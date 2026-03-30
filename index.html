@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+     <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -9,165 +9,47 @@
         body { background: #05070a; color: #e2e8f0; font-family: sans-serif; }
         .glass { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.05); }
         .gold-text { background: linear-gradient(135deg, #fcd34d 0%, #b45309 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .op-megafon { border-left: 4px solid #00b956; }
-        .op-beeline { border-left: 4px solid #ffcc00; }
-        .op-mts { border-left: 4px solid #ff0000; }
-        .op-tele2 { border-left: 4px solid #1f2229; }
     </style>
 </head>
 <body class="pb-10">
 
     <header class="p-6 sticky top-0 z-50 glass flex justify-between items-center border-b border-white/5">
         <h1 class="text-2xl font-black gold-text uppercase tracking-tighter">SIM MARKET</h1>
-        <div class="text-[10px] font-bold text-gray-400 tracking-widest uppercase">Khasavyurt</div>
+        <div class="text-[10px] font-bold text-gray-500 tracking-widest uppercase">Khasavyurt</div>
     </header>
 
     <main class="max-w-3xl mx-auto p-4 pt-8">
         <div id="list" class="space-y-3">
-            </div>
+            <div class="text-center p-10 text-gray-500 animate-pulse">Подключение к базе...</div>
+        </div>
     </main>
 
-    <div id="modal" style="display:none;" class="fixed inset-0 bg-black/95 z-[100] flex items-center justify-center p-4">
-        <div class="glass p-8 rounded-[2rem] w-full max-w-sm border-t-2 border-yellow-600/50 text-center">
-            <h2 id="m-num" class="text-2xl font-bold mb-6 gold-text"></h2>
-            <form id="orderForm" class="space-y-4 text-left">
-                <input type="text" id="fio" placeholder="Ваше Имя" class="w-full bg-white/5 p-4 rounded-xl border border-white/10 outline-none" required>
-                <input type="text" id="contact" placeholder="Ваш телефон" class="w-full bg-white/5 p-4 rounded-xl border border-white/10 outline-none" required>
-                <button type="submit" id="sbtn" class="w-full bg-yellow-600 text-black font-black py-4 rounded-xl uppercase">Забронировать</button>
-                <button type="button" onclick="document.getElementById('modal').style.display='none'" class="w-full text-gray-500 text-xs">ОТМЕНА</button>
-            </form>
-        </div>
-    </div>
-
     <script>
-        const DATA = [
-            {n:"925-809-14-14", o:"Мегафон", t:"575", op:"megafon"},
-            {n:"960-477-14-14", o:"билайн", t:"430", op:"beeline"},
-            {n:"967-686-14-14", o:"Мегафон", t:"575", op:"megafon"},
-            {n:"967-884-14-14", o:"билайн", t:"430", op:"beeline"},
-            {n:"910-447-14-14", o:"МТС", t:"900", op:"mts"},
-            {n:"968-809-14-14", o:"билайн", t:"430", op:"beeline"},
-            {n:"999-902-14-14", o:"Tele2", t:"800", op:"tele2"},
-            {n:"905-226-14-14", o:"билайн", t:"430", op:"beeline"},
-            {n:"915-145-14-14", o:"МТС", t:"900", op:"mts"},
-            {n:"968-760-14-14", o:"билайн", t:"430", op:"beeline"},
-            {n:"964-769-14-14", o:"Мегафон", t:"555", op:"megafon"},
-            {n:"910-442-14-14", o:"МТС", t:"900", op:"mts"},
-            {n:"968-458-14-14", o:"билайн", t:"390", op:"beeline"},
-            {n:"977-999-14-14", o:"Tele2", t:"800", op:"tele2"},
-            {n:"989-112-14-14", o:"МТС", t:"900", op:"mts"},
-            {n:"999-916-14-14", o:"Tele2", t:"800", op:"tele2"},
-            {n:"915-112-14-14", o:"МТС", t:"900", op:"mts"},
-            {n:"999-889-14-14", o:"Tele2", t:"700", op:"tele2"},
-            {n:"968-808-14-14", o:"билайн", t:"430", op:"beeline"},
-            {n:"925-489-14-14", o:"Мегафон", t:"390", op:"megafon"},
-            {n:"925-553-14-14", o:"Мегафон", t:"755", op:"megafon"},
-            {n:"989-119-14-14", o:"МТС", t:"900", op:"mts"},
-            {n:"985-031-14-14", o:"МТС", t:"1150", op:"mts"},
-            {n:"999-893-14-14", o:"Tele2", t:"600", op:"tele2"},
-            {n:"963-676-14-14", o:"билайн", t:"430", op:"beeline"},
-            {n:"925-905-14-14", o:"Мегафон", t:"575", op:"megafon"},
-            {n:"995-452-14-14", o:"Мегафон", t:"575", op:"megafon"},
-            {n:"967-577-14-14", o:"Мегафон", t:"575", op:"megafon"},
-            {n:"999-922-14-14", o:"Tele2", t:"800", op:"tele2"},
-            {n:"999-912-14-14", o:"Tele2", t:"800", op:"tele2"},
-            {n:"967-689-14-14", o:"Мегафон", t:"575", op:"megafon"},
-            {n:"985-779-14-14", o:"Мегафон", t:"575", op:"megafon"},
-            {n:"961-794-14-14", o:"билайн", t:"430", op:"beeline"},
-            {n:"905-753-14-14", o:"билайн", t:"430", op:"beeline"},
-            {n:"966-071-14-14", o:"билайн", t:"430", op:"beeline"},
-            {n:"910-445-14-14", o:"МТС", t:"900", op:"mts"},
-            {n:"958-117-14-14", o:"Мегафон", t:"625", op:"megafon"},
-            {n:"995-459-14-14", o:"Мегафон", t:"575", op:"megafon"},
-            {n:"910-440-14-14", o:"МТС", t:"900", op:"mts"},
-            {n:"917-531-14-14", o:"МТС", t:"1150", op:"mts"},
-            {n:"999-920-14-14", o:"Tele2", t:"800", op:"tele2"},
-            {n:"958-119-14-14", o:"Мегафон", t:"625", op:"megafon"},
-            {n:"967-575-14-14", o:"Мегафон", t:"575", op:"megafon"},
-            {n:"966-855-14-14", o:"билайн", t:"430", op:"beeline"},
-            {n:"999-929-14-14", o:"Tele2", t:"800", op:"tele2"},
-            {n:"917-550-14-14", o:"Мегафон", t:"575", op:"megafon"},
-            {n:"966-671-14-14", o:"Мегафон", t:"575", op:"megafon"},
-            {n:"989-118-14-14", o:"МТС", t:"900", op:"mts"},
-            {n:"915-148-14-14", o:"МТС", t:"900", op:"mts"},
-            {n:"985-071-14-14", o:"МТС", t:"1150", op:"mts"},
-            {n:"965-409-14-14", o:"билайн", t:"430", op:"beeline"},
-            {n:"968-369-14-14", o:"билайн", t:"430", op:"beeline"},
-            {n:"964-264-14-14", o:"билайн", t:"430", op:"beeline"},
-            {n:"989-116-14-14", o:"МТС", t:"900", op:"mts"},
-            {n:"967-578-14-14", o:"Мегафон", t:"575", op:"megafon"},
-            {n:"999-894-14-14", o:"Tele2", t:"600", op:"tele2"},
-            {n:"964-578-14-14", o:"билайн", t:"430", op:"beeline"},
-            {n:"967-579-14-14", o:"Мегафон", t:"575", op:"megafon"},
-            {n:"903-452-14-14", o:"билайн", t:"430", op:"beeline"},
-            {n:"966-676-14-14", o:"Мегафон", t:"525", op:"megafon"},
-            {n:"963-734-14-14", o:"билайн", t:"440", op:"beeline"},
-            {n:"966-850-14-14", o:"билайн", t:"430", op:"beeline"},
-            {n:"960-490-14-14", o:"билайн", t:"430", op:"beeline"},
-            {n:"999-911-14-14", o:"Tele2", t:"800", op:"tele2"},
-            {n:"969-895-14-14", o:"Мегафон", t:"575", op:"megafon"},
-            {n:"915-149-14-14", o:"МТС", t:"900", op:"mts"},
-            {n:"966-856-14-14", o:"билайн", t:"430", op:"beeline"},
-            {n:"910-443-14-14", o:"МТС", t:"900", op:"mts"},
-            {n:"961-436-14-14", o:"билайн", t:"430", op:"beeline"},
-            {n:"964-706-14-14", o:"билайн", t:"430", op:"beeline"},
-            {n:"991-614-14-14", o:"Tele2", t:"1100", op:"tele2"},
-            {n:"901-333-14-14", o:"Tele2", t:"900", op:"tele2"},
-            {n:"901-832-14-14", o:"Мегафон", t:"575", op:"megafon"},
-            {n:"905-271-14-14", o:"билайн", t:"430", op:"beeline"},
-            {n:"999-928-14-14", o:"Tele2", t:"800", op:"tele2"},
-            {n:"901-837-14-14", o:"Мегафон", t:"575", op:"megafon"},
-            {n:"915-119-14-14", o:"МТС", t:"900", op:"mts"},
-            {n:"915-146-14-14", o:"МТС", t:"900", op:"mts"},
-            {n:"965-137-14-14", o:"билайн", t:"430", op:"beeline"},
-            {n:"901-839-14-14", o:"Мегафон", t:"575", op:"megafon"},
-            {n:"999-906-14-14", o:"Tele2", t:"800", op:"tele2"},
-            {n:"985-709-14-14", o:"Мегафон", t:"575", op:"megafon"},
-            {n:"915-116-14-14", o:"МТС", t:"900", op:"mts"},
-            {n:"968-463-14-14", o:"билайн", t:"430", op:"beeline"},
-            {n:"962-784-14-14", o:"билайн", t:"430", op:"beeline"},
-            {n:"906-934-14-14", o:"билайн", t:"430", op:"beeline"},
-            {n:"925-639-14-14", o:"Мегафон", t:"575", op:"megafon"},
-            {n:"966-670-14-14", o:"Мегафон", t:"525", op:"megafon"},
-            {n:"966-857-14-14", o:"билайн", t:"430", op:"beeline"},
-            {n:"999-918-14-14", o:"Tele2", t:"800", op:"tele2"},
-            {n:"966-675-14-14", o:"Мегафон", t:"525", op:"megafon"},
-            {n:"925-952-14-14", o:"Мегафон", t:"575", op:"megafon"},
-            {n:"964-723-14-14", o:"билайн", t:"430", op:"beeline"},
-            {n:"989-115-14-14", o:"МТС", t:"900", op:"mts"},
-            {n:"905-702-14-14", o:"билайн", t:"440", op:"beeline"},
-            {n:"915-117-14-14", o:"МТС", t:"900", op:"mts"},
-            {n:"901-838-14-14", o:"Мегафон", t:"575", op:"megafon"},
-            {n:"925-963-14-14", o:"Мегафон", t:"625", op:"megafon"},
-            {n:"969-893-14-14", o:"Мегафон", t:"575", op:"megafon"},
-            {n:"999-908-14-14", o:"Tele2", t:"800", op:"tele2"},
-            {n:"969-897-14-14", o:"Мегафон", t:"575", op:"megafon"},
-            {n:"906-279-14-14", o:"билайн", t:"430", op:"beeline"},
-            {n:"961-784-14-14", o:"билайн", t:"430", op:"beeline"},
-            {n:"969-899-14-14", o:"Мегафон", t:"575", op:"megafon"},
-            {n:"915-147-14-14", o:"МТС", t:"900", op:"mts"},
-            {n:"905-562-14-14", o:"билайн", t:"440", op:"beeline"},
-            {n:"999-903-14-14", o:"Tele2", t:"800", op:"tele2"},
-            {n:"968-638-14-14", o:"билайн", t:"430", op:"beeline"},
-            {n:"969-890-14-14", o:"Мегафон", t:"575", op:"megafon"},
-            {n:"966-678-14-14", o:"Мегафон", t:"525", op:"megafon"},
-            {n:"967-576-14-14", o:"Мегафон", t:"575", op:"megafon"},
-            {n:"925-375-14-14", o:"Мегафон", t:"575", op:"megafon"},
-            {n:"905-425-14-14", o:"билайн", t:"430", op:"beeline"},
-            {n:"999-898-14-14", o:"Tele2", t:"600", op:"tele2"},
-            {n:"915-142-14-14", o:"МТС", t:"900", op:"mts"},
-            {n:"925-928-14-14", o:"Мегафон", t:"575", op:"megafon"},
-            {n:"989-117-14-14", o:"МТС", t:"900", op:"mts"},
-            {n:"910-446-14-14", o:"МТС", t:"900", op:"mts"},
-            {n:"909-923-14-14", o:"билайн", t:"430", op:"beeline"},
-            {n:"915-118-14-14", o:"МТС", t:"900", op:"mts"},
-            {n:"985-778-14-14", o:"билайн", t:"430", op:"beeline"}
-        ];
+        const BIN_ID = "69c9d640aaba882197a65742"; 
+        const MASTER_KEY = "$2a$10$BIVZfOXmYVaG9NpPRW61Le//5yePRuieGl/ph3o6UYlHw4uOJQKtW"; 
 
-        function render() {
+        async function loadData() {
             const list = document.getElementById('list');
-            list.innerHTML = DATA.map(i => `
-                <div onclick="openM('${i.n}')" class="glass p-5 rounded-2xl flex justify-between items-center cursor-pointer op-${i.op}">
+            try {
+                const response = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
+                    headers: { 'X-Master-Key': MASTER_KEY }
+                });
+                if (!response.ok) throw new Error();
+                const resData = await response.json();
+                render(resData.record);
+            } catch (err) {
+                list.innerHTML = `<div class="text-center p-10 text-red-500">Ошибка: Обновите данные в jsonbin</div>`;
+            }
+        }
+
+        function render(items) {
+            const list = document.getElementById('list');
+            if (!items || items.length === 0) {
+                list.innerHTML = '<div class="text-center p-10 text-gray-500">Список пуст</div>';
+                return;
+            }
+            list.innerHTML = items.map(i => `
+                <div class="glass p-5 rounded-2xl flex justify-between items-center border-l-4 ${getBorder(i.op)}">
                     <div>
                         <div class="text-xl font-mono font-bold tracking-tighter">${i.n}</div>
                         <div class="text-[10px] text-gray-400 uppercase font-bold">${i.o}</div>
@@ -175,15 +57,22 @@
                     <div class="text-right">
                         <div class="text-xs text-yellow-600 font-black">от ${i.t}₽</div>
                     </div>
-                </div>`).join('');
+                </div>
+            `).join('');
         }
 
-        function openM(n) {
-            document.getElementById('m-num').innerText = n;
-            document.getElementById('modal').style.display = 'flex';
+        function getBorder(op) {
+            const colors = {
+                'megafon': 'border-green-500',
+                'beeline': 'border-yellow-400',
+                'mts': 'border-red-600',
+                'tele2': 'border-gray-800'
+            };
+            return colors[op] || 'border-white/10';
         }
 
-        window.onload = render;
+        window.onload = loadData;
     </script>
 </body>
 </html>
+       
