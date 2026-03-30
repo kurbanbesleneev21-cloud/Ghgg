@@ -9,6 +9,7 @@
         body { background: #05070a; color: #e2e8f0; font-family: sans-serif; }
         .glass { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.05); }
         .gold-text { background: linear-gradient(135deg, #fcd34d 0%, #b45309 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .vip-border { border: 1px solid rgba(252, 211, 77, 0.4) !important; background: rgba(252, 211, 77, 0.03); }
         input[type="file"]::file-selector-button { background: #b45309; border: none; padding: 8px 16px; border-radius: 8px; color: white; cursor: pointer; font-size: 10px; text-transform: uppercase; }
     </style>
 </head>
@@ -20,13 +21,13 @@
     </header>
 
     <main class="max-w-3xl mx-auto p-4 pt-8">
-        <div id="list" class="space-y-3">
-            <div class="text-center p-10 text-gray-500 animate-pulse">Загрузка витрины...</div>
+        <div id="list" class="space-y-4">
+            <div class="text-center p-10 text-gray-500 animate-pulse text-xs uppercase tracking-widest">Загрузка витрины...</div>
         </div>
     </main>
 
     <div id="modal" style="display:none;" class="fixed inset-0 bg-black/95 z-[100] flex items-center justify-center p-4 overflow-y-auto">
-        <div class="glass p-6 rounded-[2rem] w-full max-w-md my-auto border-t-2 border-yellow-600/30">
+        <div class="glass p-6 rounded-[2.5rem] w-full max-w-md my-auto border-t-2 border-yellow-600/30">
             <h2 class="text-xl font-bold mb-2 gold-text uppercase">Оформление</h2>
             <p id="target-num" class="mb-6 text-white font-mono text-lg border-b border-white/10 pb-2"></p>
             
@@ -51,7 +52,6 @@
     </div>
 
     <script>
-        // Данные базы и Телеграм бота
         const BIN_ID = "69c9d640aaba882197a65742"; 
         const MASTER_KEY = "$2a$10$BIVZfOXmYVaG9NpPRW61Le//5yePRuieGl/ph3o6UYlHw4uOJQKtW"; 
         const TG_TOKEN = "8569235049:AAEsaW4ME-Ql6036i04tIbj--IPNT6JdroE"; 
@@ -65,23 +65,32 @@
                     headers: { 'X-Master-Key': MASTER_KEY }
                 });
                 const resData = await response.json();
-                render(resData.record);
+                render(resData.record || []);
             } catch (err) { console.error(err); }
         }
 
         function render(items) {
             const list = document.getElementById('list');
-            list.innerHTML = items.map(i => `
-                <div onclick="openM('${i.n}')" class="glass p-5 rounded-2xl flex justify-between items-center cursor-pointer active:scale-95 transition-all border-l-4 ${getBorder(i.op)}">
+            list.innerHTML = items.map(i => {
+                const isVip = i.cat === 'vip' || i.cat === 'gold';
+                return `
+                <div onclick="openM('${i.n}')" class="glass p-5 rounded-[2rem] flex justify-between items-center cursor-pointer active:scale-95 transition-all border-l-4 ${getBorder(i.op)} ${isVip ? 'vip-border' : ''}">
                     <div>
-                        <div class="text-xl font-mono font-bold tracking-tighter">${i.n}</div>
-                        <div class="text-[10px] text-gray-400 uppercase font-bold">${i.o}</div>
+                        <div class="flex items-center gap-2">
+                            <div class="text-xl font-mono font-bold tracking-tighter">${i.n}</div>
+                            ${isVip ? `<span class="text-[8px] bg-yellow-600 text-black px-1.5 py-0.5 rounded font-black uppercase">${i.cat}</span>` : ''}
+                        </div>
+                        <div class="text-[10px] text-gray-400 uppercase font-bold mt-1">
+                            ${i.o} • ${i.tarif || 'Базовый тариф'} 
+                            <span class="text-yellow-600/80">(${i.tarif_p || 0}₽/мес)</span>
+                        </div>
                     </div>
                     <div class="text-right">
-                        <div class="text-[10px] bg-yellow-600/20 text-yellow-500 px-3 py-1 rounded-full font-black uppercase tracking-widest">Купить</div>
+                        <div class="text-sm font-black text-yellow-500">${i.t}₽</div>
+                        <div class="text-[8px] text-gray-500 font-bold uppercase tracking-widest mt-1">Оформить</div>
                     </div>
                 </div>
-            `).join('');
+            `}).reverse().join('');
         }
 
         function openM(num) {
@@ -111,29 +120,22 @@
             const text = `💰 НОВАЯ ЗАЯВКА\n\nНомер: ${selectedNum}\nФИО: ${fio}\nКлиент: ${phone}`;
 
             try {
-                // Отправка текстовых данных
                 await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({ chat_id: TG_CHAT_ID, text: text })
                 });
-
-                // Отправка фото паспорта
                 const f1 = new FormData(); f1.append('chat_id', TG_CHAT_ID); f1.append('photo', p1);
                 await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendPhoto`, { method: 'POST', body: f1 });
-
-                // Отправка фото прописки
                 const f2 = new FormData(); f2.append('chat_id', TG_CHAT_ID); f2.append('photo', p2);
                 await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendPhoto`, { method: 'POST', body: f2 });
 
-                alert("Заявка успешно отправлена! Мы свяжемся с вами в ближайшее время.");
+                alert("Заявка отправлена!");
                 closeM();
                 document.getElementById('regForm').reset();
-            } catch (err) {
-                alert("Ошибка при отправке! Попробуйте позже.");
-            } finally {
+            } catch (err) { alert("Ошибка!"); } finally {
                 btn.disabled = false;
-                btn.innerText = "Отправить заявку";
+                btn.innerText = "ОТПРАВИТЬ ЗАЯВКУ";
             }
         };
 
