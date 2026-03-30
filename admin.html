@@ -29,19 +29,133 @@
                 <h1 class="text-xl font-black text-yellow-500 uppercase">SIM MARKET</h1>
                 <p id="stats" class="text-[10px] text-gray-400 font-bold uppercase"></p>
             </div>
-            <button onclick="location.reload()" class="p-2 bg-white/5 rounded-xl border border-white/10 text-xs uppercase">Обновить</button>
+            <button onclick="location.reload()" class="p-2 bg-white/5 rounded-xl border border-white/10 text-[10px] uppercase font-bold">Обновить</button>
         </header>
 
         <main class="max-w-2xl mx-auto p-4 pt-8">
-            
             <section class="glass p-6 rounded-[2.5rem] mb-10">
-                <h2 class="text-xs font-bold mb-4 text-gray-500 uppercase tracking-widest">Добавить новый лот</h2>
+                <h2 class="text-xs font-bold mb-4 text-gray-500 uppercase tracking-widest">Добавить номер</h2>
                 <div class="grid gap-3">
-                    <input type="text" id="new_n" placeholder="Номер (напр. 928-111-14-14)" class="w-full p-4 rounded-xl">
-                    
+                    <input type="text" id="new_n" placeholder="Номер (928-111-14-14)" class="w-full p-4 rounded-xl">
                     <div class="grid grid-cols-2 gap-3">
                         <input type="number" id="new_t" placeholder="Цена номера ₽" class="p-4 rounded-xl">
                         <select id="new_op" class="p-4 rounded-xl">
                             <option value="megafon">Мегафон</option>
                             <option value="beeline">Билайн</option>
-                            
+                            <option value="mts">МТС</option>
+                            <option value="tele2">Tele2</option>
+                        </select>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3">
+                        <input type="text" id="new_tarif" placeholder="Название тарифа" class="p-4 rounded-xl">
+                        <input type="number" id="new_tarif_p" placeholder="Абонплата ₽" class="p-4 rounded-xl">
+                    </div>
+                    <select id="new_cat" class="w-full p-4 rounded-xl">
+                        <option value="std">Обычный номер</option>
+                        <option value="gold">GOLD номер</option>
+                        <option value="vip">VIP номер</option>
+                    </select>
+                    <button onclick="addNumber()" id="addBtn" class="w-full gold-btn py-5 rounded-2xl uppercase tracking-widest mt-2">Опубликовать</button>
+                </div>
+            </section>
+
+            <div id="admin_list" class="space-y-3"></div>
+        </main>
+    </div>
+
+    <script>
+        const BIN_ID = "69c9d640aaba882197a65742";
+        const MASTER_KEY = "$2a$10$BIVZfOXmYVaG9NpPRW61Le//5yePRuieGl/ph3o6UYlHw4uOJQKtW";
+        const ADMIN_PASS = "1414"; 
+        
+        let currentData = [];
+
+        function checkPass() {
+            const input = document.getElementById('pass_input').value;
+            if(input === ADMIN_PASS) {
+                document.getElementById('login_screen').style.display = 'none';
+                document.getElementById('admin_content').style.display = 'block';
+                load();
+            } else {
+                alert("Неверный пароль!");
+            }
+        }
+
+        async function load() {
+            try {
+                const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
+                    headers: { 'X-Master-Key': MASTER_KEY }
+                });
+                const json = await res.json();
+                currentData = json.record || [];
+                render();
+            } catch (err) { alert("Ошибка загрузки данных!"); }
+        }
+
+        function render() {
+            const list = document.getElementById('admin_list');
+            document.getElementById('stats').innerText = `Витрина: ${currentData.length}`;
+
+            list.innerHTML = currentData.map((item, index) => {
+                const isVip = item.cat === 'vip' || item.cat === 'gold';
+                return `
+                <div class="glass p-5 rounded-3xl flex justify-between items-center ${isVip ? 'vip-border' : ''}">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xl font-mono font-bold">${item.n}</span>
+                            ${isVip ? `<span class="text-[8px] bg-yellow-600 text-black px-1.5 rounded font-black uppercase">${item.cat}</span>` : ''}
+                        </div>
+                        <div class="text-[10px] text-gray-500 font-bold uppercase">
+                            ${item.o} • ${item.tarif || 'Базовый'} (${item.tarif_p || 0}₽)
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="text-right text-sm font-black text-yellow-500">${item.t}₽</div>
+                        <button onclick="deleteNumber(${index})" class="w-10 h-10 flex items-center justify-center bg-red-500/10 text-red-500 rounded-xl">🗑️</button>
+                    </div>
+                </div>
+            `}).reverse().join('');
+        }
+
+        async function addNumber() {
+            const btn = document.getElementById('addBtn');
+            const n = document.getElementById('new_n').value;
+            const t = document.getElementById('new_t').value;
+            const tarif = document.getElementById('new_tarif').value;
+            const tarif_p = document.getElementById('new_tarif_p').value;
+            const op = document.getElementById('new_op').value;
+            const cat = document.getElementById('new_cat').value;
+            const o = document.querySelector(`#new_op option[value="${op}"]`).text;
+
+            if(!n || !t) return alert("Заполни поля!");
+            btn.disabled = true;
+
+            const updatedData = [...currentData, { n, t, op, o, tarif, tarif_p, cat }];
+            await updateBin(updatedData);
+            
+            document.getElementById('new_n').value = '';
+            document.getElementById('new_t').value = '';
+            btn.disabled = false;
+        }
+
+        async function deleteNumber(index) {
+            if(!confirm("Удалить?")) return;
+            const realIndex = currentData.length - 1 - index;
+            const updatedData = currentData.filter((_, i) => i !== realIndex);
+            await updateBin(updatedData);
+        }
+
+        async function updateBin(newData) {
+            try {
+                await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json', 'X-Master-Key': MASTER_KEY },
+                    body: JSON.stringify(newData)
+                });
+                currentData = newData;
+                render();
+            } catch (err) { alert("Ошибка сохранения!"); }
+        }
+    </script>
+</body>
+</html>
