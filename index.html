@@ -3,204 +3,158 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIM MARKET | DIGITAL MOTION</title>
+    <title>SIM MARKET | КЛАССИКА ЛЮКС</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;900&family=JetBrains+Mono:wght@400;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&family=Manrope:wght@500;800&display=swap');
         
-        body { background: #010204; color: #a1a1aa; font-family: 'Inter', sans-serif; overflow-x: hidden; position: relative; }
+        body { 
+            background-color: #05070a; 
+            color: #ffffff; 
+            font-family: 'Manrope', sans-serif;
+            background-image: radial-gradient(circle at 50% -20%, #1a1c20 0%, #05070a 100%);
+        }
+
+        /* Эффект дорогого стекла */
+        .premium-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
         
-        /* Динамический фон */
-        body::before { content: ''; position: fixed; inset: 0; background: radial-gradient(circle at 20% 80%, rgba(251, 191, 36, 0.03), transparent 40%), radial-gradient(circle at 80% 20%, rgba(251, 191, 36, 0.02), transparent 40%); z-index: -1; }
-        .bg-shape { position: fixed; border-radius: 50%; background: rgba(251, 191, 36, 0.01); backdrop-filter: blur(50px); z-index: -2; animation: floatShapes 20s infinite linear; }
-        @keyframes floatShapes { from { transform: translate(0, 0) rotate(0deg); } to { transform: translate(100px, 100px) rotate(360deg); } }
+        .premium-card:hover {
+            border-color: rgba(251, 191, 36, 0.4);
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.05);
+        }
 
-        .glass-header { background: rgba(1, 2, 4, 0.85); backdrop-filter: blur(20px); border-b: 1px solid rgba(255, 255, 255, 0.03); }
-        
-        .gold-gradient { background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; transition: 0.3s; }
-        
-        .gold-btn { background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%); color: #000; font-weight: 900; position: relative; overflow: hidden; transition: 0.3s; }
-        .gold-btn::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); transform: translateX(-100%); transition: 0.5s; }
-        .gold-btn:hover::after { transform: translateX(100%); }
+        .gold-text {
+            background: linear-gradient(135deg, #fcd34d 0%, #d97706 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+        }
 
-        /* Анимация появления */
-        .card-anim { animation: rollIn 0.8s ease forwards; opacity: 0; transform-origin: center; }
-        @keyframes rollIn { 0% { opacity: 0; transform: scale(0.8) translateY(20px); } 100% { opacity: 1; transform: scale(1) translateY(0); } }
+        .order-btn {
+            background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
+            color: #000;
+            font-weight: 800;
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(217, 119, 6, 0.3);
+        }
 
-        /* Эффект полета кометы для VIP */
-        .vip-neon { position: relative; border: 1px solid rgba(251, 191, 36, 0.1); box-shadow: 0 0 15px rgba(251, 191, 36, 0.02); transition: 0.3s; }
-        .vip-neon::after { content: ''; position: absolute; inset: -2px; border: 2px solid transparent; border-top-color: #fbbf24; border-radius: 2.5rem; opacity: 0; transition: 0.5s; animation: cometRun 2s infinite linear; animation-play-state: paused; }
-        .vip-neon:hover::after, .vip-neon:active::after { opacity: 1; animation-play-state: running; }
-        @keyframes cometRun { 0% { clip-path: inset(0 100% 100% 0); } 25% { clip-path: inset(0 0 100% 0); } 50% { clip-path: inset(0 0 0 0); } 75% { clip-path: inset(100% 0 0 0); } 100% { clip-path: inset(100% 100% 0 0); } }
+        .search-bar {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            color: white;
+            transition: 0.3s;
+        }
 
-        /* Магнитный эффект */
-        .magnetic { transition: transform 0.2s ease-out; }
+        .search-bar:focus {
+            border-color: #fbbf24;
+            outline: none;
+            background: rgba(255, 255, 255, 0.08);
+        }
 
-        .search-dark { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); transition: 0.3s; }
-        .search-dark:focus { border-color: #fbbf24; background: rgba(255,255,255,0.05); box-shadow: 0 0 15px rgba(251, 191, 36, 0.05); }
-        
-        .tab-text { font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; transition: 0.3s; position: relative; }
-        .tab-text::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 2px; background: #fbbf24; transition: 0.3s; }
-        .tab-active { color: #fbbf24; }
-        .tab-active::after { width: 100%; }
-        
-        .font-num { font-family: 'JetBrains Mono', monospace; letter-spacing: -1.5px; }
+        .operator-badge {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.05);
+        }
 
-        /* Кнопка Lucky Sim */
-        .lucky-btn { transition: 0.3s; filter: grayscale(1); opacity: 0.5; }
-        .lucky-btn:hover { filter: grayscale(0); opacity: 1; transform: rotate(15deg) scale(1.1); }
+        /* Плавное появление */
+        .fade-in { animation: fadeIn 0.5s ease-out forwards; opacity: 0; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
-<body class="pb-24">
+<body class="pb-10">
 
-    <div class="bg-shape" style="width: 200px; height: 200px; top: 10%; left: -50px; animation-duration: 25s;"></div>
-    <div class="bg-shape" style="width: 150px; height: 150px; bottom: 15%; right: -30px; animation-delay: -5s;"></div>
-
-    <header class="p-8 text-center sticky top-0 z-50 glass-header flex justify-between items-center">
-        <div class="w-10"></div> <div>
-            <h1 class="text-4xl font-black gold-gradient tracking-tighter uppercase leading-none mb-1 group cursor-pointer">
-                <span class="inline-block hover:animate-bounce">S</span>IM MARKET
-            </h1>
-            <p class="text-[9px] font-bold text-gray-600 tracking-[0.5em] uppercase">Digital Assets • DAG</p>
-        </div>
-        <button onclick="luckySim()" class="lucky-btn text-2xl p-2 rounded-full glass-header border border-white/5" title="Счастливый случай">🎲</button>
+    <header class="py-10 px-6 text-center">
+        <h1 class="text-4xl font-[900] tracking-tighter uppercase mb-2">
+            <span class="gold-text">SIM</span> MARKET
+        </h1>
+        <p class="text-gray-500 text-[10px] font-bold tracking-[0.4em] uppercase">Эксклюзивные номера • Дагестан</p>
     </header>
 
-    <main class="max-w-2xl mx-auto p-4">
+    <main class="max-w-xl mx-auto px-4">
         
-        <section class="mt-8 mb-10 space-y-5">
-            <input type="text" id="mainSearch" oninput="applyFilters()" placeholder="ПОИСК (НАПР. 000 ИЛИ МЕГАФОН)" 
-                   class="w-full p-5 rounded-[1.5rem] search-dark text-white outline-none font-medium text-xs tracking-widest uppercase magnetic">
-            
-            <div class="flex gap-4 overflow-x-auto pb-2 border-b border-white/5 no-scrollbar">
-                <button onclick="setTab('all')" id="tab-all" class="tab-text tab-active py-2 whitespace-nowrap">Все</button>
-                <button onclick="setTab('vip')" id="tab-vip" class="tab-text py-2 whitespace-nowrap text-gray-600">VIP & GOLD</button>
-                <button onclick="setTab('megafon')" id="tab-megafon" class="tab-text py-2 whitespace-nowrap text-gray-600">Мегафон</button>
-                <button onclick="setTab('beeline')" id="tab-beeline" class="tab-text py-2 whitespace-nowrap text-gray-600">Билайн</button>
-            </div>
-        </section>
-
-        <div id="displayGrid" class="space-y-4">
-            <div class="text-center p-20 opacity-10 text-[9px] font-black uppercase tracking-[0.3em]">Синхронизация движения...</div>
+        <div class="mb-8">
+            <input type="text" id="searchInput" oninput="render()" placeholder="Поиск номера (например: 000)" 
+                   class="w-full p-5 search-bar text-sm">
         </div>
+
+        <div class="flex gap-2 overflow-x-auto mb-8 no-scrollbar pb-2">
+            <button onclick="filterBy('all')" class="px-5 py-2 rounded-full border border-white/10 text-[11px] font-bold uppercase hover:bg-white/5">Все</button>
+            <button onclick="filterBy('vip')" class="px-5 py-2 rounded-full border border-yellow-600/30 text-[11px] font-bold uppercase text-yellow-500 hover:bg-yellow-600/10">VIP</button>
+            <button onclick="filterBy('megafon')" class="px-5 py-2 rounded-full border border-white/10 text-[11px] font-bold uppercase hover:bg-white/5">Мегафон</button>
+            <button onclick="filterBy('beeline')" class="px-5 py-2 rounded-full border border-white/10 text-[11px] font-bold uppercase hover:bg-white/5">Билайн</button>
+        </div>
+
+        <div id="numbersList" class="space-y-4">
+            </div>
     </main>
 
-    <div id="orderModal" style="display:none;" class="fixed inset-0 bg-black/98 z-[100] flex items-center justify-center p-6 backdrop-blur-xl">
-        <div class="p-8 rounded-[3rem] w-full max-w-sm border border-white/10 bg-[#010204] card-anim">
-            <h2 class="text-2xl font-black mb-1 gold-gradient uppercase tracking-tighter">Оформление</h2>
-            <p id="targetNum" class="text-lg font-num font-bold text-white mb-6 border-b border-white/5 pb-2"></p>
+    <div id="modal" class="fixed inset-0 bg-black/90 z-[100] hidden items-center justify-center p-6 backdrop-blur-md">
+        <div class="premium-card p-8 w-full max-w-sm border-t-4 border-yellow-600 bg-[#0a0c10]">
+            <h2 class="text-2xl font-black mb-1 gold-text uppercase">Заявка</h2>
+            <p id="selectedNum" class="text-xl font-bold mb-6 text-white"></p>
             
             <form id="orderForm" class="space-y-4">
-                <input type="text" id="userName" placeholder="ВАШЕ ФИО" class="w-full search-dark p-4 rounded-xl border border-white/5 outline-none focus:border-yellow-600 text-white text-xs" required>
-                <input type="tel" id="userPhone" placeholder="ТЕЛЕФОН" class="w-full search-dark p-4 rounded-xl border border-white/5 outline-none focus:border-yellow-600 text-white text-xs" required>
+                <input type="text" id="name" placeholder="Ваше Имя" class="w-full p-4 search-bar text-sm" required>
+                <input type="tel" id="phone" placeholder="Контактный номер" class="w-full p-4 search-bar text-sm" required>
                 
-                <div class="grid grid-cols-2 gap-3">
-                    <div class="p-3 bg-white/3 rounded-xl border border-white/5 text-center">
-                        <label class="text-[7px] text-gray-600 block mb-2 uppercase font-black tracking-widest">ПАСПОРТ (ЛИЦО)</label>
-                        <input type="file" id="pass1" accept="image/*" class="text-[8px] text-gray-500" required>
+                <div class="grid grid-cols-2 gap-3 text-center">
+                    <div class="p-3 bg-white/5 rounded-xl border border-white/5">
+                        <label class="text-[8px] text-gray-500 block mb-1 uppercase">Паспорт</label>
+                        <input type="file" id="p1" class="text-[8px]" required>
                     </div>
-                    <div class="p-3 bg-white/3 rounded-xl border border-white/5 text-center">
-                        <label class="text-[7px] text-gray-600 block mb-2 uppercase font-black tracking-widest">ПРОПИСКА</label>
-                        <input type="file" id="pass2" accept="image/*" class="text-[8px] text-gray-500" required>
+                    <div class="p-3 bg-white/5 rounded-xl border border-white/5">
+                        <label class="text-[8px] text-gray-500 block mb-1 uppercase">Прописка</label>
+                        <input type="file" id="p2" class="text-[8px]" required>
                     </div>
                 </div>
 
-                <button type="submit" id="submitOrder" class="w-full gold-btn text-black font-black py-5 rounded-2xl uppercase tracking-widest mt-2 magnetic">Оформить актив</button>
-                <button type="button" onclick="closeOrder()" class="w-full text-gray-700 text-[9px] font-bold uppercase py-2 tracking-widest active:scale-95 transition-all">Назад</button>
+                <button type="submit" class="w-full py-5 order-btn uppercase tracking-widest text-xs active:scale-95 transition-all">Подтвердить заказ</button>
+                <button type="button" onclick="closeModal()" class="w-full text-gray-600 text-[10px] font-bold uppercase mt-2">Закрыть</button>
             </form>
         </div>
     </div>
 
     <script>
         const BIN_ID = "69c9d640aaba882197a65742"; 
-        const MASTER_KEY = "$2a$10$BIVZfOXmYVaG9NpPRW61Le//5yePRuieGl/ph3o6UYlHw4uOJQKtW"; 
-        const TG_TOKEN = "8569235049:AAEsaW4ME-Ql6036i04tIbj--IPNT6JdroE"; 
-        const TG_CHAT = "8768514374"; 
+        const KEY = "$2a$10$BIVZfOXmYVaG9NpPRW61Le//5yePRuieGl/ph3o6UYlHw4uOJQKtW";
+        let db = [];
+        let currentFilter = 'all';
 
-        let allData = [];
-        let currentTab = 'all';
-
-        async function init() {
-            try {
-                const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
-                    headers: { 'X-Master-Key': MASTER_KEY }
-                });
-                const data = await res.json();
-                allData = data.record || [];
-                applyFilters();
-                initMagnetic(); // Запускаем магнитный эффект
-            } catch (err) { console.error("Network Error"); }
+        async function load() {
+            const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, { headers: {'X-Master-Key': KEY} });
+            const data = await res.json();
+            db = data.record || [];
+            render();
         }
 
-        function setTab(tab) {
-            currentTab = tab;
-            document.querySelectorAll('.tab-text').forEach(b => b.classList.remove('tab-active', 'text-yellow-500'));
-            document.querySelectorAll('.tab-text').forEach(b => b.classList.add('text-gray-600'));
-            document.getElementById('tab-' + tab).classList.add('tab-active', 'text-yellow-500');
-            applyFilters();
-        }
-
-        function applyFilters(luckyItem = null) {
-            const grid = document.getElementById('displayGrid');
-            const searchVal = document.getElementById('mainSearch').value.toLowerCase();
+        function render() {
+            const list = document.getElementById('numbersList');
+            const search = document.getElementById('searchInput').value.toLowerCase();
             
-            let filtered = luckyItem ? [luckyItem] : allData.filter(i => i.n.includes(searchVal) || (i.o && i.o.toLowerCase().includes(searchVal)));
+            let filtered = db.filter(i => i.n.includes(search));
+            if(currentFilter === 'vip') filtered = filtered.filter(i => i.cat === 'vip' || i.cat === 'gold');
+            else if(currentFilter !== 'all') filtered = filtered.filter(i => i.op === currentFilter);
 
-            if(!luckyItem) {
-                if(currentTab === 'vip') filtered = filtered.filter(i => i.cat === 'vip' || i.cat === 'gold');
-                else if(currentTab !== 'all') filtered = filtered.filter(i => i.op === currentTab);
-            }
-
-            grid.innerHTML = filtered.map((item, idx) => {
-                const isVip = item.cat === 'vip' || item.cat === 'gold';
-                return `
-                <div onclick="openOrder('${item.n}')" class="p-6 rounded-[2.5rem] flex justify-between items-center cursor-pointer card-anim border border-white/5 hover:border-yellow-600/30 transition-all magnetic ${isVip ? 'vip-neon' : ''}" style="animation-delay: ${idx * 0.03}s">
+            list.innerHTML = filtered.map((item, idx) => `
+                <div onclick="openModal('${item.n}')" class="premium-card p-6 flex justify-between items-center fade-in cursor-pointer" style="animation-delay: ${idx * 0.05}s">
                     <div>
-                        <div class="flex items-center gap-3">
-                            <span class="text-3xl font-black font-num tracking-tighter text-white leading-none">${item.n}</span>
-                            ${isVip ? `<span class="bg-yellow-600 text-black text-[7px] px-2 py-0.5 rounded font-black uppercase tracking-widest">${item.cat}</span>` : ''}
+                        <div class="flex items-center gap-3 mb-1">
+                            <span class="text-2xl font-black tracking-tighter">${item.n}</span>
+                            ${(item.cat === 'vip' || item.cat === 'gold') ? '<span class="text-[8px] bg-yellow-600 text-black px-1.5 py-0.5 rounded font-black">VIP</span>' : ''}
                         </div>
-                        <div class="text-[9px] font-bold text-gray-700 uppercase mt-2 tracking-widest">
-                            ${item.o || item.op} • <span class="text-yellow-600/80">${item.tarif || 'Базовый'}</span> (${item.tarif_p || 0}₽)
-                        </div>
-                    </div>
-                    <div class="text-right flex items-center gap-3">
-                        <div class="text-xl font-black font-num text-yellow-500 tracking-tighter">${item.t}₽</div>
-                        <div class="text-xs text-gray-700 active:scale-125 transition-all">→</div>
-                    </div>
-                </div>
-            `}).reverse().join('');
-        }
-
-        // Функция "Счастливый случай"
-        function luckySim() {
-            const premiumNumbers = allData.filter(i => i.cat === 'vip' || i.cat === 'gold');
-            if(premiumNumbers.length === 0) return alert("VIP номеров пока нет");
-            const randomItem = premiumNumbers[Math.floor(Math.random() * premiumNumbers.length)];
-            
-            // Сбрасываем фильтры и поиск
-            document.getElementById('mainSearch').value = '';
-            setTab('all');
-            
-            // Показываем один номер
-            applyFilters(randomItem);
-            
-            // Всплывающее уведомление
-            alert("🎲 Счастливый случай! Мы подобрали для вас номер: " + randomItem.n);
-        }
-
-        function openOrder(num) {
-            document.getElementById('targetNum').innerText = num;
-            document.getElementById('orderModal').style.display = 'flex';
-        }
-
-        function closeOrder() { document.getElementById('orderModal').style.display = 'none'; }
-
-        // Реализация магнитного эффекта
-        function initMagnetic() {
-            const magnetics = document.querySelectorAll('.magnetic');
-            magnetics.forEach(elem => {
-                elem.addEventListener('mousemove', e => {
-                    const pos = elem.getBoundingClientRect();
-                    const mx = e.clientX - pos.left - pos.width/2;
-                    const my = e.clientY - pos
+                        <div class="flex items-center gap-2">
+                            <span class="operator-badge text-gray-400">${item.o || item.op}</span>
+                            <span class="text-[10px] text-gray-600 font-
