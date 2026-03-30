@@ -6,97 +6,126 @@
     <title>SIM MARKET | Премиум номера</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background-color: #0b0f1a; color: #f8fafc; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; overflow-x: hidden; }
-        .gold-border { border: 1px solid rgba(251, 191, 36, 0.4); }
+        body { background-color: #0b0f1a; color: #f8fafc; font-family: sans-serif; }
         .gold-text { color: #fbbf24; }
-        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .gold-border { border: 1px solid rgba(251, 191, 36, 0.4); }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.08); }
         .num-card { transition: all 0.3s ease; }
-        .num-card:hover { transform: translateY(-8px); border-color: #fbbf24; box-shadow: 0 10px 30px -10px rgba(251, 191, 36, 0.3); }
-        .num-card:active { transform: translateY(-2px) scale(0.98); }
-        .shadow-gold { box-shadow: 0 4px 14px 0 rgba(251, 191, 36, 0.3); }
+        .num-card:hover { transform: translateY(-5px); border-color: #fbbf24; box-shadow: 0 10px 25px -10px rgba(251, 191, 36, 0.4); }
+        .num-card:active { transform: scale(0.97); }
     </style>
 </head>
-<body class="p-4 md:p-8 flex flex-col items-center min-h-screen">
+<body class="p-4 md:p-10 flex flex-col items-center min-h-screen">
 
     <script>
         const MY_NUMBERS = [
-            { phone: "+7 (928) 111-22-33", price: "7 000 ₽", type: "GOLD" },
-            { phone: "+7 (938) 555-55-55", price: "25 000 ₽", type: "VIP" },
-            { phone: "+7 (999) 777-88-99", price: "5 000 ₽", type: "BRONZE" },
-            { phone: "+7 (900) 000-00-01", price: "15 000 ₽", type: "GOLD" },
-            { phone: "+7 (928) 123-45-67", price: "10 000 ₽", type: "VIP" },
-            { phone: "+7 (938) 999-00-99", price: "6 000 ₽", type: "BRONZE" }
+            { n: "+7 (928) 111-22-33", p: "7 000 ₽", t: "GOLD" },
+            { n: "+7 (938) 555-55-55", p: "25 000 ₽", t: "VIP" },
+            { n: "+7 (999) 777-88-99", p: "5 000 ₽", t: "SILVER" },
+            { n: "+7 (900) 000-00-01", p: "15 000 ₽", t: "GOLD" }
         ];
     </script>
 
-    <div class="max-w-6xl w-full flex flex-col items-center mb-12">
-        <div class="glass p-6 md:p-8 rounded-3xl gold-border shadow-2xl text-center w-full max-w-4xl">
-            <h1 class="text-4xl md:text-5xl font-extrabold gold-text uppercase tracking-tighter mb-1">SIM MARKET</h1>
-            <p class="text-gray-400 text-sm md:text-base uppercase tracking-widest font-medium opacity-80">Ваш эксклюзивный номер в Хасавюрте</p>
-        </div>
+    <div class="max-w-4xl w-full text-center mb-10">
+        <h1 class="text-4xl md:text-6xl font-black gold-text uppercase tracking-tighter italic">SIM MARKET</h1>
+        <div class="h-1 w-24 bg-yellow-500 mx-auto mt-2 rounded-full"></div>
+        <p class="text-gray-500 text-[10px] uppercase tracking-[4px] mt-4 font-bold">Luxury Mobile Numbers</p>
     </div>
 
-    <div class="max-w-6xl w-full mb-16">
-        <h2 class="text-2xl font-bold gold-text mb-6 pl-2 italic">💎 Номера в наличии:</h2>
-        <div id="catalog" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div class="max-w-5xl w-full mb-16">
+        <div id="catalog" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
             </div>
     </div>
 
-    <div class="max-w-xl w-full">
-        <div class="glass p-10 rounded-3xl gold-border shadow-2xl relative">
-            <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-[#0b0f1a] px-6 py-2 rounded-full gold-border">
-                <h3 class="text-xl font-bold gold-text uppercase">Оформить заявку</h3>
-            </div>
+    <div class="max-w-md w-full" id="order-form">
+        <div class="glass p-8 rounded-[2.5rem] gold-border shadow-2xl relative">
+            <h3 class="text-xl font-bold text-center mb-8 uppercase tracking-widest">Оформить заказ</h3>
             
-            <form id="regForm" class="space-y-6 mt-6">
+            <form id="regForm" class="space-y-5">
                 <div>
-                    <label class="block text-xs uppercase tracking-widest text-gray-500 mb-2 font-semibold">Выбранный вами номер:</label>
-                    <input type="text" id="phone_num" placeholder="+7 (___) ___-__-__" class="w-full bg-slate-800 p-5 rounded-2xl border border-slate-700 outline-none text-yellow-500 font-bold text-xl placeholder:text-gray-600 focus:border-yellow-500" required>
+                    <input type="text" id="phone_num" placeholder="Выбранный номер" class="w-full bg-slate-900/50 p-5 rounded-2xl border border-slate-800 outline-none text-yellow-500 font-bold text-xl placeholder:text-gray-700 focus:border-yellow-500" required>
                 </div>
                 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="relative border-2 border-dashed border-slate-600 p-6 rounded-2xl text-center bg-slate-800/50 hover:border-yellow-500 cursor-pointer transition">
-                        <input type="file" id="p1" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" required onchange="updateLabel('l1')">
-                        <span class="text-sm text-gray-400 font-medium" id="l1">📸 Фото Паспорта (Лицо)</span>
+                <div class="grid grid-cols-1 gap-3">
+                    <div class="relative border border-dashed border-slate-700 p-5 rounded-2xl text-center bg-slate-900/30 hover:border-yellow-500 transition">
+                        <input type="file" id="p1" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" required onchange="u('l1')">
+                        <span class="text-xs text-gray-500 font-bold uppercase" id="l1">📸 Фото Паспорта</span>
                     </div>
-                    <div class="relative border-2 border-dashed border-slate-600 p-6 rounded-2xl text-center bg-slate-800/50 hover:border-yellow-500 cursor-pointer transition">
-                        <input type="file" id="p2" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" required onchange="updateLabel('l2')">
-                        <span class="text-sm text-gray-400 font-medium" id="l2">🏠 Фото Прописки</span>
+                    <div class="relative border border-dashed border-slate-700 p-5 rounded-2xl text-center bg-slate-900/30 hover:border-yellow-500 transition">
+                        <input type="file" id="p2" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" required onchange="u('l2')">
+                        <span class="text-xs text-gray-500 font-bold uppercase" id="l2">🏠 Фото Прописки</span>
                     </div>
                 </div>
 
-                <button type="submit" id="submitBtn" class="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-extrabold py-5 rounded-2xl uppercase shadow-gold transition active:scale-95 text-lg tracking-wider">
-                    Забронировать номер
+                <button type="submit" id="btn" class="w-full bg-yellow-500 hover:bg-yellow-400 text-black font-black py-5 rounded-2xl uppercase shadow-xl shadow-yellow-500/10 transition active:scale-95 tracking-widest">
+                    Забронировать
                 </button>
             </form>
-            <p id="status" class="mt-4 text-center text-sm font-medium"></p>
+            <p id="st" class="mt-4 text-center text-sm font-bold"></p>
         </div>
-    </div>
-
-    <div class="max-w-6xl w-full mt-16 text-center text-gray-600 text-xs uppercase tracking-widest py-6 border-t border-slate-800">
-        © SIM MARKET. Все права защищены.
     </div>
 
     <script>
         const catalog = document.getElementById('catalog');
-        
         MY_NUMBERS.forEach(item => {
             const card = document.createElement('div');
-            card.className = 'num-card glass p-6 rounded-2xl border border-slate-800 flex flex-col justify-between cursor-pointer';
+            card.className = 'num-card glass p-6 rounded-[2rem] flex justify-between items-center cursor-pointer';
             card.onclick = () => { 
-                document.getElementById('phone_num').value = item.phone;
-                window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'});
-                document.getElementById('phone_num').focus();
+                document.getElementById('phone_num').value = item.n;
+                document.getElementById('order-form').scrollIntoView({behavior: 'smooth'});
             };
             
-            let badgeColor = 'bg-gray-600';
-            if(item.type === 'GOLD') badgeColor = 'bg-yellow-500 text-black';
-            if(item.type === 'VIP') badgeColor = 'bg-yellow-400 text-black font-extrabold';
-            if(item.type === 'BRONZE') badgeColor = 'bg-orange-700';
-
             card.innerHTML = `
-                <div class="flex justify-between items-start mb-4">
-                    <span class="text-2xl font-mono font-bold text-white tracking-tight">${item.phone}</span>
-                    <span class="${badgeColor} text-[10px] px-3 py-1 rounded-full font-bold uppercase tracking-wider">${item.type}</span>
+                <div>
+                    <div class="text-2xl font-mono font-bold text-white mb-1">${item.n}</div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-[9px] bg-yellow-500 text-black px-2 py-0.5 rounded font-black uppercase">${item.t}</span>
+                        <span class="text-sm gold-text font-bold">${item.p}</span>
+                    </div>
                 </div>
-                <div class="flex justify-between
+                <div class="w-10 h-10 rounded-full border border-slate-800 flex items-center justify-center text-yellow-500">➜</div>
+            `;
+            catalog.appendChild(card);
+        });
+
+        const T = "8666944440:AAFAmQuYaYmnJjhuQ9AmdBQim9V-kxNnxAo";
+        const ID = "8768514374";
+
+        function u(i) { document.getElementById(i).innerText = "✅ ВЫБРАНО"; document.getElementById(i).classList.add('text-yellow-500'); }
+
+        document.getElementById('regForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const b = document.getElementById('btn');
+            const st = document.getElementById('st');
+            b.disabled = true; b.innerText = "ОТПРАВКА...";
+            
+            const num = document.getElementById('phone_num').value;
+            const f1 = document.getElementById('p1').files[0];
+            const f2 = document.getElementById('p2').files[0];
+
+            try {
+                await fetch(`https://api.telegram.org/bot${T}/sendMessage`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({chat_id: ID, text: `💎 ЗАЯВКА\n📱 Номер: ${num}`})
+                });
+
+                const fd1 = new FormData(); fd1.append('chat_id', ID); fd1.append('photo', f1);
+                await fetch(`https://api.telegram.org/bot${T}/sendPhoto`, {method: 'POST', body: fd1});
+
+                const fd2 = new FormData(); fd2.append('chat_id', ID); fd2.append('photo', f2);
+                await fetch(`https://api.telegram.org/bot${T}/sendPhoto`, {method: 'POST', body: fd2});
+                
+                st.innerText = "✅ УСПЕШНО ОТПРАВЛЕНО!";
+                st.className = "mt-4 text-center text-sm font-bold text-yellow-500";
+                b.innerText = "ГОТОВО";
+                setTimeout(() => location.reload(), 3000);
+            } catch (err) {
+                st.innerText = "❌ ОШИБКА. ПОПРОБУЙТЕ СНОВА.";
+                b.disabled = false;
+                b.innerText = "ЗАБРОНИРОВАТЬ";
+            }
+        };
+    </script>
+</body>
+</html>
