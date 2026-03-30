@@ -6,102 +6,60 @@
     <title>SIM MARKET | Магазин</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background: #0f172a; color: #f8fafc; }
-        .gold-border { border: 1px solid #fbbf24; }
-        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); }
-        .num-card:active { transform: scale(0.98); border-color: #fbbf24; }
+        body { background: #0b0f1a; color: #fff; font-family: sans-serif; }
+        .card { background: rgba(255,255,255,0.05); border: 1px solid #334155; padding: 15px; border-radius: 15px; margin-bottom: 10px; }
+        .gold { border-color: #fbbf24; }
     </style>
 </head>
-<body class="p-5 font-sans">
+<body class="p-4">
+
+    <script>
+        const NOMERA = [
+            { n: "+7 (928) 000-11-22", p: "5000₽", t: "GOLD" },
+            { n: "+7 (938) 555-55-55", p: "25000₽", t: "VIP" },
+            { n: "+7 (999) 111-22-33", p: "3000₽", t: "SILVER" }
+        ];
+    </script>
 
     <div class="max-w-md mx-auto">
-        <script>
-            // ПРОСТО ДОБАВЛЯЙ ИЛИ МЕНЯЙ НОМЕРА ЗДЕСЬ:
-            const MY_NUMBERS = [
-                { phone: "+7 (928) 000-11-22", price: "5000₽", type: "GOLD" },
-                { phone: "+7 (938) 555-55-55", price: "25000₽", type: "PLATINUM" },
-                { phone: "+7 (999) 123-45-67", price: "3000₽", type: "SILVER" },
-                { phone: "+7 (900) 000-00-01", price: "15000₽", type: "GOLD" }
-            ];
-        </script>
+        <h1 class="text-3xl font-black text-yellow-500 text-center mb-6">SIM MARKET</h1>
+        
+        <div id="list"></div>
 
-        <div class="glass p-6 rounded-2xl gold-border shadow-2xl mb-6 text-center">
-            <h1 class="text-3xl font-bold text-yellow-500 uppercase tracking-tighter">SIM MARKET</h1>
-            <p class="text-gray-400 text-[10px] mt-1 tracking-[3px]">PREMIUM NUMBERS</p>
-        </div>
-
-        <div id="catalog" class="space-y-3 mb-8">
-            </div>
-
-        <div class="glass p-6 rounded-3xl gold-border shadow-2xl">
-            <h2 class="text-center font-bold mb-4">ОФОРМИТЬ ЗАЯВКУ</h2>
-            <form id="regForm" class="space-y-4">
-                <input type="text" id="phone_num" placeholder="Выбранный номер" class="w-full bg-slate-800 p-4 rounded-xl border border-slate-700 outline-none text-yellow-500 font-bold" required>
-                
-                <div class="grid grid-cols-2 gap-2">
-                    <div class="relative border border-dashed border-slate-600 p-3 rounded-xl text-center bg-slate-800/50">
-                        <input type="file" id="p1" accept="image/*" class="absolute inset-0 opacity-0" required>
-                        <span class="text-[10px] text-gray-400" id="l1">📸 ПАСПОРТ</span>
-                    </div>
-                    <div class="relative border border-dashed border-slate-600 p-3 rounded-xl text-center bg-slate-800/50">
-                        <input type="file" id="p2" accept="image/*" class="absolute inset-0 opacity-0" required>
-                        <span class="text-[10px] text-gray-400" id="l2">🏠 ПРОПИСКА</span>
-                    </div>
-                </div>
-
-                <button type="submit" id="btn" class="w-full bg-yellow-500 text-black font-black py-4 rounded-2xl uppercase shadow-lg shadow-yellow-500/20">Отправить заявку</button>
+        <div class="card gold mt-8">
+            <h3 class="text-center font-bold mb-4">ОФОРМИТЬ ВЫБРАННЫЙ НОМЕР</h3>
+            <form id="f" class="space-y-4">
+                <input type="text" id="phone" placeholder="Номер телефона" class="w-full bg-gray-800 p-4 rounded-xl border-none outline-none text-yellow-500 font-bold" required>
+                <button type="submit" id="b" class="w-full bg-yellow-500 text-black font-bold py-4 rounded-xl uppercase">Отправить заявку</button>
             </form>
         </div>
     </div>
 
     <script>
-        const catalog = document.getElementById('catalog');
-        MY_NUMBERS.forEach(item => {
-            const card = document.createElement('div');
-            card.className = 'num-card glass p-4 rounded-2xl border border-slate-800 flex justify-between items-center cursor-pointer transition';
-            card.onclick = () => { 
-                document.getElementById('phone_num').value = item.phone;
-                window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'});
-            };
-            card.innerHTML = `
-                <div>
-                    <div class="text-lg font-mono font-bold text-white">${item.phone}</div>
-                    <div class="text-[10px] text-yellow-500 font-bold">${item.type} — ${item.price}</div>
-                </div>
-                <div class="text-yellow-500">➜</div>
-            `;
-            catalog.appendChild(card);
+        const list = document.getElementById('list');
+        NOMERA.forEach(item => {
+            const d = document.createElement('div');
+            d.className = 'card flex justify-between items-center';
+            if(item.t === 'GOLD' || item.t === 'VIP') d.classList.add('gold');
+            d.onclick = () => { document.getElementById('phone').value = item.n; };
+            d.innerHTML = `<div><div class="text-xl font-mono">${item.n}</div><div class="text-xs text-yellow-500">${item.t} — ${item.p}</div></div><div class="text-yellow-500">➜</div>`;
+            list.appendChild(d);
         });
 
-        const TOKEN = "8666944440:AAFAmQuYaYmnJjhuQ9AmdBQim9V-kxNnxAo";
-        const ID = "8768514374";
-
-        document.getElementById('p1').onchange = () => document.getElementById('l1').innerText = "✅ ГОТОВО";
-        document.getElementById('p2').onchange = () => document.getElementById('l2').innerText = "✅ ГОТОВО";
-
-        document.getElementById('regForm').onsubmit = async (e) => {
+        document.getElementById('f').onsubmit = async (e) => {
             e.preventDefault();
-            const b = document.getElementById('btn');
-            b.disabled = true; b.innerText = "ОТПРАВЛЯЕМ...";
+            const b = document.getElementById('b');
+            b.disabled = true; b.innerText = "ОТПРАВКА...";
+            const txt = `💎 ЗАЯВКА\n📱 Номер: ${document.getElementById('phone').value}`;
             
-            const num = document.getElementById('phone_num').value;
-            const f1 = document.getElementById('p1').files[0];
-            const f2 = document.getElementById('p2').files[0];
-
-            try {
-                await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({chat_id: ID, text: `💎 ЗАЯВКА\n📱 Номер: ${num}`})
-                });
-                const fd1 = new FormData(); fd1.append('chat_id', ID); fd1.append('photo', f1);
-                await fetch(`https://api.telegram.org/bot${TOKEN}/sendPhoto`, {method: 'POST', body: fd1});
-                const fd2 = new FormData(); fd2.append('chat_id', ID); fd2.append('photo', f2);
-                await fetch(`https://api.telegram.org/bot${TOKEN}/sendPhoto`, {method: 'POST', body: fd2});
-                
-                alert("Успешно! Курбан скоро свяжется с вами.");
-                location.reload();
-            } catch (err) { alert("Ошибка!"); b.disabled = false; }
+            await fetch(`https://api.telegram.org/bot8666944440:AAFAmQuYaYmnJjhuQ9AmdBQim9V-kxNnxAo/sendMessage`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({chat_id: "8768514374", text: txt})
+            });
+            
+            alert("Заявка отправлена!");
+            location.reload();
         };
     </script>
 </body>
