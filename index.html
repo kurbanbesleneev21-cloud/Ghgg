@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SIM MARKET | ВИТРИНА</title>
+    <title>SIM MARKET | КАТАЛОГ</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap');
@@ -40,7 +40,7 @@
         </div>
 
         <div id="list" class="space-y-4">
-            <div class="p-20 text-center opacity-20 text-[10px] font-black uppercase tracking-widest">Загрузка витрины...</div>
+            <div class="p-20 text-center opacity-20 text-[10px] font-black uppercase tracking-widest">Загрузка данных...</div>
         </div>
     </main>
 
@@ -53,22 +53,38 @@
 
         async function init() {
             try {
-                const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, { headers: {'X-Master-Key': KEY} });
+                const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, { 
+                    headers: {'X-Master-Key': KEY} 
+                });
                 const data = await res.json();
-                db = data.record.record || []; // Берем массив номеров из объекта record
+                
+                // ВАЖНО: берем массив из record.record (так как мы добавили чат)
+                db = data.record.record || data.record; 
+                
                 draw();
-            } catch (e) { document.getElementById('list').innerHTML = "Ошибка связи"; }
+            } catch (e) { 
+                document.getElementById('list').innerHTML = "Ошибка связи с сервером"; 
+            }
         }
 
         function draw() {
             const list = document.getElementById('list');
             const q = document.getElementById('q').value.toLowerCase();
-            let items = db.filter(i => (i.n && i.n.includes(q)) || (i.o && i.o.toLowerCase().includes(q)));
+            
+            // Фильтрация
+            let items = db.filter(i => {
+                const num = String(i.n || "").toLowerCase();
+                const opName = String(i.o || i.op || "").toLowerCase();
+                return num.includes(q) || opName.includes(q);
+            });
             
             if(currentFilter === 'vip') items = items.filter(i => i.cat === 'vip');
-            else if(currentFilter !== 'all') items = items.filter(i => i.op && i.op.toLowerCase() === currentFilter);
+            else if(currentFilter !== 'all') items = items.filter(i => String(i.op || i.o).toLowerCase() === currentFilter);
 
-            if(items.length === 0) { list.innerHTML = `<div class="p-10 text-center opacity-20 text-[10px]">К СОЖАЛЕНИЮ, НОМЕРОВ НЕТ</div>`; return; }
+            if(items.length === 0) { 
+                list.innerHTML = `<div class="p-10 text-center opacity-20 text-[10px]">НОМЕРА НЕ НАЙДЕНЫ</div>`; 
+                return; 
+            }
 
             list.innerHTML = items.map(item => `
                 <div class="card p-6 flex justify-between items-center ${item.cat === 'vip' ? 'border-amber-500/20 shadow-lg shadow-amber-500/5' : ''}">
@@ -77,11 +93,11 @@
                             <span class="text-2xl font-black text-white tracking-tighter">${item.n}</span>
                             ${item.cat === 'vip' ? '<span class="bg-amber-500 text-black text-[7px] px-1.5 py-0.5 rounded font-black uppercase">VIP</span>' : ''}
                         </div>
-                        <div class="text-[9px] font-bold text-zinc-500 uppercase mt-1 tracking-widest">${item.op || 'SIM'} • ${item.tarif || 'Базовый'}</div>
+                        <div class="text-[9px] font-bold text-zinc-500 uppercase mt-1 tracking-widest">${item.op || item.o || 'SIM'} • ${item.tarif || 'Базовый'}</div>
                     </div>
                     <div class="text-right">
                         <div class="text-xl font-black text-amber-500">${item.t} ₽</div>
-                        <button onclick="window.open('https://wa.me/79281112233')" class="text-[8px] font-black text-zinc-600 uppercase mt-1">КУПИТЬ →</button>
+                        <button onclick="window.open('https://wa.me/79999993834')" class="text-[8px] font-black text-zinc-600 uppercase mt-1">КУПИТЬ →</button>
                     </div>
                 </div>
             `).reverse().join('');
