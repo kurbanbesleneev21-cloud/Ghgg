@@ -1,94 +1,119 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIM MARKET | Заявка</title>
+    <title>SIM MARKET | Premium Digital Store</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background-color: #0b0f1a; color: #f8fafc; font-family: sans-serif; }
-        .gold-text { color: #fbbf24; }
-        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); border: 1px solid rgba(251, 191, 36, 0.4); }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
+        body { background: #05070a; color: #e2e8f0; font-family: 'Inter', sans-serif; }
+        .gold-gradient { background: linear-gradient(135deg, #fcd34d 0%, #fbbf24 50%, #b45309 100%); }
+        .glass-card { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.05); transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .glass-card:hover { border-color: #fbbf24; transform: translateY(-5px); box-shadow: 0 20px 40px -20px rgba(251, 191, 36, 0.3); }
+        .search-input { background: rgba(30, 41, 59, 0.5); border: 1px solid rgba(255, 255, 255, 0.1); transition: 0.3s; }
+        .search-input:focus { border-color: #fbbf24; box-shadow: 0 0 0 2px rgba(251, 191, 36, 0.1); }
+        .badge-new { animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
     </style>
 </head>
-<body class="p-4 flex flex-col items-center min-h-screen justify-center">
+<body class="min-h-screen pb-20">
 
-    <div class="max-w-md w-full glass p-8 rounded-[2.5rem] shadow-2xl">
-        <h3 class="text-xl font-bold text-center mb-6 uppercase gold-text">Оформление заказа</h3>
-        
-        <form id="regForm" class="space-y-4">
-            <input type="text" id="phone_num" placeholder="Выбранный номер" class="w-full bg-slate-900/50 p-4 rounded-2xl border border-slate-800 outline-none text-yellow-500 font-bold" required>
-            <input type="text" id="user_name" placeholder="Ваше ФИО" class="w-full bg-slate-900/50 p-4 rounded-2xl border border-slate-800 outline-none text-white" required>
-            <input type="text" id="user_contact" placeholder="Ваш номер для связи" class="w-full bg-slate-900/50 p-4 rounded-2xl border border-slate-800 outline-none text-white" required>
+    <header class="sticky top-0 z-50 glass-card border-b border-white/5 px-6 py-4 mb-8">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <div class="flex flex-col">
+                <span class="text-2xl font-black tracking-tighter gold-gradient bg-clip-text text-transparent uppercase">SIM MARKET</span>
+                <span class="text-[9px] text-gray-500 tracking-[3px] uppercase">Khasavyurt Edition</span>
+            </div>
+            <div class="flex gap-4">
+                <div id="cart-count" class="bg-yellow-500 text-black text-[10px] font-bold px-2 py-1 rounded-full">0 НОМЕРОВ</div>
+            </div>
+        </div>
+    </header>
 
-            <div class="grid grid-cols-2 gap-2">
-                <div class="relative border border-dashed border-slate-700 p-4 rounded-2xl text-center bg-slate-900/30">
-                    <input type="file" id="p1" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" required onchange="u('l1')">
-                    <span class="text-[10px] text-gray-500 font-bold" id="l1">📸 ПАСПОРТ</span>
-                </div>
-                <div class="relative border border-dashed border-slate-700 p-4 rounded-2xl text-center bg-slate-900/30">
-                    <input type="file" id="p2" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" required onchange="u('l2')">
-                    <span class="text-[10px] text-gray-500 font-bold" id="l2">🏠 ПРОПИСКА</span>
+    <main class="max-w-6xl mx-auto px-4">
+        <section class="mb-12">
+            <div class="glass-card p-6 rounded-3xl">
+                <div class="flex flex-col md:flex-row gap-4">
+                    <input type="text" id="searchInput" oninput="filterNumbers()" placeholder="Поиск по цифрам (например: 777)..." class="search-input w-full p-4 rounded-2xl outline-none text-white">
+                    <select id="filterTag" onchange="filterNumbers()" class="search-input p-4 rounded-2xl outline-none text-gray-400">
+                        <option value="ALL">Все категории</option>
+                        <option value="VIP">VIP</option>
+                        <option value="GOLD">GOLD</option>
+                        <option value="SILVER">SILVER</option>
+                    </select>
                 </div>
             </div>
+        </section>
 
-            <button type="submit" id="btn" class="w-full bg-yellow-500 text-black font-black py-5 rounded-2xl uppercase shadow-xl transition active:scale-95 mt-4">
-                Забронировать
-            </button>
-        </form>
-        <p id="st" class="mt-4 text-center text-xs font-bold"></p>
-    </div>
+        <section id="catalog" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
+            </section>
+
+        <section id="orderSection" class="max-w-2xl mx-auto">
+            <div class="glass-card p-8 md:p-12 rounded-[3rem] border-t-2 border-yellow-500/30 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-yellow-500/5 blur-3xl rounded-full"></div>
+                <h2 class="text-3xl font-extrabold mb-8 text-center italic">ОФОРМИТЬ <span class="gold-text">ЗАЯВКУ</span></h2>
+                
+                <form id="regForm" class="space-y-5">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <input type="text" id="phone_num" placeholder="Выбранный номер" class="search-input p-5 rounded-2xl w-full text-yellow-500 font-bold" required readonly>
+                        <input type="text" id="user_contact" placeholder="Ваш телефон для связи" class="search-input p-5 rounded-2xl w-full" required>
+                    </div>
+                    <input type="text" id="user_name" placeholder="Полное ФИО клиента" class="search-input p-5 rounded-2xl w-full" required>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <label class="group cursor-pointer">
+                            <div class="glass-card p-4 rounded-2xl text-center group-hover:bg-white/5">
+                                <input type="file" id="p1" class="hidden" required onchange="u('l1')">
+                                <span id="l1" class="text-[10px] font-bold text-gray-500 uppercase">📸 ПАСПОРТ</span>
+                            </div>
+                        </label>
+                        <label class="group cursor-pointer">
+                            <div class="glass-card p-4 rounded-2xl text-center group-hover:bg-white/5">
+                                <input type="file" id="p2" class="hidden" required onchange="u('l2')">
+                                <span id="l2" class="text-[10px] font-bold text-gray-500 uppercase">🏠 ПРОПИСКА</span>
+                            </div>
+                        </label>
+                    </div>
+
+                    <button type="submit" id="mainBtn" class="w-full gold-gradient p-6 rounded-2xl text-black font-black uppercase tracking-widest hover:scale-[1.02] active:scale-95 transition-all shadow-2xl shadow-yellow-500/20">
+                        Подтвердить регистрацию
+                    </button>
+                </form>
+                <div id="statusMsg" class="mt-6 text-center text-sm font-bold"></div>
+            </div>
+        </section>
+    </main>
 
     <script>
-        const T = "8666944440:AAFAmQuYaYmnJjhuQ9AmdBQim9V-kxNnxAo";
-        const ID = "8768514374";
+        // БАЗА ДАННЫХ НОМЕРОВ
+        const DATA = [
+            { id: 1, n: "+7 (928) 000-77-77", p: "45 000 ₽", t: "VIP", s: "В наличии" },
+            { id: 2, n: "+7 (938) 555-55-55", p: "25 000 ₽", t: "VIP", s: "В наличии" },
+            { id: 3, n: "+7 (928) 111-22-33", p: "8 000 ₽", t: "GOLD", s: "В наличии" },
+            { id: 4, n: "+7 (999) 000-11-22", p: "5 000 ₽", t: "SILVER", s: "В наличии" },
+            { id: 5, n: "+7 (928) 777-00-11", p: "12 000 ₽", t: "GOLD", s: "В наличии" }
+        ];
 
-        function u(i) { document.getElementById(i).innerText = "✅ ГОТОВО"; document.getElementById(i).style.color = "#fbbf24"; }
+        const BOT_TOKEN = "8666944440:AAFAmQuYaYmnJjhuQ9AmdBQim9V-kxNnxAo";
+        const CHAT_ID = "8768514374";
 
-        document.getElementById('regForm').onsubmit = async (e) => {
-            e.preventDefault();
-            const b = document.getElementById('btn');
-            const st = document.getElementById('st');
-            b.disabled = true;
-            b.innerText = "ОТПРАВКА...";
-            
-            const msg = `🆕 ЗАЯВКА С САЙТА\n\n📱 Номер: ${document.getElementById('phone_num').value}\n👤 ФИО: ${document.getElementById('user_name').value}\n📞 Контакт: ${document.getElementById('user_contact').value}`;
-
-            try {
-                // 1. Отправляем текст (это работает почти всегда)
-                const textRes = await fetch(`https://api.telegram.org/bot${T}/sendMessage`, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({chat_id: ID, text: msg})
-                });
-
-                if (!textRes.ok) throw new Error('Ошибка текста');
-
-                // 2. Отправляем фото 1
-                const fd1 = new FormData();
-                fd1.append('chat_id', ID);
-                fd1.append('photo', document.getElementById('p1').files[0]);
-                await fetch(`https://api.telegram.org/bot${T}/sendPhoto`, {method: 'POST', body: fd1});
-
-                // 3. Отправляем фото 2
-                const fd2 = new FormData();
-                fd2.append('chat_id', ID);
-                fd2.append('photo', document.getElementById('p2').files[0]);
-                await fetch(`https://api.telegram.org/bot${T}/sendPhoto`, {method: 'POST', body: fd2});
-                
-                st.innerText = "✅ ЗАЯВКА ОТПРАВЛЕНА!";
-                st.style.color = "#fbbf24";
-                b.innerText = "УСПЕШНО";
-                setTimeout(() => location.reload(), 2000);
-
-            } catch (err) {
-                console.error(err);
-                st.innerText = "❌ ОШИБКА! ПРОВЕРЬТЕ ИНТЕРНЕТ ИЛИ БОТА.";
-                st.style.color = "#ff4444";
-                b.disabled = false;
-                b.innerText = "ПОПРОБОВАТЬ СНОВА";
-            }
-        };
-    </script>
-</body>
-</html>
+        function render(items) {
+            const container = document.getElementById('catalog');
+            container.innerHTML = '';
+            items.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'glass-card p-6 rounded-[2rem] flex flex-col justify-between';
+                card.innerHTML = `
+                    <div class="flex justify-between items-start mb-6">
+                        <span class="text-[9px] bg-white/10 text-white px-2 py-1 rounded-md font-bold uppercase tracking-widest">${item.t}</span>
+                        <span class="badge-new text-[9px] text-yellow-500 font-bold uppercase italic">${item.s}</span>
+                    </div>
+                    <div class="text-2xl font-mono font-bold text-white mb-2">${item.n}</div>
+                    <div class="flex justify-between items-center mt-4 pt-4 border-t border-white/5">
+                        <span class="text-xl font-black gold-gradient bg-clip-text text-transparent">${item.p}</span>
+                        <button onclick="select('${item.n}')" class="bg-white text-black text-[10px] font-black px-4 py-2 rounded-full uppercase hover:bg-yellow-500 transition">Выбрать</button>
+                    </div>
+                `;
+                container.appendChild(card);
+             
