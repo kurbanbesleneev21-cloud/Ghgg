@@ -10,23 +10,23 @@
         body { background: #09090b; color: #f4f4f5; font-family: 'Manrope', sans-serif; margin: 0; }
         .glass { background: rgba(24, 24, 27, 0.9); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.08); }
         .gold-text { background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .input-dark { background: #18181b; border: 1px solid #27272a; border-radius: 12px; padding: 14px; outline: none; width: 100%; color: white; }
-        .btn-gold { background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%); color: #000; font-weight: 800; border-radius: 12px; width: 100%; padding: 16px; text-transform: uppercase; cursor: pointer; border: none; }
+        .input-dark { background: #18181b; border: 1px solid #27272a; border-radius: 12px; padding: 14px; outline: none; width: 100%; color: white; display: block; }
+        .btn-gold { background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%); color: #000; font-weight: 800; border-radius: 12px; width: 100%; padding: 16px; text-transform: uppercase; border: none; cursor: pointer; }
     </style>
 </head>
 <body class="p-4">
 
     <div id="login-box" class="fixed inset-0 z-50 flex items-center justify-center bg-[#09090b]">
-        <div class="max-w-xs w-full p-8 glass rounded-[2rem] text-center">
+        <form id="auth-form" class="max-w-xs w-full p-8 glass rounded-[2rem] text-center">
             <h1 class="text-xl font-black mb-6 uppercase tracking-tighter">SIM <span class="gold-text">ADMIN</span></h1>
-            <input type="email" id="user-email" placeholder="Gmail" class="input-dark mb-3 text-center">
-            <input type="password" id="user-pass" placeholder="Пароль" class="input-dark mb-6 text-center">
-            <button onclick="tryLogin()" class="btn-gold">Войти</button>
+            <input type="email" id="user-email" placeholder="Gmail" class="input-dark mb-3 text-center" required>
+            <input type="password" id="user-pass" placeholder="Пароль" class="input-dark mb-6 text-center" required>
+            <button type="submit" class="btn-gold">Войти</button>
             <p id="err" class="text-red-500 text-[10px] mt-4 font-bold hidden uppercase">Ошибка данных</p>
-        </div>
+        </form>
     </div>
 
-    <div id="admin-ui" class="hidden max-w-xl mx-auto space-y-6 py-6">
+    <div id="admin-ui" style="display: none;" class="max-w-xl mx-auto space-y-6 py-6">
         <div class="flex justify-between items-center">
             <h2 class="font-black uppercase tracking-tighter">SIM <span class="gold-text">MARKET</span></h2>
             <button onclick="exit()" class="text-[9px] font-black text-red-500 uppercase bg-red-500/10 px-3 py-1 rounded-lg">Выход</button>
@@ -53,8 +53,8 @@
             </form>
         </div>
 
-        <div id="list-container" class="glass p-5 rounded-[1.5rem] space-y-3">
-            <p class="text-[10px] uppercase opacity-30 font-bold tracking-widest text-center">Загрузка номеров...</p>
+        <div id="list-container" class="glass p-5 rounded-[1.5rem] space-y-3 text-xs">
+            <p class="opacity-30 text-center uppercase font-bold">Загрузка...</p>
         </div>
     </div>
 
@@ -66,23 +66,28 @@
 
         let dataStore = { record: [] };
 
-        // Проверка при открытии
+        // Авто-вход
         if(localStorage.getItem('auth_ok') === 'yes') { openAdmin(); }
 
-        function tryLogin() {
+        // ОБРАБОТКА ВХОДА (Надежный метод)
+        document.getElementById('auth-form').addEventListener('submit', function(e) {
+            e.preventDefault();
             const m = document.getElementById('user-email').value;
             const p = document.getElementById('user-pass').value;
+            
             if(m === LOGIN && p === PASS) {
                 localStorage.setItem('auth_ok', 'yes');
                 openAdmin();
             } else {
-                document.getElementById('err').classList.remove('hidden');
+                const errorText = document.getElementById('err');
+                errorText.classList.remove('hidden');
+                setTimeout(() => errorText.classList.add('hidden'), 3000);
             }
-        }
+        });
 
         function openAdmin() {
             document.getElementById('login-box').style.display = 'none';
-            document.getElementById('admin-ui').classList.remove('hidden');
+            document.getElementById('admin-ui').style.display = 'block';
             sync();
         }
 
@@ -92,8 +97,60 @@
         }
 
         async function sync() {
-            const r = await fetch(`https://api.jsonbin.io/v3/b/${B_ID}/latest`, { headers: {'X-Master-Key': B_KEY} });
-            const d = await r.json();
-            dataStore = d.record.record ? d.record : { record: d.record };
+            try {
+                const r = await fetch(`https://api.jsonbin.io/v3/b/${B_ID}/latest`, { headers: {'X-Master-Key': B_KEY} });
+                const d = await r.json();
+                dataStore = d.record.record ? d.record : { record: d.record };
+                renderList();
+            } catch(e) { console.log('Sync error'); }
+        }
+
+        function renderList() {
+            const cont = document.getElementById('list-container');
+            const items = dataStore.record || [];
+            if(items.length === 0) { cont.innerHTML = "Список пуст"; return; }
+            cont.innerHTML = items.map((i, idx) => `
+                <div class="flex justify-between items-center p-3 bg-white/5 rounded-xl border border-white/5">
+                    <div><b>${i.n}</b><br><span class="opacity-40 uppercase text-[9px]">${i.op} | ${i.t} ₽</span></div>
+                    <button onclick="del(${idx})" class="text-red-500 font-bold px-2">✕</button>
+                </div>
+            `).reverse().join('');
+        }
+
+        document.getElementById('num-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const btn = document.getElementById('sub-btn');
+            btn.innerText = "СОХРАНЕНИЕ...";
+            
+            const newItem = {
+                n: document.getElementById('num-val').value,
+                op: document.getElementById('op-val').value,
+                cat: document.getElementById('cat-val').value,
+                tarif: document.getElementById('tar-val').value || 'Стандарт',
+                t: document.getElementById('price-val').value
+            };
+            
+            dataStore.record.push(newItem);
+            await save();
+            e.target.reset();
+            btn.innerText = "Добавить";
+        });
+
+        async function del(idx) {
+            if(!confirm('Удалить?')) return;
+            const realIdx = dataStore.record.length - 1 - idx;
+            dataStore.record.splice(realIdx, 1);
+            await save();
+        }
+
+        async function save() {
+            await fetch(`https://api.jsonbin.io/v3/b/${B_ID}`, {
+                method: 'PUT',
+                headers: {'Content-Type': 'application/json', 'X-Master-Key': B_KEY},
+                body: JSON.stringify(dataStore)
+            });
             renderList();
         }
+    </script>
+</body>
+</html>
