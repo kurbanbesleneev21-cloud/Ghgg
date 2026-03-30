@@ -2,26 +2,29 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>SIM MARKET</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
 
 <style>
 
-@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap');
 
 body{
 background:#050505;
 color:white;
-font-family:'Manrope',sans-serif;
--webkit-tap-highlight-color:transparent;
+font-family:Manrope;
 }
 
-.glass{
-background:rgba(15,15,15,0.9);
+.header{
+background:rgba(10,10,10,0.8);
 backdrop-filter:blur(20px);
-border-bottom:1px solid rgba(255,255,255,0.06);
+border-bottom:1px solid rgba(255,255,255,0.05);
+}
+
+.gold{
+background:linear-gradient(135deg,#fbbf24,#d97706);
 }
 
 .gold-text{
@@ -30,75 +33,32 @@ background:linear-gradient(135deg,#fbbf24,#d97706);
 -webkit-text-fill-color:transparent;
 }
 
-.gold-btn{
-background:linear-gradient(135deg,#fbbf24,#d97706);
-transition:0.25s;
-}
-
-.gold-btn:hover{
-transform:translateY(-2px);
-box-shadow:0 8px 30px rgba(251,191,36,0.3);
-}
-
-.line-item{
+.card{
 background:#0b0b0b;
-transition:0.25s;
-border-bottom:1px solid rgba(255,255,255,0.03);
+border:1px solid rgba(255,255,255,0.05);
+transition:.25s;
 }
 
-.line-item:hover{
-background:#101010;
+.card:hover{
+transform:translateY(-4px);
+box-shadow:0 10px 40px rgba(0,0,0,0.6);
 }
 
-.badge-mini{
-font-size:9px;
-font-weight:800;
-text-transform:uppercase;
-color:#888;
-border:1px solid rgba(255,255,255,0.08);
+.badge{
+font-size:10px;
 padding:2px 6px;
 border-radius:6px;
+background:#111;
+color:#aaa;
 }
 
-.tab-btn{
-font-size:11px;
-font-weight:800;
-text-transform:uppercase;
-color:#666;
-padding-bottom:12px;
-transition:0.25s;
-}
-
-.tab-active{
+.vip{
+background:#1c1917;
 color:#fbbf24;
-border-bottom:2px solid #fbbf24;
 }
 
-#order-modal{
-display:none;
-position:fixed;
-inset:0;
-background:rgba(0,0,0,0.92);
-z-index:100;
-align-items:center;
-justify-content:center;
-padding:20px;
-}
-
-.modal-box{
-background:#0b0b0b;
-border:1px solid rgba(255,255,255,0.07);
-border-radius:30px;
-}
-
-input{
-background:#0f0f0f;
-border:1px solid #1e1e1e;
-}
-
-input:focus{
-border-color:#fbbf24;
-outline:none;
+.favorite{
+cursor:pointer;
 }
 
 </style>
@@ -106,156 +66,152 @@ outline:none;
 
 <body>
 
-<header class="glass sticky top-0 z-50 p-5 flex justify-between items-center">
-<h1 class="text-xl font-black italic">SIM <span class="gold-text">MARKET</span></h1>
-<span class="text-xs opacity-40 uppercase">Premium numbers</span>
+<header class="header sticky top-0 z-50 p-5 flex justify-between items-center">
+
+<h1 class="text-xl font-black">
+SIM <span class="gold-text">MARKET</span>
+</h1>
+
+<div class="text-xs opacity-40 uppercase">
+Premium Numbers
+</div>
+
 </header>
 
 
-<main class="max-w-2xl mx-auto">
+<main class="max-w-5xl mx-auto p-4">
 
-<div class="p-4">
+<!-- SEARCH -->
+
+<div class="flex gap-3 mb-4">
+
 <input
-id="q"
-oninput="draw()"
+id="search"
+oninput="render()"
 placeholder="Поиск номера..."
-class="w-full p-4 rounded-xl text-sm"
+class="flex-1 p-4 rounded-xl bg-zinc-900 border border-zinc-800"
 />
-</div>
 
-<div class="flex gap-6 overflow-x-auto px-6 border-b border-white/5">
+<select id="sort" onchange="render()" class="p-4 rounded-xl bg-zinc-900 border border-zinc-800">
 
-<button onclick="setFilter('all',this)" class="tab-btn tab-active">Все</button>
-<button onclick="setFilter('mts',this)" class="tab-btn">МТС</button>
-<button onclick="setFilter('megafon',this)" class="tab-btn">Мегафон</button>
-<button onclick="setFilter('beeline',this)" class="tab-btn">Билайн</button>
-<button onclick="setFilter('tele2',this)" class="tab-btn">Tele2</button>
-<button onclick="setFilter('yota',this)" class="tab-btn">Yota</button>
+<option value="default">Сортировка</option>
+<option value="cheap">Сначала дешевые</option>
+<option value="expensive">Сначала дорогие</option>
+
+</select>
 
 </div>
 
-<div id="list"></div>
+
+<!-- FILTER -->
+
+<div class="flex gap-2 mb-6 flex-wrap">
+
+<button onclick="setFilter('all')" class="badge">Все</button>
+<button onclick="setFilter('mts')" class="badge">МТС</button>
+<button onclick="setFilter('megafon')" class="badge">Мегафон</button>
+<button onclick="setFilter('beeline')" class="badge">Билайн</button>
+<button onclick="setFilter('tele2')" class="badge">Tele2</button>
+
+</div>
+
+
+<!-- LIST -->
+
+<div id="grid" class="grid grid-cols-2 md:grid-cols-3 gap-4"></div>
 
 </main>
 
 
-<div id="order-modal">
 
-<div class="modal-box w-full max-w-sm p-8 space-y-4 relative">
+<!-- ORDER MODAL -->
 
-<button onclick="closeModal()" class="absolute right-6 top-6 text-zinc-500">✕</button>
+<div id="modal" class="fixed inset-0 hidden bg-black/90 flex items-center justify-center p-4">
 
-<h2 id="target-num" class="text-3xl font-black text-center"></h2>
+<div class="bg-zinc-950 p-8 rounded-3xl w-full max-w-sm space-y-4">
 
-<input id="client-fio" placeholder="ФИО полностью" class="w-full p-4 rounded-xl text-sm">
+<h2 id="mNumber" class="text-2xl font-black text-center"></h2>
 
-<input id="client-phone" placeholder="Телефон" class="w-full p-4 rounded-xl text-sm">
+<input id="fio" placeholder="ФИО" class="w-full p-3 rounded-lg bg-zinc-900 border border-zinc-800">
 
-<div class="grid grid-cols-2 gap-2">
+<input id="phone" placeholder="Телефон" class="w-full p-3 rounded-lg bg-zinc-900 border border-zinc-800">
 
-<button onclick="passport.click()" class="p-3 text-xs border border-zinc-800 rounded-xl text-amber-500 font-bold">Паспорт</button>
-<button onclick="propiska.click()" class="p-3 text-xs border border-zinc-800 rounded-xl text-amber-500 font-bold">Прописка</button>
+<button onclick="order()" class="gold w-full p-3 rounded-lg text-black font-bold">
+Купить номер
+</button>
 
-<input id="passport" type="file" accept="image/*" class="hidden">
-<input id="propiska" type="file" accept="image/*" class="hidden">
-
-</div>
-
-<button onclick="submitOrder()" id="send-btn" class="gold-btn w-full py-4 rounded-xl text-black font-black text-xs">
-Оформить заказ
+<button onclick="closeModal()" class="w-full text-xs opacity-40">
+Закрыть
 </button>
 
 </div>
+
 </div>
+
 
 
 <script>
 
-const TOKEN="YOUR_BOT_TOKEN"
-const MY_ID="YOUR_ID"
+let db=[
 
-let db=[]
-let activeFilter="all"
+{n:"9999999999",op:"mts",price:25000,type:"platinum"},
+{n:"7777777777",op:"megafon",price:18000,type:"vip"},
+{n:"9000000000",op:"beeline",price:12000,type:"gold"},
+{n:"5555555555",op:"tele2",price:8000,type:"vip"},
+{n:"1234567890",op:"mts",price:3000,type:"normal"}
 
-async function init(){
+]
 
-try{
+let filter="all"
+let selected=null
 
-const res=await fetch("db.json")
-db=await res.json()
+function setFilter(f){
 
-draw()
-
-}catch{
-
-document.getElementById("list").innerHTML=
-"<div class='p-10 text-center opacity-40'>Ошибка загрузки</div>"
+filter=f
+render()
 
 }
 
-}
+function render(){
 
-function setFilter(v,b){
+let q=document.getElementById("search").value
+let sort=document.getElementById("sort").value
 
-activeFilter=v
+let data=db.filter(i=>{
 
-document.querySelectorAll(".tab-btn")
-.forEach(x=>x.classList.remove("tab-active"))
-
-b.classList.add("tab-active")
-
-draw()
-
-}
-
-function draw(){
-
-const list=document.getElementById("list")
-
-const q=document.getElementById("q").value.toLowerCase()
-
-let filtered=db.filter(i=>{
-
-let num=i.n.toLowerCase()
-
-let op=(i.op||"").toLowerCase()
-
-return num.includes(q)&&(activeFilter==="all"||op===activeFilter)
+return i.n.includes(q)&&(filter==="all"||i.op===filter)
 
 })
 
-if(!filtered.length){
+if(sort==="cheap") data.sort((a,b)=>a.price-b.price)
+if(sort==="expensive") data.sort((a,b)=>b.price-a.price)
 
-list.innerHTML="<div class='p-12 text-center opacity-30'>Ничего не найдено</div>"
-return
+let grid=document.getElementById("grid")
 
-}
+grid.innerHTML=data.map(i=>`
 
-list.innerHTML=filtered.map(i=>`
+<div class="card p-4 rounded-2xl space-y-3">
 
-<div class="line-item p-4 flex justify-between items-center">
+<div class="flex justify-between">
 
-<div>
+<div class="badge">${i.op}</div>
+
+<div class="favorite" onclick="fav(this)">🤍</div>
+
+</div>
 
 <div class="text-lg font-black">${i.n}</div>
 
-<div class="flex gap-2 mt-1">
-<span class="badge-mini">${i.op||"SIM"}</span>
-<span class="text-xs text-amber-500">${i.tarif||"VIP"}</span>
+<div class="flex justify-between items-center">
+
+<div class="text-amber-400 font-bold">
+${i.price} ₽
 </div>
 
-</div>
+<button onclick="openModal('${i.n}')"
+class="gold text-black px-3 py-1 rounded-lg text-sm">
 
-<div class="flex items-center gap-4">
-
-<span class="text-amber-500 font-black">${i.t} ₽</span>
-
-<button
-onclick="openModal('${i.n}','${i.t}')"
-class="gold-btn w-8 h-8 rounded-lg flex items-center justify-center text-black font-bold"
->
-
-→
+Купить
 
 </button>
 
@@ -263,70 +219,51 @@ class="gold-btn w-8 h-8 rounded-lg flex items-center justify-center text-black f
 
 </div>
 
-`).reverse().join("")
+`).join("")
 
 }
 
-function openModal(n,t){
+function fav(el){
 
-target-num.innerText=n
+el.innerText = el.innerText==="🤍" ? "❤️" : "🤍"
 
-order-modal.style.display="flex"
+}
 
-window.cN=n
-window.cT=t
+function openModal(n){
+
+selected=n
+
+document.getElementById("mNumber").innerText=n
+document.getElementById("modal").classList.remove("hidden")
 
 }
 
 function closeModal(){
 
-order-modal.style.display="none"
+document.getElementById("modal").classList.add("hidden")
 
 }
 
-async function submitOrder(){
+function order(){
 
-let fio=client-fio.value
-let phone=client-phone.value
+let fio=document.getElementById("fio").value
+let phone=document.getElementById("phone").value
 
 if(!fio||!phone){
 
 alert("Заполните данные")
+
 return
 
 }
 
-let msg=
-`Новый заказ
-Номер: ${cN}
-Цена: ${cT}
-Клиент: ${fio}
-Телефон: ${phone}`
-
-await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`,{
-
-method:"POST",
-
-headers:{
-"Content-Type":"application/json"
-},
-
-body:JSON.stringify({
-
-chat_id:MY_ID,
-text:msg
-
-})
-
-})
-
-alert("Заказ отправлен")
+alert("Заявка отправлена!")
 
 closeModal()
 
 }
 
-init()
+render()
 
 </script>
 
