@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIM MARKET | ВХОД В АДМИН</title>
+    <title>SIM MARKET | АДМИН</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap');
@@ -17,30 +17,27 @@
         #admin-content { display: none; }
     </style>
 </head>
-<body class="p-5 flex items-center justify-center min-h-screen">
+<body class="p-5 flex items-center justify-center min-h-screen" id="body-ctx">
 
     <div id="login-box" class="max-w-sm w-full glass p-8 rounded-[2.5rem] shadow-2xl text-center">
         <h1 class="text-2xl font-black uppercase tracking-tighter mb-6">SIM <span class="gold-text">ADMIN</span></h1>
-        <p class="text-[10px] uppercase tracking-widest opacity-40 mb-6 font-bold">Вход для владельца</p>
-        
         <div class="space-y-4">
             <input type="email" id="login-email" placeholder="Gmail почта" class="input-dark text-center">
             <input type="password" id="login-pass" placeholder="Пароль" class="input-dark text-center">
-            <button onclick="checkAuth()" class="btn-gold">Войти в панель</button>
+            <button onclick="checkAuth()" class="btn-gold">Войти</button>
         </div>
-        <p id="error-msg" class="text-red-500 text-[10px] mt-4 font-bold hidden uppercase tracking-widest">Неверные данные</p>
+        <p id="error-msg" class="text-red-500 text-[10px] mt-4 font-bold hidden uppercase">Ошибка входа</p>
     </div>
 
-    <div id="admin-content" class="max-w-2xl mx-auto w-full space-y-8 py-10">
-        
+    <div id="admin-content" class="max-w-2xl mx-auto w-full space-y-8 py-10 hidden">
         <div class="flex justify-between items-center">
-            <h1 class="text-xl font-black uppercase tracking-tighter">Управление <span class="gold-text">Номерами</span></h1>
-            <button onclick="logout()" class="text-[10px] font-bold text-red-500 uppercase tracking-widest">Выйти ✕</button>
+            <h1 class="text-xl font-black uppercase">SIM <span class="gold-text">MARKET</span></h1>
+            <button onclick="logout()" class="text-[10px] font-bold text-red-500 uppercase tracking-widest bg-red-500/10 px-3 py-1 rounded-lg">Выйти ✕</button>
         </div>
 
         <section class="glass p-6 rounded-[2rem]">
             <form id="add-form" class="space-y-4">
-                <input type="text" id="n" placeholder="Номер (напр. +7 999 000 00 00)" class="input-dark" required>
+                <input type="text" id="n" placeholder="Номер телефона" class="input-dark" required>
                 <div class="grid grid-cols-2 gap-4">
                     <select id="op" class="input-dark">
                         <option value="megafon">Мегафон</option>
@@ -53,67 +50,90 @@
                         <option value="vip">VIP / Gold</option>
                     </select>
                 </div>
-                <input type="text" id="tarif" placeholder="Тариф (напр. Безлимит)" class="input-dark">
-                <input type="number" id="t" placeholder="Цена (руб)" class="input-dark" required>
+                <input type="text" id="tarif" placeholder="Тариф" class="input-dark">
+                <input type="number" id="t" placeholder="Цена" class="input-dark" required>
                 <button type="submit" id="save-btn" class="btn-gold">Опубликовать</button>
             </form>
         </section>
 
         <section class="glass p-6 rounded-[2rem]">
-            <h2 class="text-xs font-black uppercase tracking-[0.2em] mb-6 opacity-50 text-amber-500">Активные номера на сайте</h2>
-            <div id="num-list" class="space-y-3"></div>
+            <h2 class="text-xs font-black uppercase tracking-widest mb-6 text-amber-500">Активные номера</h2>
+            <div id="num-list" class="space-y-3">
+                <div class="text-center py-5 opacity-20 text-xs">Загрузка...</div>
+            </div>
         </section>
     </div>
 
     <script>
-        // ТВОИ ДАННЫЕ ДЛЯ ВХОДА (ИЗМЕНИ ИХ ПРИ ЖЕЛАНИИ)
         const ADMIN_EMAIL = "kurban@gmail.com"; 
         const ADMIN_PASS = "777"; 
-
         const BIN_ID = "69c9d640aaba882197a65742"; 
         const KEY = "$2a$10$BIVZfOXmYVaG9NpPRW61Le//5yePRuieGl/ph3o6UYlHw4uOJQKtW"; 
 
         let fullData = { record: [] };
 
-        // ФУНКЦИЯ ВХОДА
+        // 1. ПРОВЕРКА СОХРАНЕННОГО ВХОДА ПРИ ЗАГРУЗКЕ
+        window.onload = () => {
+            const isLogged = localStorage.getItem('sim_admin_logged');
+            if (isLogged === 'true') {
+                showAdmin();
+            }
+        };
+
         function checkAuth() {
             const email = document.getElementById('login-email').value;
             const pass = document.getElementById('login-pass').value;
-            const error = document.getElementById('error-msg');
-
             if (email === ADMIN_EMAIL && pass === ADMIN_PASS) {
-                document.getElementById('login-box').style.display = 'none';
-                document.getElementById('admin-content').style.display = 'block';
-                document.body.classList.remove('items-center', 'justify-center');
-                load();
+                localStorage.setItem('sim_admin_logged', 'true'); // Запоминаем вход
+                showAdmin();
             } else {
-                error.classList.remove('hidden');
-                setTimeout(() => error.classList.add('hidden'), 2000);
+                const err = document.getElementById('error-msg');
+                err.classList.remove('hidden');
+                setTimeout(() => err.classList.add('hidden'), 2000);
             }
         }
 
-        function logout() { location.reload(); }
+        function showAdmin() {
+            document.getElementById('login-box').classList.add('hidden');
+            document.getElementById('admin-content').classList.remove('hidden');
+            document.getElementById('body-ctx').classList.remove('items-center', 'justify-center');
+            load();
+        }
 
-        // ЛОГИКА АДМИНКИ (СТАРАЯ)
+        function logout() {
+            localStorage.removeItem('sim_admin_logged');
+            location.reload();
+        }
+
+        // ЛОГИКА НОМЕРОВ
         async function load() {
             try {
                 const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, { headers: {'X-Master-Key': KEY} });
                 const data = await res.json();
-                fullData = data.record.record ? data.record : { record: data.record };
+                
+                // Исправляем "пропажу" номеров: проверяем оба варианта структуры
+                if (data.record.record) {
+                    fullData = data.record;
+                } else {
+                    fullData = { record: data.record, support: [] };
+                }
+                
                 draw();
-            } catch (e) { alert("Ошибка загрузки"); }
+            } catch (e) { console.error("Ошибка загрузки"); }
         }
 
         function draw() {
             const list = document.getElementById('num-list');
             const items = fullData.record || [];
+            if(items.length === 0) { list.innerHTML = `<div class="text-center opacity-20 py-10 text-xs">ПУСТО</div>`; return; }
+            
             list.innerHTML = items.map((i, idx) => `
                 <div class="flex justify-between items-center p-4 bg-white/5 rounded-xl border border-white/5">
                     <div>
                         <div class="font-black text-sm text-white">${i.n}</div>
-                        <div class="text-[9px] opacity-40 uppercase font-bold">${i.op} • ${i.t} ₽</div>
+                        <div class="text-[9px] opacity-40 uppercase">${i.op} • ${i.t} ₽</div>
                     </div>
-                    <button onclick="deleteNum(${idx})" class="w-8 h-8 flex items-center justify-center bg-red-500/10 text-red-500 rounded-lg hover:bg-red-500 text-xs">✕</button>
+                    <button onclick="deleteNum(${idx})" class="w-8 h-8 flex items-center justify-center bg-red-500/10 text-red-500 rounded-lg hover:bg-red-500 hover:text-white text-xs transition-all">✕</button>
                 </div>
             `).reverse().join('');
         }
@@ -121,8 +141,7 @@
         document.getElementById('add-form').onsubmit = async (e) => {
             e.preventDefault();
             const btn = document.getElementById('save-btn');
-            btn.innerText = "СОХРАНЕНИЕ...";
-            btn.disabled = true;
+            btn.innerText = "СОХРАНЕНИЕ..."; btn.disabled = true;
 
             const newNum = {
                 n: document.getElementById('n').value,
@@ -135,26 +154,23 @@
             fullData.record.push(newNum);
             await save();
             e.target.reset();
-            btn.innerText = "Опубликовать";
-            btn.disabled = false;
+            btn.innerText = "Опубликовать"; btn.disabled = false;
         };
 
         async function deleteNum(index) {
-            if(!confirm("Удалить?")) return;
+            if(!confirm("Удалить этот номер?")) return;
             const realIndex = fullData.record.length - 1 - index;
             fullData.record.splice(realIndex, 1);
             await save();
         }
 
         async function save() {
-            try {
-                await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
-                    method: 'PUT',
-                    headers: {'Content-Type': 'application/json', 'X-Master-Key': KEY},
-                    body: JSON.stringify(fullData)
-                });
-                draw();
-            } catch (e) { alert("Ошибка сохранения!"); }
+            await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
+                method: 'PUT',
+                headers: {'Content-Type': 'application/json', 'X-Master-Key': KEY},
+                body: JSON.stringify(fullData)
+            });
+            draw();
         }
     </script>
 </body>
