@@ -3,123 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIM MARKET | ADMIN</title>
+    <title>SIM ADMIN | ПАНЕЛЬ УПРАВЛЕНИЯ</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background: #0f172a; color: #f8fafc; font-family: sans-serif; }
-        .card { background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(255,255,255,0.1); border-radius: 1.5rem; }
-        input, select { background: #1e293b !important; border: 1px solid #334155 !important; color: white !important; }
+        body { background: #020617; color: #f8fafc; font-family: sans-serif; }
+        .glass { background: rgba(30, 41, 59, 0.4); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.05); }
+        .gold-btn { background: linear-gradient(135deg, #fcd34d 0%, #b45309 100%); color: #000; font-weight: 900; }
+        input, select { background: #1e293b !important; border: 1px solid #334155 !important; color: white !important; outline: none; }
+        .vip-border { border: 1px solid #fcd34d !important; box-shadow: 0 0 15px rgba(252, 211, 77, 0.05); }
     </style>
 </head>
-<body class="p-4 pb-20">
+<body class="pb-10">
 
-    <header class="mb-8 text-center">
-        <h1 class="text-2xl font-black text-yellow-500 uppercase">Админ-панель</h1>
-        <p class="text-xs text-gray-400">Управление номерами SIM MARKET</p>
-    </header>
-
-    <section class="max-w-md mx-auto card p-6 mb-10">
-        <h2 class="text-lg font-bold mb-4">Добавить номер</h2>
-        <div class="space-y-3">
-            <input type="text" id="new_n" placeholder="928-000-14-14" class="w-full p-4 rounded-xl outline-none">
-            <input type="number" id="new_t" placeholder="Цена (например 500)" class="w-full p-4 rounded-xl outline-none">
-            <select id="new_op" class="w-full p-4 rounded-xl outline-none">
-                <option value="megafon">Мегафон</option>
-                <option value="beeline">Билайн</option>
-                <option value="mts">МТС</option>
-                <option value="tele2">Tele2</option>
-            </select>
-            <button onclick="addNumber()" id="addBtn" class="w-full bg-yellow-600 text-black font-black py-4 rounded-xl uppercase tracking-widest">Добавить на сайт</button>
+    <div id="login_screen" class="fixed inset-0 z-[200] bg-slate-950 flex items-center justify-center p-6">
+        <div class="glass p-8 rounded-[2.5rem] w-full max-w-sm">
+            <h1 class="text-xl font-black mb-6 text-center text-yellow-500 uppercase">Вход в систему</h1>
+            <input type="password" id="pass_input" placeholder="Пароль" class="w-full p-5 rounded-2xl mb-4 text-center text-xl tracking-widest">
+            <button onclick="checkPass()" class="w-full gold-btn py-5 rounded-2xl uppercase active:scale-95 transition-all">Войти</button>
         </div>
-    </section>
+    </div>
 
-    <section class="max-w-md mx-auto">
-        <h2 class="text-lg font-bold mb-4">Текущие номера</h2>
-        <div id="admin_list" class="space-y-2">
-            <div class="text-center py-10 opacity-50">Загрузка списка...</div>
-        </div>
-    </section>
+    <div id="admin_content" style="display:none;">
+        <header class="p-6 sticky top-0 z-50 glass flex justify-between items-center border-b border-white/5">
+            <div>
+                <h1 class="text-xl font-black text-yellow-500 uppercase">SIM MARKET</h1>
+                <p id="stats" class="text-[10px] text-gray-400 font-bold uppercase"></p>
+            </div>
+            <button onclick="location.reload()" class="p-2 bg-white/5 rounded-xl border border-white/10 text-xs uppercase">Обновить</button>
+        </header>
 
-    <script>
-        const BIN_ID = "69c9d640aaba882197a65742";
-        const MASTER_KEY = "$2a$10$BIVZfOXmYVaG9NpPRW61Le//5yePRuieGl/ph3o6UYlHw4uOJQKtW";
-        let currentData = [];
-
-        // Загрузка данных
-        async function load() {
-            const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
-                headers: { 'X-Master-Key': MASTER_KEY }
-            });
-            const json = await res.json();
-            currentData = json.record;
-            render();
-        }
-
-        // Отрисовка списка с кнопками удаления
-        function render() {
-            const list = document.getElementById('admin_list');
-            list.innerHTML = currentData.map((item, index) => `
-                <div class="card p-4 flex justify-between items-center">
-                    <div>
-                        <div class="font-bold">${item.n}</div>
-                        <div class="text-[10px] uppercase text-gray-400">${item.o} — ${item.t}₽</div>
-                    </div>
-                    <button onclick="deleteNumber(${index})" class="text-red-500 text-xs font-bold p-2">УДАЛИТЬ</button>
-                </div>
-            `).join('');
-        }
-
-        // Добавление номера
-        async function addNumber() {
-            const btn = document.getElementById('addBtn');
-            const n = document.getElementById('new_n').value;
-            const t = document.getElementById('new_t').value;
-            const op = document.getElementById('new_op').value;
-            const o = document.querySelector(`#new_op option[value="${op}"]`).text;
-
-            if(!n || !t) return alert("Заполни все поля!");
-
-            btn.disabled = true;
-            btn.innerText = "СОХРАНЯЕМ...";
-
-            const newEntry = { n, t, op, o };
-            const updatedData = [...currentData, newEntry];
-
-            await updateBin(updatedData);
+        <main class="max-w-2xl mx-auto p-4 pt-8">
             
-            // Чистим форму
-            document.getElementById('new_n').value = '';
-            document.getElementById('new_t').value = '';
-            btn.disabled = false;
-            btn.innerText = "ДОБАВИТЬ НА САЙТ";
-        }
-
-        // Удаление номера
-        async function deleteNumber(index) {
-            if(!confirm("Удалить этот номер с сайта?")) return;
-            const updatedData = currentData.filter((_, i) => i !== index);
-            await updateBin(updatedData);
-        }
-
-        // Обновление базы на jsonbin
-        async function updateBin(newData) {
-            try {
-                const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Master-Key': MASTER_KEY
-                    },
-                    body: JSON.stringify(newData)
-                });
-                if(res.ok) {
-                    currentData = newData;
-                    render();
-                }
-            } catch (err) { alert("Ошибка при обновлении!"); }
-        }
-
-        window.onload = load;
-    </script>
-</body>
-</html>
+            <section class="glass p-6 rounded-[2.5rem] mb-10">
+                <h2 class="text-xs font-bold mb-4 text-gray-500 uppercase tracking-widest">Добавить новый лот</h2>
+                <div class="grid gap-3">
+                    <input type="text" id="new_n" placeholder="Номер (напр. 928-111-14-14)" class="w-full p-4 rounded-xl">
+                    
+                    <div class="grid grid-cols-2 gap-3">
+                        <input type="number" id="new_t" placeholder="Цена номера ₽" class="p-4 rounded-xl">
+                        <select id="new_op" class="p-4 rounded-xl">
+                            <option value="megafon">Мегафон</option>
+                            <option value="beeline">Билайн</option>
+                            
