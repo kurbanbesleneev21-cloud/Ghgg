@@ -3,97 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIM TERMINAL OS | V4.0</title>
+    <title>СИМ МАРКЕТ | ПАНЕЛЬ УПРАВЛЕНИЯ</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;800&display=swap');
-        body { background: #010204; color: #a1a1aa; font-family: 'JetBrains Mono', monospace; overflow-x: hidden; }
-        .neon-border { border: 1px solid rgba(251, 191, 36, 0.2); box-shadow: 0 0 15px rgba(251, 191, 36, 0.05); }
-        .btn-action { transition: 0.2s; border: 1px solid rgba(255,255,255,0.05); }
-        .btn-action:active { transform: scale(0.95); }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;900&display=swap');
+        body { background: #010204; color: #a1a1aa; font-family: 'Inter', sans-serif; }
+        .neon-border { border: 1px solid rgba(251, 191, 36, 0.2); }
         .gold-gradient { background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%); }
-        .glass-panel { background: rgba(10, 12, 16, 0.8); backdrop-filter: blur(20px); }
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-thumb { background: #d97706; border-radius: 10px; }
+        .glass-panel { background: rgba(10, 12, 16, 0.8); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.05); }
+        input, select { background: #0d1117 !important; border: 1px solid #30363d !important; color: white !important; outline: none; }
     </style>
 </head>
 <body class="pb-32">
 
-    <div id="auth" class="fixed inset-0 z-[500] bg-black flex items-center justify-center p-6">
-        <div class="max-w-xs w-full text-center">
-            <div class="mb-8 inline-block p-4 rounded-full border-2 border-yellow-600 animate-pulse">🔑</div>
-            <h1 class="text-white font-black text-2xl mb-6 tracking-tighter uppercase">System Encrypted</h1>
-            <input type="password" id="p_word" placeholder="ACCESS CODE" class="w-full bg-transparent border-b-2 border-yellow-600 text-center text-3xl text-yellow-500 py-3 outline-none mb-8">
-            <button onclick="unlock()" class="w-full gold-gradient text-black font-black py-4 rounded-full uppercase text-xs tracking-[0.3em]">Authorize</button>
+    <div id="auth" class="fixed inset-0 z-[500] bg-black flex items-center justify-center p-6 text-center">
+        <div class="max-w-xs w-full">
+            <div class="mb-6 text-4xl">🔐</div>
+            <h1 class="text-white font-black text-2xl mb-2 uppercase tracking-tighter">Доступ ограничен</h1>
+            <p class="text-gray-500 text-[10px] mb-8 uppercase tracking-widest">Введите секретный код</p>
+            <input type="password" id="p_word" placeholder="КОД" class="w-full bg-transparent border-b-2 border-yellow-600 text-center text-3xl text-yellow-500 py-3 outline-none mb-8 font-black">
+            <button onclick="unlock()" class="w-full gold-gradient text-black font-black py-4 rounded-full uppercase text-xs tracking-widest active:scale-95 transition-all">Авторизация</button>
         </div>
     </div>
 
     <div id="app" style="display:none;">
         <header class="p-6 sticky top-0 z-50 glass-panel border-b border-white/5">
-            <div class="max-w-6xl mx-auto flex justify-between items-end">
+            <div class="max-w-6xl mx-auto flex justify-between items-center">
                 <div>
-                    <h1 class="text-white font-black text-xl leading-none">SIM MARKET <span class="text-yellow-600 text-[10px]">V4.0</span></h1>
+                    <h1 class="text-white font-black text-xl leading-none uppercase">СИМ МАРКЕТ <span class="text-yellow-600 text-[10px]">v4.0</span></h1>
                     <div id="live_stats" class="flex gap-4 mt-2 text-[9px] font-bold uppercase tracking-widest text-gray-500">
                         </div>
                 </div>
                 <div class="flex gap-2">
-                    <button onclick="exportData()" class="p-2 glass-panel rounded-lg text-xs" title="Экспорт CSV">📥</button>
-                    <button onclick="toggleConfig()" class="p-2 glass-panel rounded-lg text-xs">⚙️</button>
+                    <button onclick="exportData()" class="p-3 glass-panel rounded-xl text-xs" title="Скачать базу">💾</button>
+                    <button onclick="toggleConfig()" class="p-3 glass-panel rounded-xl text-xs">⚙️</button>
                 </div>
             </div>
         </header>
 
         <main class="max-w-6xl mx-auto p-4 grid lg:grid-cols-12 gap-6 mt-6">
             
-            <aside class="lg:col-span-4 space-y-6">
-                <div class="glass-panel p-6 rounded-[2rem] neon-border">
-                    <h2 class="text-[10px] font-black mb-6 uppercase tracking-widest text-yellow-600">Add Terminal</h2>
-                    <div class="space-y-3">
-                        <input type="text" id="n_num" placeholder="Номер" class="w-full p-4 rounded-2xl text-white">
-                        <div class="grid grid-cols-2 gap-2">
-                            <input type="number" id="n_price" placeholder="Цена ₽" class="p-4 rounded-2xl text-yellow-500 font-bold">
-                            <select id="n_op" class="p-4 rounded-2xl text-xs uppercase font-bold">
-                                <option value="megafon">Megafon</option>
-                                <option value="beeline">Beeline</option>
-                                <option value="mts">MTS</option>
+            <aside class="lg:col-span-5 space-y-6">
+                <div class="glass-panel p-8 rounded-[2.5rem] neon-border">
+                    <h2 class="text-[10px] font-black mb-6 uppercase tracking-widest text-yellow-600 text-center">Новый номер</h2>
+                    <div class="space-y-4">
+                        <input type="text" id="n_num" placeholder="Номер (напр. 928-111-14-14)" class="w-full p-4 rounded-2xl text-white font-bold">
+                        <div class="grid grid-cols-2 gap-3">
+                            <input type="number" id="n_price" placeholder="Цена ₽" class="p-4 rounded-2xl text-yellow-500 font-black">
+                            <select id="n_op" class="p-4 rounded-2xl text-[10px] uppercase font-bold">
+                                <option value="megafon">Мегафон</option>
+                                <option value="beeline">Билайн</option>
+                                <option value="mts">МТС</option>
                                 <option value="tele2">Tele2</option>
                             </select>
                         </div>
-                        <input type="text" id="n_tarif" placeholder="Имя тарифа" class="w-full p-4 rounded-2xl text-xs">
-                        <select id="n_cat" class="w-full p-4 rounded-2xl text-xs font-bold uppercase text-gray-400">
-                            <option value="std">Обычный</option>
-                            <option value="gold">🥇 Gold</option>
-                            <option value="vip">💎 VIP</option>
+                        <div class="grid grid-cols-2 gap-3">
+                            <input type="text" id="n_tarif" placeholder="Тариф" class="p-4 rounded-2xl text-xs">
+                            <input type="number" id="n_tarif_p" placeholder="Абонплата ₽" class="p-4 rounded-2xl text-xs">
+                        </div>
+                        <select id="n_cat" class="w-full p-4 rounded-2xl text-[10px] font-black uppercase text-gray-400">
+                            <option value="std">ОБЫЧНЫЙ НОМЕР</option>
+                            <option value="gold">ЗОЛОТОЙ (GOLD)</option>
+                            <option value="vip">ВИП (VIP)</option>
                         </select>
-                        <button onclick="processAdd()" id="add_btn" class="w-full gold-gradient text-black font-black py-5 rounded-3xl uppercase tracking-widest mt-2">Push to Live</button>
+                        <button onclick="processAdd()" id="add_btn" class="w-full gold-gradient text-black font-black py-5 rounded-3xl uppercase tracking-widest mt-2 shadow-lg shadow-yellow-600/20 active:scale-95 transition-all">Опубликовать</button>
                     </div>
                 </div>
 
-                <div class="glass-panel p-6 rounded-[2rem] border border-white/5">
-                    <input type="text" id="fast_search" oninput="draw()" placeholder="Smart Search..." class="w-full bg-transparent border-b border-white/10 p-2 text-xs mb-4">
+                <div class="glass-panel p-6 rounded-[2rem]">
+                    <p class="text-[10px] font-bold text-gray-600 mb-4 uppercase">Быстрые фильтры:</p>
                     <div class="flex flex-wrap gap-2">
-                        <button onclick="setF('all')" class="text-[8px] font-bold border border-white/10 px-3 py-1 rounded-full uppercase">All</button>
-                        <button onclick="setF('vip')" class="text-[8px] font-bold border border-yellow-600/30 px-3 py-1 rounded-full uppercase text-yellow-500">VIP</button>
-                        <button onclick="setF('megafon')" class="text-[8px] font-bold border border-green-600/30 px-3 py-1 rounded-full uppercase text-green-500">Mega</button>
+                        <button onclick="setF('all')" class="text-[9px] font-bold border border-white/10 px-4 py-2 rounded-full uppercase">Все</button>
+                        <button onclick="setF('vip')" class="text-[9px] font-bold border border-yellow-600/30 px-4 py-2 rounded-full uppercase text-yellow-500">VIP/Gold</button>
+                        <button onclick="setF('megafon')" class="text-[9px] font-bold border border-green-600/30 px-4 py-2 rounded-full uppercase text-green-500">Мегафон</button>
                     </div>
                 </div>
             </aside>
 
-            <section class="lg:col-span-8">
-                <div id="data_grid" class="space-y-3">
+            <section class="lg:col-span-7">
+                <input type="text" id="fast_search" oninput="draw()" placeholder="🔍 Поиск по номеру или тарифу..." class="w-full glass-panel p-5 rounded-2xl mb-6 border-none text-white">
+                <div id="data_grid" class="space-y-4">
                     </div>
             </section>
         </main>
     </div>
 
     <div id="cfg" style="display:none;" class="fixed inset-0 z-[600] bg-black/95 backdrop-blur-xl flex items-center justify-center p-6">
-        <div class="glass-panel p-8 rounded-[3rem] w-full max-w-sm border border-white/10 text-center">
-            <h2 class="text-white font-black mb-8">TERMINAL SETTINGS</h2>
+        <div class="glass-panel p-10 rounded-[3rem] w-full max-w-sm border border-white/10 text-center">
+            <h2 class="text-white font-black mb-8 uppercase tracking-widest">Настройки терминала</h2>
             <div class="space-y-4">
-                <button onclick="copyBackup()" class="w-full p-4 bg-white/5 rounded-2xl text-xs uppercase font-bold">Copy JSON Backup</button>
-                <button onclick="changePass()" class="w-full p-4 bg-white/5 rounded-2xl text-xs uppercase font-bold">Change Master Key</button>
-                <button onclick="nuke()" class="w-full p-4 bg-red-900/20 text-red-500 rounded-2xl text-xs uppercase font-bold">Nuke All Data</button>
-                <button onclick="toggleConfig()" class="mt-4 text-gray-600 text-[10px] uppercase font-bold">Exit Settings</button>
+                <button onclick="copyBackup()" class="w-full p-5 bg-white/5 rounded-2xl text-[10px] uppercase font-black tracking-widest">Копировать резерв базы</button>
+                <button onclick="changePass()" class="w-full p-5 bg-white/5 rounded-2xl text-[10px] uppercase font-black tracking-widest">Сменить пароль входа</button>
+                <div class="h-px bg-white/10 my-4"></div>
+                <button onclick="nuke()" class="w-full p-5 bg-red-900/20 text-red-500 rounded-2xl text-[10px] uppercase font-black tracking-widest">Удалить все данные</button>
+                <button onclick="toggleConfig()" class="mt-6 text-gray-500 text-[10px] uppercase font-bold">Вернуться назад</button>
             </div>
         </div>
     </div>
@@ -110,51 +113,53 @@
                 document.getElementById('auth').style.display = 'none';
                 document.getElementById('app').style.display = 'block';
                 sync();
-            } else alert("INVALID KEY");
+            } else alert("НЕВЕРНЫЙ КОД ДОСТУПА");
         }
 
         async function sync() {
-            const res = await fetch(`https://api.jsonbin.io/v3/b/${API_ID}/latest`, { headers: {'X-Master-Key': API_KEY} });
-            const data = await res.json();
-            db = data.record || [];
-            draw();
+            try {
+                const res = await fetch(`https://api.jsonbin.io/v3/b/${API_ID}/latest`, { headers: {'X-Master-Key': API_KEY} });
+                const data = await res.json();
+                db = data.record || [];
+                draw();
+            } catch (e) { alert("Ошибка сети!"); }
         }
 
         function draw() {
             const grid = document.getElementById('data_grid');
             const q = document.getElementById('fast_search').value.toLowerCase();
             
-            let items = db.filter(i => i.n.includes(q));
+            let items = db.filter(i => i.n.includes(q) || (i.tarif && i.tarif.toLowerCase().includes(q)));
             if(filter === 'vip') items = items.filter(i => i.cat === 'vip' || i.cat === 'gold');
             else if(filter !== 'all') items = items.filter(i => i.op === filter);
 
             let totalVal = db.reduce((acc, curr) => acc + Number(curr.t), 0);
             document.getElementById('live_stats').innerHTML = `
-                <span>STOCK: ${db.length}</span>
-                <span class="text-yellow-600">VALUE: ${totalVal.toLocaleString()}₽</span>
-                <span>SYNC: OK</span>
+                <span>НОМЕРОВ: ${db.length}</span>
+                <span class="text-yellow-600">ОЦЕНКА СКЛАДА: ${totalVal.toLocaleString()}₽</span>
+                <span class="text-green-500">СЕТЬ: OK</span>
             `;
 
             grid.innerHTML = items.map((item, idx) => {
                 const isVip = item.cat === 'vip' || item.cat === 'gold';
                 return `
-                <div class="glass-panel p-5 rounded-[2rem] border border-white/5 flex justify-between items-center group transition-all hover:border-yellow-600/30">
-                    <div onclick="copyToClipboard('${item.n}')" class="cursor-pointer">
+                <div class="glass-panel p-6 rounded-[2.5rem] flex justify-between items-center group hover:border-yellow-600/40 transition-all">
+                    <div>
                         <div class="flex items-center gap-3">
                             <span class="text-white font-black text-xl tracking-tighter">${item.n}</span>
-                            ${isVip ? `<span class="bg-yellow-600 text-black text-[7px] px-2 py-0.5 rounded font-black">${item.cat.toUpperCase()}</span>` : ''}
+                            ${isVip ? `<span class="bg-yellow-600 text-black text-[8px] px-2 py-0.5 rounded font-black">${item.cat.toUpperCase()}</span>` : ''}
                         </div>
-                        <div class="text-[9px] uppercase font-bold text-gray-600 mt-1">
-                            ${item.o} / ${item.tarif || 'No Plan'} / ${item.tarif_p || 0}₽
+                        <div class="text-[10px] uppercase font-bold text-gray-600 mt-2">
+                            ${item.o} / ${item.tarif || 'Без тарифа'} / ${item.tarif_p || 0}₽ мес.
                         </div>
                     </div>
                     <div class="flex items-center gap-4">
                         <div class="text-right">
-                            <div class="text-sm font-black text-white">${item.t}₽</div>
+                            <div class="text-lg font-black text-white">${item.t}₽</div>
                         </div>
-                        <div class="flex gap-1 opacity-0 group-hover:opacity-100 transition-all">
-                            <button onclick="editItem(${db.indexOf(item)})" class="p-2 bg-white/5 rounded-lg text-[10px]">✏️</button>
-                            <button onclick="delItem(${db.indexOf(item)})" class="p-2 bg-red-900/20 text-red-500 rounded-lg text-[10px]">🗑️</button>
+                        <div class="flex gap-2">
+                            <button onclick="editItem(${db.indexOf(item)})" class="p-3 bg-white/5 rounded-xl hover:bg-white/10 transition-all">✏️</button>
+                            <button onclick="delItem(${db.indexOf(item)})" class="p-3 bg-red-900/10 text-red-500 rounded-xl hover:bg-red-500 hover:text-white transition-all">🗑️</button>
                         </div>
                     </div>
                 </div>
@@ -164,61 +169,65 @@
         async function processAdd() {
             const n = document.getElementById('n_num').value;
             const t = document.getElementById('n_price').value;
-            if(!n || !t) return alert("Empty Data");
+            const tarif = document.getElementById('n_tarif').value;
+            const tarif_p = document.getElementById('n_tarif_p').value;
+            
+            if(!n || !t) return alert("Введите номер и цену!");
+            if(db.some(i => i.n === n)) return alert("Такой номер уже есть в базе!");
 
-            if(db.some(i => i.n === n)) return alert("Duplicate Number!");
-
-            const newItem = {
-                n, t, 
+            db.push({
+                n, t, tarif, tarif_p,
                 op: document.getElementById('n_op').value,
                 o: document.getElementById('n_op').selectedOptions[0].text,
-                tarif: document.getElementById('n_tarif').value,
-                tarif_p: "0",
                 cat: document.getElementById('n_cat').value
-            };
-
-            db.push(newItem);
+            });
             await push();
             document.getElementById('n_num').value = '';
+            document.getElementById('n_price').value = '';
         }
 
         async function push() {
-            document.getElementById('add_btn').innerText = "PUSHING...";
+            document.getElementById('add_btn').innerText = "СОХРАНЕНИЕ...";
             await fetch(`https://api.jsonbin.io/v3/b/${API_ID}`, {
                 method: 'PUT',
                 headers: {'Content-Type': 'application/json', 'X-Master-Key': API_KEY},
                 body: JSON.stringify(db)
             });
-            document.getElementById('add_btn').innerText = "Push to Live";
+            document.getElementById('add_btn').innerText = "Опубликовать";
             draw();
         }
 
-        function copyToClipboard(text) {
-            navigator.clipboard.writeText(text);
-            alert("Copied: " + text);
-        }
-
         async function delItem(idx) {
-            if(confirm("Delete Permanently?")) {
+            if(confirm("Удалить номер безвозвратно?")) {
                 db.splice(idx, 1);
                 await push();
             }
         }
 
-        function setF(val) { filter = val; draw(); }
-        function toggleConfig() { const s = document.getElementById('cfg'); s.style.display = s.style.display === 'none' ? 'flex' : 'none'; }
-        
-        function exportData() {
-            const blob = new Blob([JSON.stringify(db)], {type: 'application/json'});
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url; a.download = 'sim_market_backup.json';
-            a.click();
+        async function editItem(idx) {
+            const p = prompt("Новая цена для " + db[idx].n + ":", db[idx].t);
+            if(p !== null) { db[idx].t = p; await push(); }
         }
 
-        async function editItem(idx) {
-            const p = prompt("New Price:", db[idx].t);
-            if(p) { db[idx].t = p; await push(); }
+        function setF(val) { filter = val; draw(); }
+        function toggleConfig() { 
+            const s = document.getElementById('cfg'); 
+            s.style.display = s.style.display === 'none' ? 'flex' : 'none'; 
+        }
+
+        function changePass() {
+            const newP = prompt("Введите новый пароль (минимум 4 знака):");
+            if(newP && newP.length >= 4) {
+                localStorage.setItem('s_pass', newP);
+                MASTER = newP;
+                alert("Пароль изменен!");
+            }
+        }
+
+        async function nuke() {
+            if(confirm("ВНИМАНИЕ! Это действие удалит ВСЕ номера. Вы уверены?")) {
+                db = []; await push(); toggleConfig();
+            }
         }
     </script>
 </body>
