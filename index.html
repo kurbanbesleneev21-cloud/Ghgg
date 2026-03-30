@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SIM MARKET | PREMIUM</title>
+    <title>SIM MARKET | LUXURY</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap');
         
         body { background: #050505; color: #fff; font-family: 'Manrope', sans-serif; margin: 0; }
 
-        /* ЛОГОТИП: ОДИНАКОВЫЙ И БЛЕСТЯЩИЙ */
+        /* ЛОГОТИП */
         .logo-shine {
             font-weight: 800; font-size: 28px; letter-spacing: -1px; text-transform: uppercase;
             background: linear-gradient(90deg, #bf953f, #fcf6ba, #b38728, #fcf6ba, #bf953f);
@@ -19,11 +19,21 @@
         }
         @keyframes shine { to { background-position: 200% center; } }
 
-        /* КАРТОЧКИ И КНОПКИ */
+        /* КАРТОЧКА НОМЕРА */
         .glass-card {
             background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 24px; padding: 24px;
+            border-radius: 28px; padding: 24px; transition: 0.3s;
         }
+
+        /* КНОПКА ЗАКАЗАТЬ В КАРТОЧКЕ */
+        .buy-btn {
+            background: #fff; color: #000; font-weight: 800; font-size: 10px;
+            text-transform: uppercase; letter-spacing: 1px; padding: 12px 20px;
+            border-radius: 12px; transition: 0.3s; border: none; cursor: pointer;
+        }
+        .buy-btn:active { transform: scale(0.95); background: #fbbf24; }
+
+        /* ФИЛЬТРЫ */
         .tab-btn {
             background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05);
             padding: 12px 20px; border-radius: 14px; font-size: 11px; font-weight: 800;
@@ -31,14 +41,15 @@
         }
         .tab-active { background: #fff !important; color: #000 !important; }
 
+        /* МОДАЛКА И ИНПУТЫ */
         .input-luxury {
             background: #0f0f0f; border: 1px solid #1a1a1a; border-radius: 18px;
             padding: 18px; width: 100%; color: #fff; outline: none; text-align: center;
         }
-        .btn-order {
+        .btn-submit {
             background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
             color: #000; font-weight: 800; border-radius: 18px; width: 100%; padding: 20px;
-            text-transform: uppercase; letter-spacing: 2px; font-size: 11px;
+            text-transform: uppercase; letter-spacing: 2px; font-size: 11px; border: none;
         }
 
         #order-modal { display: none; position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,0.97); backdrop-filter: blur(15px); align-items: center; justify-content: center; }
@@ -64,11 +75,11 @@
             <button onclick="setFilter('tele2', this)" class="tab-btn">Tele2</button>
         </div>
 
-        <div id="list" class="space-y-4"></div>
+        <div id="list" class="space-y-6"></div>
     </main>
 
     <div id="order-modal">
-        <div class="glass-card w-[90%] max-w-md relative">
+        <div class="glass-card w-[90%] max-w-md relative border-white/10">
             <button onclick="closeModal()" class="absolute top-5 right-5 text-zinc-500 text-xl">✕</button>
             <h3 class="text-[10px] font-bold text-amber-500 uppercase tracking-widest text-center mb-6">Оформление заказа</h3>
             <p id="selected-num" class="text-3xl font-black text-center mb-8 italic tracking-tighter"></p>
@@ -89,7 +100,7 @@
                     <input type="file" id="p2" class="hidden" accept="image/*" required onchange="showStatus('p2', 'p2-info')">
                 </label>
 
-                <button type="submit" id="sub-btn" class="btn-order mt-4">Отправить Курбану</button>
+                <button type="submit" id="sub-btn" class="btn-submit mt-4">Отправить Курбану</button>
             </form>
         </div>
     </div>
@@ -108,7 +119,7 @@
                 const d = await r.json();
                 database = d.record.record || d.record || [];
                 draw();
-            } catch(e) { console.error('Ошибка загрузки'); }
+            } catch(e) { console.error('Ошибка базы'); }
         }
 
         function setFilter(val, el) {
@@ -124,15 +135,18 @@
             const filtered = database.filter(i => (i.n.includes(q)) && (currentFilter === 'all' || i.op.toLowerCase() === currentFilter));
 
             list.innerHTML = filtered.map(i => `
-                <div class="glass-card flex justify-between items-center mb-4">
-                    <div>
-                        <div class="text-[9px] font-bold uppercase opacity-40 mb-1 tracking-widest">${i.op}</div>
-                        <div class="text-2xl font-black italic tracking-tighter">${i.n}</div>
-                        <div class="text-amber-500 font-bold text-xs mt-1">${i.t} ₽</div>
+                <div class="glass-card flex flex-col gap-4">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <div class="text-[10px] font-bold uppercase opacity-40 mb-1 tracking-widest">${i.op}</div>
+                            <div class="text-3xl font-black italic tracking-tighter">${i.n}</div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-2xl font-black text-amber-500">${i.t} ₽</div>
+                            <div class="text-[8px] font-bold opacity-30 uppercase tracking-widest">Цена номера</div>
+                        </div>
                     </div>
-                    <button onclick="openModal('${i.n}')" class="bg-white text-black h-12 w-12 rounded-full flex items-center justify-center">
-                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"></path></svg>
-                    </button>
+                    <button onclick="openModal('${i.n}')" class="buy-btn">Заказать</button>
                 </div>
             `).reverse().join('');
         }
@@ -155,7 +169,7 @@
             const btn = document.getElementById('sub-btn');
             btn.innerText = "ОТПРАВКА..."; btn.disabled = true;
 
-            const msg = `🆕 <b>ЗАКАЗ</b>\n\n🔟 <b>НОМЕР:</b> ${document.getElementById('selected-num').innerText}\n👤 <b>ФИО:</b> ${document.getElementById('fio').value}\n📞 <b>СВЯЗЬ:</b> ${document.getElementById('contact').value}`;
+            const msg = `🆕 <b>ЗАКАЗ</b>\n\n🔟 <b>НОМЕР:</b> <code>${document.getElementById('selected-num').innerText}</code>\n👤 <b>ФИО:</b> ${document.getElementById('fio').value}\n📞 <b>СВЯЗЬ:</b> ${document.getElementById('contact').value}`;
 
             try {
                 await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
