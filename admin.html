@@ -3,36 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIM MARKET | АДМИН</title>
+    <title>SIM MARKET | ADMIN</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap');
-        body { background: #09090b; color: #f4f4f5; font-family: 'Manrope', sans-serif; }
+        body { background: #09090b; color: #f4f4f5; font-family: 'Manrope', sans-serif; min-height: 100vh; margin: 0; }
         .glass { background: rgba(24, 24, 27, 0.9); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.08); }
         .gold-text { background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .input-dark { background: #18181b; border: 1px solid #27272a; border-radius: 12px; padding: 14px; font-size: 14px; outline: none; transition: 0.3s; width: 100%; }
-        .input-dark:focus { border-color: #f59e0b; }
-        .btn-gold { background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%); color: #000; font-weight: 800; border-radius: 12px; transition: 0.3s; width: 100%; padding: 16px; text-transform: uppercase; letter-spacing: 1px; }
-        .btn-gold:active { transform: scale(0.96); }
-        #admin-content { display: none; }
+        .input-dark { background: #18181b; border: 1px solid #27272a; border-radius: 12px; padding: 14px; font-size: 14px; outline: none; transition: 0.3s; width: 100%; color: white; }
+        .btn-gold { background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%); color: #000; font-weight: 800; border-radius: 12px; transition: 0.3s; width: 100%; padding: 16px; text-transform: uppercase; }
+        #login-screen { display: flex; align-items: center; justify-center: center; position: fixed; inset: 0; z-index: 100; background: #09090b; }
     </style>
 </head>
-<body class="p-5 flex items-center justify-center min-h-screen" id="body-ctx">
+<body>
 
-    <div id="login-box" class="max-w-sm w-full glass p-8 rounded-[2.5rem] shadow-2xl text-center">
-        <h1 class="text-2xl font-black uppercase tracking-tighter mb-6">SIM <span class="gold-text">ADMIN</span></h1>
-        <div class="space-y-4">
-            <input type="email" id="login-email" placeholder="Gmail почта" class="input-dark text-center">
-            <input type="password" id="login-pass" placeholder="Пароль" class="input-dark text-center">
-            <button onclick="checkAuth()" class="btn-gold">Войти</button>
+    <div id="login-screen">
+        <div class="max-w-sm w-full mx-auto p-8 glass rounded-[2.5rem] text-center">
+            <h1 class="text-2xl font-black uppercase tracking-tighter mb-6">SIM <span class="gold-text">ADMIN</span></h1>
+            <div class="space-y-4">
+                <input type="email" id="login-email" placeholder="Gmail почта" class="input-dark text-center">
+                <input type="password" id="login-pass" placeholder="Пароль" class="input-dark text-center">
+                <button onclick="checkAuth()" class="btn-gold">Войти</button>
+            </div>
+            <p id="error-msg" class="text-red-500 text-[10px] mt-4 font-bold hidden uppercase">Ошибка входа</p>
         </div>
-        <p id="error-msg" class="text-red-500 text-[10px] mt-4 font-bold hidden uppercase">Ошибка входа</p>
     </div>
 
-    <div id="admin-content" class="max-w-2xl mx-auto w-full space-y-8 py-10 hidden">
+    <div id="main-admin" class="hidden max-w-2xl mx-auto w-full p-5 space-y-8 py-10">
         <div class="flex justify-between items-center">
             <h1 class="text-xl font-black uppercase">SIM <span class="gold-text">MARKET</span></h1>
-            <button onclick="logout()" class="text-[10px] font-bold text-red-500 uppercase tracking-widest bg-red-500/10 px-3 py-1 rounded-lg">Выйти ✕</button>
+            <button onclick="logout()" class="text-[10px] font-bold text-red-500 uppercase bg-red-500/10 px-3 py-1 rounded-lg">Выйти ✕</button>
         </div>
 
         <section class="glass p-6 rounded-[2rem]">
@@ -72,20 +72,19 @@
 
         let fullData = { record: [] };
 
-        // 1. ПРОВЕРКА СОХРАНЕННОГО ВХОДА ПРИ ЗАГРУЗКЕ
+        // ПРОВЕРКА ВХОДА ПРИ ЗАГРУЗКЕ
         window.onload = () => {
-            const isLogged = localStorage.getItem('sim_admin_logged');
-            if (isLogged === 'true') {
-                showAdmin();
+            if (localStorage.getItem('sim_admin_auth') === 'true') {
+                showAdminView();
             }
         };
 
         function checkAuth() {
-            const email = document.getElementById('login-email').value;
-            const pass = document.getElementById('login-pass').value;
-            if (email === ADMIN_EMAIL && pass === ADMIN_PASS) {
-                localStorage.setItem('sim_admin_logged', 'true'); // Запоминаем вход
-                showAdmin();
+            const e = document.getElementById('login-email').value;
+            const p = document.getElementById('login-pass').value;
+            if(e === ADMIN_EMAIL && p === ADMIN_PASS) {
+                localStorage.setItem('sim_admin_auth', 'true');
+                showAdminView();
             } else {
                 const err = document.getElementById('error-msg');
                 err.classList.remove('hidden');
@@ -93,39 +92,31 @@
             }
         }
 
-        function showAdmin() {
-            document.getElementById('login-box').classList.add('hidden');
-            document.getElementById('admin-content').classList.remove('hidden');
-            document.getElementById('body-ctx').classList.remove('items-center', 'justify-center');
-            load();
+        function showAdminView() {
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('main-admin').classList.remove('hidden');
+            loadData();
         }
 
         function logout() {
-            localStorage.removeItem('sim_admin_logged');
+            localStorage.removeItem('sim_admin_auth');
             location.reload();
         }
 
-        // ЛОГИКА НОМЕРОВ
-        async function load() {
+        async function loadData() {
             try {
                 const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, { headers: {'X-Master-Key': KEY} });
                 const data = await res.json();
-                
-                // Исправляем "пропажу" номеров: проверяем оба варианта структуры
-                if (data.record.record) {
-                    fullData = data.record;
-                } else {
-                    fullData = { record: data.record, support: [] };
-                }
-                
-                draw();
-            } catch (e) { console.error("Ошибка загрузки"); }
+                // Универсальная проверка структуры базы
+                fullData = data.record.record ? data.record : { record: data.record, support: [] };
+                render();
+            } catch (e) { console.error("Data error"); }
         }
 
-        function draw() {
+        function render() {
             const list = document.getElementById('num-list');
             const items = fullData.record || [];
-            if(items.length === 0) { list.innerHTML = `<div class="text-center opacity-20 py-10 text-xs">ПУСТО</div>`; return; }
+            if(items.length === 0) { list.innerHTML = "<div class='text-center opacity-20'>ПУСТО</div>"; return; }
             
             list.innerHTML = items.map((i, idx) => `
                 <div class="flex justify-between items-center p-4 bg-white/5 rounded-xl border border-white/5">
@@ -133,7 +124,7 @@
                         <div class="font-black text-sm text-white">${i.n}</div>
                         <div class="text-[9px] opacity-40 uppercase">${i.op} • ${i.t} ₽</div>
                     </div>
-                    <button onclick="deleteNum(${idx})" class="w-8 h-8 flex items-center justify-center bg-red-500/10 text-red-500 rounded-lg hover:bg-red-500 hover:text-white text-xs transition-all">✕</button>
+                    <button onclick="deleteNum(${idx})" class="w-8 h-8 flex items-center justify-center bg-red-500/10 text-red-500 rounded-lg hover:bg-red-500 hover:text-white transition-all text-xs font-bold">✕</button>
                 </div>
             `).reverse().join('');
         }
@@ -158,7 +149,7 @@
         };
 
         async function deleteNum(index) {
-            if(!confirm("Удалить этот номер?")) return;
+            if(!confirm("Удалить номер?")) return;
             const realIndex = fullData.record.length - 1 - index;
             fullData.record.splice(realIndex, 1);
             await save();
@@ -170,7 +161,7 @@
                 headers: {'Content-Type': 'application/json', 'X-Master-Key': KEY},
                 body: JSON.stringify(fullData)
             });
-            draw();
+            render();
         }
     </script>
 </body>
