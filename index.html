@@ -3,146 +3,161 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SIM MARKET | NEXT GEN</title>
+    <title>SIM MARKET | КУПИТЬ НОМЕР</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@300;500;800&display=swap');
-        
-        :root { --gold: #f59e0b; --dark: #09090b; }
-        body { background: var(--dark); color: #fafafa; font-family: 'Manrope', sans-serif; -webkit-tap-highlight-color: transparent; }
-        
-        .card-blur { background: rgba(24, 24, 27, 0.6); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.05); }
-        .gold-glow { box-shadow: 0 0 20px rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.2); }
-        
-        /* Анимация появления */
-        .reveal { animation: reveal 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
-        @keyframes reveal { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        input::placeholder { color: #52525b; text-transform: uppercase; font-size: 10px; letter-spacing: 1px; }
+        @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap');
+        body { background: #09090b; color: #f4f4f5; font-family: 'Manrope', sans-serif; -webkit-tap-highlight-color: transparent; }
+        .glass { background: rgba(24, 24, 27, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.05); }
+        .gold-text { background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .btn-gold { background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%); color: #000; font-weight: 800; }
+        .card { transition: all 0.3s ease; border: 1px solid rgba(255,255,255,0.03); }
+        .card:active { transform: scale(0.97); background: rgba(255,255,255,0.05); }
+        .vip-border { border: 1px solid rgba(251, 191, 36, 0.2) !important; }
+        input::placeholder { color: #52525b; text-transform: uppercase; font-size: 10px; }
     </style>
 </head>
-<body class="safe-top">
+<body class="pb-20">
 
-    <div class="fixed inset-0 overflow-hidden pointer-events-none -z-10">
-        <div class="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-amber-500/10 blur-[120px] rounded-full"></div>
-        <div class="absolute bottom-[10%] right-[10%] w-[30%] h-[30%] bg-amber-600/5 blur-[100px] rounded-full"></div>
-    </div>
-
-    <nav class="sticky top-0 z-40 px-6 py-5 flex justify-between items-center card-blur">
-        <div>
-            <h1 class="text-xl font-[800] tracking-tighter leading-none">SIM <span class="text-amber-500">MARKET</span></h1>
-            <p class="text-[8px] font-medium text-zinc-500 uppercase tracking-[0.3em] mt-1">Premium Assets</p>
+    <header class="p-6 sticky top-0 z-50 glass border-b border-white/5">
+        <div class="max-w-2xl mx-auto flex justify-between items-center">
+            <div>
+                <h1 class="text-xl font-extrabold tracking-tighter uppercase leading-none">SIM <span class="gold-text">MARKET</span></h1>
+                <p class="text-[8px] font-bold text-zinc-500 uppercase tracking-[0.3em] mt-1">Премиальные номера</p>
+            </div>
+            <div class="flex gap-4">
+                <button onclick="window.location.reload()" class="opacity-50">🔄</button>
+            </div>
         </div>
-        <button onclick="window.location.reload()" class="p-2 rounded-full bg-zinc-900 border border-zinc-800 active:scale-90 transition-transform">
-            <i data-lucide="refresh-cw" class="w-4 h-4 text-amber-500"></i>
-        </button>
-    </nav>
+    </header>
 
-    <main class="px-6 pt-6 pb-24 max-w-2xl mx-auto">
+    <main class="max-w-2xl mx-auto p-4">
         
-        <div class="relative mb-8 reveal" style="animation-delay: 0.1s;">
-            <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-600"></i>
-            <input type="text" id="search" oninput="render()" placeholder="Найти свой номер..." 
-                   class="w-full pl-11 pr-4 py-4 bg-zinc-900/50 border border-zinc-800 rounded-2xl outline-none focus:border-amber-500 transition-colors">
+        <section class="mt-4 mb-6">
+            <input type="text" id="q" oninput="draw()" placeholder="Поиск номера или тарифа..." 
+                   class="w-full p-4 rounded-2xl bg-zinc-900 border border-zinc-800 outline-none focus:border-amber-500 transition-all text-sm">
+        </section>
+
+        <div class="flex gap-2 overflow-x-auto no-scrollbar mb-6 pb-2">
+            <button onclick="setF('all')" class="px-5 py-2 rounded-full bg-zinc-900 text-[10px] font-black uppercase tracking-widest border border-white/5">Все</button>
+            <button onclick="setF('vip')" class="px-5 py-2 rounded-full bg-zinc-900 text-[10px] font-black uppercase tracking-widest border border-amber-500/20 text-amber-500">VIP</button>
+            <button onclick="setF('megafon')" class="px-5 py-2 rounded-full bg-zinc-900 text-[10px] font-black uppercase tracking-widest border border-white/5">Мегафон</button>
         </div>
 
-        <div class="flex gap-3 overflow-x-auto no-scrollbar mb-8 reveal" style="animation-delay: 0.2s;">
-            <button onclick="setFilter('all')" class="filter-btn active px-6 py-2.5 rounded-full bg-amber-500 text-black text-xs font-bold uppercase tracking-wider">Все</button>
-            <button onclick="setFilter('vip')" class="filter-btn px-6 py-2.5 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-400 text-xs font-bold uppercase tracking-wider">VIP</button>
-            <button onclick="setFilter('megafon')" class="filter-btn px-6 py-2.5 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-400 text-xs font-bold uppercase tracking-wider">Мегафон</button>
-        </div>
-
-        <div id="grid" class="grid gap-4">
-            <div class="h-24 bg-zinc-900/50 animate-pulse rounded-3xl"></div>
-            <div class="h-24 bg-zinc-900/50 animate-pulse rounded-3xl"></div>
+        <div id="list" class="space-y-3">
+            <div class="p-10 text-center opacity-20 text-xs font-bold uppercase tracking-widest">Загрузка базы...</div>
         </div>
     </main>
 
-    <div class="fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-md h-16 card-blur rounded-3xl flex justify-around items-center px-4 border border-zinc-800 z-50">
-        <button class="flex flex-col items-center gap-1 text-amber-500">
-            <i data-lucide="layout-grid" class="w-5 h-5"></i>
-            <span class="text-[8px] font-bold uppercase">Витрина</span>
-        </button>
-        <button onclick="window.open('https://t.me/твой_ник')" class="flex flex-col items-center gap-1 text-zinc-500">
-            <i data-lucide="message-circle" class="w-5 h-5"></i>
-            <span class="text-[8px] font-bold uppercase">Связь</span>
-        </button>
-        <button onclick="alert('В разработке')" class="flex flex-col items-center gap-1 text-zinc-500">
-            <i data-lucide="info" class="w-5 h-5"></i>
-            <span class="text-[8px] font-bold uppercase">О нас</span>
-        </button>
+    <div id="modal" class="fixed inset-0 z-[100] bg-black/95 hidden items-center justify-center p-6 backdrop-blur-md">
+        <div class="glass p-8 rounded-[2.5rem] w-full max-w-sm border-t-2 border-amber-500">
+            <h2 class="text-2xl font-black mb-1 gold-text uppercase">Оформление</h2>
+            <p id="target" class="text-lg font-bold text-white mb-6 border-b border-white/5 pb-2"></p>
+            
+            <form id="tg_form" class="space-y-4">
+                <input type="text" id="u_name" placeholder="Ваше ФИО" class="w-full bg-zinc-900 p-4 rounded-xl border border-white/5 outline-none text-xs" required>
+                <input type="tel" id="u_phone" placeholder="Контактный номер" class="w-full bg-zinc-900 p-4 rounded-xl border border-white/5 outline-none text-xs" required>
+                
+                <div class="grid grid-cols-2 gap-3 text-center">
+                    <div class="p-3 bg-zinc-900 rounded-xl border border-white/5">
+                        <label class="text-[7px] text-zinc-500 block mb-2 uppercase font-black">Паспорт (Лицо)</label>
+                        <input type="file" id="img1" accept="image/*" class="text-[8px] text-zinc-600" required>
+                    </div>
+                    <div class="p-3 bg-zinc-900 rounded-xl border border-white/5">
+                        <label class="text-[7px] text-zinc-500 block mb-2 uppercase font-black">Прописка</label>
+                        <input type="file" id="img2" accept="image/*" class="text-[8px] text-zinc-600" required>
+                    </div>
+                </div>
+
+                <button type="submit" id="send_btn" class="w-full btn-gold py-5 rounded-2xl uppercase tracking-widest text-[10px] mt-2 active:scale-95 transition-all">Отправить заявку</button>
+                <button type="button" onclick="closeM()" class="w-full text-zinc-600 text-[9px] font-bold uppercase py-2">Отмена</button>
+            </form>
+        </div>
     </div>
 
     <script>
-        // Инициализация иконок
-        lucide.createIcons();
+        const BIN_ID = "69c9d640aaba882197a65742"; 
+        const KEY = "$2a$10$BIVZfOXmYVaG9NpPRW61Le//5yePRuieGl/ph3o6UYlHw4uOJQKtW"; 
+        const BOT_TOKEN = "8569235049:AAEsaW4ME-Ql6036i04tIbj--IPNT6JdroE"; 
+        const CHAT_ID = "8768514374"; 
 
-        const API_URL = "69c9d640aaba882197a65742";
-        const KEY = "$2a$10$BIVZfOXmYVaG9NpPRW61Le//5yePRuieGl/ph3o6UYlHw4uOJQKtW";
         let db = [];
         let filter = 'all';
 
         async function init() {
-            const res = await fetch(`https://api.jsonbin.io/v3/b/${API_URL}/latest`, {
-                headers: { 'X-Master-Key': KEY }
-            });
-            const data = await res.json();
-            db = data.record || [];
-            render();
+            try {
+                const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, { headers: {'X-Master-Key': KEY} });
+                const data = await res.json();
+                db = data.record || [];
+                draw();
+            } catch (e) { alert("Ошибка загрузки"); }
         }
 
-        function render() {
-            const container = document.getElementById('grid');
-            const q = document.getElementById('search').value.toLowerCase();
+        function draw() {
+            const list = document.getElementById('list');
+            const search = document.getElementById('q').value.toLowerCase();
             
-            let items = db.filter(i => i.n.includes(q));
+            let items = db.filter(i => i.n.includes(search) || (i.tarif && i.tarif.toLowerCase().includes(search)));
             if(filter === 'vip') items = items.filter(i => i.cat === 'vip' || i.cat === 'gold');
             else if(filter !== 'all') items = items.filter(i => i.op === filter);
 
-            container.innerHTML = items.map((item, idx) => {
+            list.innerHTML = items.map(item => {
                 const isVip = item.cat === 'vip' || item.cat === 'gold';
                 return `
-                <div class="p-5 rounded-3xl bg-zinc-900/40 border border-zinc-800/50 flex justify-between items-center reveal ${isVip ? 'gold-glow' : ''}" style="animation-delay: ${idx * 0.05}s">
-                    <div class="flex items-center gap-4">
-                        <div class="w-10 h-10 rounded-2xl bg-zinc-800 flex items-center justify-center">
-                            <i data-lucide="phone" class="w-4 h-4 ${isVip ? 'text-amber-500' : 'text-zinc-600'}"></i>
+                <div onclick="openM('${item.n}')" class="card p-5 rounded-[2rem] bg-zinc-900/40 flex justify-between items-center ${isVip ? 'vip-border' : ''}">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xl font-black tracking-tighter text-white">${item.n}</span>
+                            ${isVip ? `<span class="bg-amber-500 text-black text-[7px] px-1.5 py-0.5 rounded font-black uppercase">${item.cat}</span>` : ''}
                         </div>
-                        <div>
-                            <h3 class="text-lg font-extrabold tracking-tight text-white">${item.n}</h3>
-                            <div class="flex items-center gap-2 mt-0.5">
-                                <span class="text-[8px] font-black uppercase text-zinc-500 tracking-wider">${item.o || item.op}</span>
-                                <span class="w-1 h-1 rounded-full bg-zinc-700"></span>
-                                <span class="text-[8px] font-bold text-amber-500/80 uppercase">${item.tarif || 'Базовый'}</span>
-                            </div>
+                        <div class="text-[9px] font-bold text-zinc-500 uppercase mt-1 tracking-widest">
+                            ${item.o || item.op} • <span class="text-amber-500/80">${item.tarif || 'Стандарт'}</span>
                         </div>
                     </div>
                     <div class="text-right">
-                        <p class="text-sm font-black text-white">${Number(item.t).toLocaleString()} ₽</p>
-                        <button onclick="order('${item.n}')" class="mt-1 text-[9px] font-black text-amber-500 uppercase tracking-widest active:opacity-50 transition-opacity">Забрать →</button>
+                        <div class="text-lg font-black text-white">${Number(item.t).toLocaleString()} ₽</div>
+                        <div class="text-[8px] font-bold text-zinc-700 uppercase tracking-tighter">Заказать →</div>
                     </div>
                 </div>
-                `;
-            }).reverse().join('');
-            lucide.createIcons();
+            `}).reverse().join('');
         }
 
-        function setFilter(val) {
-            filter = val;
-            document.querySelectorAll('.filter-btn').forEach(b => {
-                b.classList.replace('bg-amber-500', 'bg-zinc-900');
-                b.classList.replace('text-black', 'text-zinc-400');
-            });
-            event.target.classList.replace('bg-zinc-900', 'bg-amber-500');
-            event.target.classList.replace('text-zinc-400', 'text-black');
-            render();
-        }
+        function setF(v) { filter = v; draw(); }
+        function openM(n) { document.getElementById('target').innerText = n; document.getElementById('modal').style.display = 'flex'; }
+        function closeM() { document.getElementById('modal').style.display = 'none'; }
 
-        function order(num) {
-            const msg = encodeURIComponent(`Привет, Курбан! Хочу купить номер: ${num}`);
-            window.open(`https://wa.me/79281112233?text=${msg}`); // Поставь свой номер
-        }
+        document.getElementById('tg_form').onsubmit = async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('send_btn');
+            btn.innerText = "ОТПРАВЛЯЕМ..."; btn.disabled = true;
+
+            const name = document.getElementById('u_name').value;
+            const phone = document.getElementById('u_phone').value;
+            const sim = document.getElementById('target').innerText;
+            const msg = `💰 НОВЫЙ ЗАКАЗ 💰\n\nНомер: ${sim}\nФИО: ${name}\nТелефон: ${phone}`;
+
+            try {
+                // 1. Текстовое сообщение
+                await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                    method: 'POST', headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ chat_id: CHAT_ID, text: msg })
+                });
+
+                // 2. Фото паспорта
+                const f1 = new FormData(); f1.append('chat_id', CHAT_ID); f1.append('photo', document.getElementById('img1').files[0]);
+                await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, { method: 'POST', body: f1 });
+
+                // 3. Фото прописки
+                const f2 = new FormData(); f2.append('chat_id', CHAT_ID); f2.append('photo', document.getElementById('img2').files[0]);
+                await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, { method: 'POST', body: f2 });
+
+                alert("Заявка отправлена! Ждите звонка.");
+                closeM();
+                document.getElementById('tg_form').reset();
+            } catch (err) { alert("Сбой! Попробуйте еще раз."); } finally {
+                btn.innerText = "Отправить заявку"; btn.disabled = false;
+            }
+        };
 
         init();
     </script>
