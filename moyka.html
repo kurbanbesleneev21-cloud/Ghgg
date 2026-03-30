@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Автомойка SIM MARKET | Хасавюрт</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+        body { background-color: #050505; color: #fff; font-family: 'Inter', sans-serif; }
+        .glass-card { background: rgba(255, 255, 255, 0.02); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 32px; }
+        .input-field { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px; padding: 14px; width: 100%; color: white; outline: none; transition: 0.3s; }
+        .input-field:focus { border-color: #fff; background: rgba(255, 255, 255, 0.08); }
+        .gold-text { background: linear-gradient(90deg, #bf953f, #fcf6ba, #b38728); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-6 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-zinc-900 via-black to-black">
+
+    <header class="text-center mb-10">
+        <h1 class="text-5xl font-black tracking-tighter gold-text">АВТОМОЙКА</h1>
+        <p class="text-zinc-500 text-[10px] uppercase tracking-[0.4em] mt-2">Бабаюртовское шоссе, 26 • Хасавюрт</p>
+    </header>
+
+    <div class="max-w-md w-full glass-card p-10 shadow-2xl">
+        <form id="washForm" class="space-y-6">
+            <div>
+                <label class="block text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-3">Класс авто</label>
+                <select id="carCategory" class="input-field" onchange="calc()">
+                    <option value="1200">Советская (1200 ₽)</option>
+                    <option value="1400">Иномарка (1400 ₽)</option>
+                    <option value="1500">Джип (1500 ₽)</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-3">Тип услуги</label>
+                <select id="serviceType" class="input-field">
+                    <option value="Полная мойка">Полная мойка (Кузов + Салон)</option>
+                    <option value="Только верх">Только верх</option>
+                    <option value="Только салон">Только салон</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-3">Госномер или Телефон</label>
+                <input type="text" id="clientData" class="input-field" placeholder="А777АА 05" required>
+            </div>
+
+            <div class="pt-6 border-t border-white/5 flex justify-between items-end">
+                <span class="text-zinc-500 text-sm">Итого к оплате:</span>
+                <span id="finalPrice" class="text-3xl font-black text-white">1200 ₽</span>
+            </div>
+
+            <button type="submit" class="w-full py-5 bg-white text-black rounded-2xl font-black uppercase tracking-tighter hover:bg-zinc-200 transition active:scale-95">
+                Записаться на мойку
+            </button>
+        </form>
+    </div>
+
+    <footer class="mt-8">
+        <a href="https://t.me/SIamshop001" class="text-zinc-500 text-xs hover:text-white transition">👨‍💻 Связаться с Курбаном</a>
+    </footer>
+
+    <script>
+        const TG_TOKEN = '8279695581:AAGuQgQhmgq9QaTX4rULywq6o18MeT3XIUw';
+        const TG_ADMIN = '8768514374';
+
+        function calc() {
+            const val = document.getElementById('carCategory').value;
+            document.getElementById('finalPrice').innerText = val + ' ₽';
+        }
+
+        document.getElementById('washForm').onsubmit = async (e) => {
+            e.preventDefault();
+            
+            const category = document.getElementById('carCategory').options[document.getElementById('carCategory').selectedIndex].text;
+            const service = document.getElementById('serviceType').value;
+            const client = document.getElementById('clientData').value;
+            const price = document.getElementById('finalPrice').innerText;
+
+            const msg = `🧽 **НОВАЯ ЗАЯВКА: МОЙКА**\n\n` +
+                        `🚗 **Авто:** ${category}\n` +
+                        `✨ **Услуга:** ${service}\n` +
+                        `📱 **Клиент:** ${client}\n` +
+                        `💰 **Сумма:** ${price}`;
+
+            const url = `https://api.telegram.org/bot${TG_TOKEN}/sendMessage?chat_id=${TG_ADMIN}&text=${encodeURIComponent(msg)}&parse_mode=Markdown`;
+
+            try {
+                await fetch(url);
+                alert('✅ Заявка успешно отправлена!');
+                document.getElementById('washForm').reset();
+                calc();
+            } catch (err) {
+                alert('❌ Ошибка отправки. Проверьте подключение.');
+            }
+        };
+    </script>
+</body>
+</html>
