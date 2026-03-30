@@ -1,162 +1,334 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SIM MARKET | LINE</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap');
-        body { background: #000; color: #fff; font-family: 'Manrope', sans-serif; -webkit-tap-highlight-color: transparent; }
-        .glass { background: rgba(10, 10, 10, 0.9); backdrop-filter: blur(15px); border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .gold-bg { background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%); }
-        .gold-text { background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        
-        /* СТИЛЬ СТРОКИ */
-        .line-item { background: #0a0a0a; border-bottom: 1px solid rgba(255,255,255,0.03); transition: 0.2s; }
-        .line-item:active { background: #111; }
-        
-        .badge-mini { font-size: 8px; font-weight: 800; text-transform: uppercase; color: #52525b; border: 1px solid rgba(255,255,255,0.05); padding: 2px 5px; rounded: 4px; }
-        .tab-btn { transition: 0.3s; white-space: nowrap; font-size: 10px; font-weight: 800; text-transform: uppercase; color: #52525b; }
-        .tab-active { color: #fbbf24 !important; border-bottom: 2px solid #fbbf24; }
-        #order-modal { display: none; position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,0.95); align-items: center; justify-content: center; padding: 20px; }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SIM MARKET</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;900&display=swap');
+
+body{
+background:#050505;
+color:white;
+font-family:'Manrope',sans-serif;
+-webkit-tap-highlight-color:transparent;
+}
+
+.glass{
+background:rgba(15,15,15,0.9);
+backdrop-filter:blur(20px);
+border-bottom:1px solid rgba(255,255,255,0.06);
+}
+
+.gold-text{
+background:linear-gradient(135deg,#fbbf24,#d97706);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+
+.gold-btn{
+background:linear-gradient(135deg,#fbbf24,#d97706);
+transition:0.25s;
+}
+
+.gold-btn:hover{
+transform:translateY(-2px);
+box-shadow:0 8px 30px rgba(251,191,36,0.3);
+}
+
+.line-item{
+background:#0b0b0b;
+transition:0.25s;
+border-bottom:1px solid rgba(255,255,255,0.03);
+}
+
+.line-item:hover{
+background:#101010;
+}
+
+.badge-mini{
+font-size:9px;
+font-weight:800;
+text-transform:uppercase;
+color:#888;
+border:1px solid rgba(255,255,255,0.08);
+padding:2px 6px;
+border-radius:6px;
+}
+
+.tab-btn{
+font-size:11px;
+font-weight:800;
+text-transform:uppercase;
+color:#666;
+padding-bottom:12px;
+transition:0.25s;
+}
+
+.tab-active{
+color:#fbbf24;
+border-bottom:2px solid #fbbf24;
+}
+
+#order-modal{
+display:none;
+position:fixed;
+inset:0;
+background:rgba(0,0,0,0.92);
+z-index:100;
+align-items:center;
+justify-content:center;
+padding:20px;
+}
+
+.modal-box{
+background:#0b0b0b;
+border:1px solid rgba(255,255,255,0.07);
+border-radius:30px;
+}
+
+input{
+background:#0f0f0f;
+border:1px solid #1e1e1e;
+}
+
+input:focus{
+border-color:#fbbf24;
+outline:none;
+}
+
+</style>
 </head>
-<body class="pb-10">
 
-    <header class="p-5 sticky top-0 z-50 glass flex justify-between items-center">
-        <h1 class="text-lg font-black uppercase italic">SIM <span class="gold-text">MARKET</span></h1>
-        <div class="text-[10px] font-bold opacity-30 uppercase tracking-widest">Premium Numbers</div>
-    </header>
+<body>
 
-    <main class="max-w-2xl mx-auto">
-        <div class="p-4">
-            <input type="text" id="q" oninput="draw()" placeholder="Поиск номера..." class="w-full p-4 rounded-xl bg-zinc-900 border border-zinc-800 outline-none text-sm focus:border-amber-500">
-        </div>
+<header class="glass sticky top-0 z-50 p-5 flex justify-between items-center">
+<h1 class="text-xl font-black italic">SIM <span class="gold-text">MARKET</span></h1>
+<span class="text-xs opacity-40 uppercase">Premium numbers</span>
+</header>
 
-        <div class="flex gap-6 overflow-x-auto no-scrollbar px-6 mb-4 border-b border-white/5">
-            <button onclick="setFilter('all', this)" class="tab-btn tab-active pb-3">Все</button>
-            <button onclick="setFilter('mts', this)" class="tab-btn pb-3">МТС</button>
-            <button onclick="setFilter('megafon', this)" class="tab-btn pb-3">Мегафон</button>
-            <button onclick="setFilter('beeline', this)" class="tab-btn pb-3">Билайн</button>
-            <button onclick="setFilter('tele2', this)" class="tab-btn pb-3">Теле2</button>
-            <button onclick="setFilter('yota', this)" class="tab-btn pb-3">Yota</button>
-        </div>
 
-        <div id="list" class="divide-y divide-white/5">
-            <div class="text-center py-20 opacity-20 text-xs font-bold uppercase">Загрузка...</div>
-        </div>
-    </main>
+<main class="max-w-2xl mx-auto">
 
-    <div id="order-modal">
-        <div class="bg-zinc-950 w-full max-w-sm p-8 rounded-[2.5rem] border border-zinc-800 space-y-4 relative">
-            <button onclick="closeModal()" class="absolute top-6 right-6 text-zinc-500">✕</button>
-            <h2 id="target-num" class="text-3xl font-black text-center text-white tracking-tighter"></h2>
-            <div class="space-y-3">
-                <input type="text" id="client-fio" placeholder="ФИО полностью" class="w-full p-4 bg-zinc-900 border border-zinc-800 rounded-xl outline-none text-sm">
-                <input type="tel" id="client-phone" placeholder="Ваш телефон" class="w-full p-4 bg-zinc-900 border border-zinc-800 rounded-xl outline-none text-sm">
-                <div class="grid grid-cols-2 gap-2 text-center">
-                    <button onclick="document.getElementById('client-passport').click()" class="p-3 bg-zinc-900 border border-zinc-800 rounded-xl text-[9px] font-bold uppercase text-amber-500">Паспорт</button>
-                    <button onclick="document.getElementById('client-prodiska').click()" class="p-3 bg-zinc-900 border border-zinc-800 rounded-xl text-[9px] font-bold uppercase text-amber-500">Прописка</button>
-                    <input type="file" id="client-passport" accept="image/*" class="hidden">
-                    <input type="file" id="client-prodiska" accept="image/*" class="hidden">
-                </div>
-            </div>
-            <button onclick="submitOrder()" id="send-btn" class="w-full py-4 gold-bg text-black font-black rounded-xl uppercase text-xs active:scale-95 transition-all">Оформить заказ</button>
-        </div>
-    </div>
+<div class="p-4">
+<input
+id="q"
+oninput="draw()"
+placeholder="Поиск номера..."
+class="w-full p-4 rounded-xl text-sm"
+/>
+</div>
 
-    <script>
-        const TOKEN = "8279695581:AAGuQgQhmgq9QaTX4rULywq6o18MeT3XIUw";
-        const MY_ID = "8768514374"; 
-        const BIN = "69c9d640aaba882197a65742"; 
-        const KEY = "$2a$10$BIVZfOXmYVaG9NpPRW61Le//5yePRuieGl/ph3o6UYlHw4uOJQKtW"; 
+<div class="flex gap-6 overflow-x-auto px-6 border-b border-white/5">
 
-        let db = [], activeFilter = 'all';
+<button onclick="setFilter('all',this)" class="tab-btn tab-active">Все</button>
+<button onclick="setFilter('mts',this)" class="tab-btn">МТС</button>
+<button onclick="setFilter('megafon',this)" class="tab-btn">Мегафон</button>
+<button onclick="setFilter('beeline',this)" class="tab-btn">Билайн</button>
+<button onclick="setFilter('tele2',this)" class="tab-btn">Tele2</button>
+<button onclick="setFilter('yota',this)" class="tab-btn">Yota</button>
 
-        async function init() {
-            try {
-                const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN}/latest`, { headers: { 'X-Master-Key': KEY } });
-                const data = await res.json();
-                db = data.record.record || data.record;
-                draw();
-            } catch (e) { document.getElementById('list').innerHTML = '<div class="p-10 text-center">Ошибка базы</div>'; }
-        }
+</div>
 
-        function setFilter(val, btn) {
-            activeFilter = val.toLowerCase();
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('tab-active'));
-            btn.classList.add('tab-active');
-            draw();
-        }
+<div id="list"></div>
 
-        function draw() {
-            const list = document.getElementById('list');
-            const query = document.getElementById('q').value.toLowerCase();
-            
-            let filtered = db.filter(i => {
-                const num = String(i.n || "").toLowerCase();
-                const op = String(i.op || "").toLowerCase();
-                return num.includes(query) && (activeFilter === 'all' || op === activeFilter);
-            });
+</main>
 
-            if (filtered.length === 0) {
-                list.innerHTML = '<div class="p-10 text-center opacity-20 text-xs">Ничего не найдено</div>';
-                return;
-            }
 
-            list.innerHTML = filtered.map(i => `
-                <div class="line-item p-4 flex items-center justify-between">
-                    <div class="flex flex-col">
-                        <span class="text-lg font-extrabold tracking-tighter text-white">${i.n}</span>
-                        <div class="flex gap-2 items-center">
-                            <span class="badge-mini">${i.op || 'SIM'}</span>
-                            <span class="text-[9px] font-bold text-amber-500/50 uppercase">${i.tarif || 'VIP'}</span>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-4">
-                        <span class="text-sm font-black text-amber-500">${i.t} ₽</span>
-                        <button onclick="openModal('${i.n}', '${i.t}')" class="w-8 h-8 gold-bg rounded-lg flex items-center justify-center text-black active:scale-90 transition-all">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                        </button>
-                    </div>
-                </div>
-            `).reverse().join('');
-        }
+<div id="order-modal">
 
-        function openModal(n, t) {
-            document.getElementById('target-num').innerText = n;
-            document.getElementById('order-modal').style.display = 'flex';
-            window.cN = n; window.cT = t;
-        }
+<div class="modal-box w-full max-w-sm p-8 space-y-4 relative">
 
-        function closeModal() { document.getElementById('order-modal').style.display = 'none'; }
+<button onclick="closeModal()" class="absolute right-6 top-6 text-zinc-500">✕</button>
 
-        async function submitOrder() {
-            const fio = document.getElementById('client-fio').value;
-            const phone = document.getElementById('client-phone').value;
-            const pass = document.getElementById('client-passport').files[0];
-            const prop = document.getElementById('client-prodiska').files[0];
-            const btn = document.getElementById('send-btn');
+<h2 id="target-num" class="text-3xl font-black text-center"></h2>
 
-            if(!fio || !phone || !pass || !prop) return alert("Заполните все данные и прикрепите 2 фото");
-            btn.innerText = "ОТПРАВКА..."; btn.disabled = true;
+<input id="client-fio" placeholder="ФИО полностью" class="w-full p-4 rounded-xl text-sm">
 
-            try {
-                const msg = `👑 *НОВЫЙ ЗАКАЗ*\n📱 Номер: \`${window.cN}\`\n💰 Цена: ${window.cT} ₽\n👤 Клиент: ${fio}\n📞 Связь: ${phone}`;
-                await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ chat_id: MY_ID, text: msg, parse_mode: 'Markdown' }) });
-                
-                const fd1 = new FormData(); fd1.append('chat_id', MY_ID); fd1.append('photo', pass);
-                await fetch(`https://api.telegram.org/bot${TOKEN}/sendPhoto`, { method: 'POST', body: fd1 });
+<input id="client-phone" placeholder="Телефон" class="w-full p-4 rounded-xl text-sm">
 
-                const fd2 = new FormData(); fd2.append('chat_id', MY_ID); fd2.append('photo', prop);
-                await fetch(`https://api.telegram.org/bot${TOKEN}/sendPhoto`, { method: 'POST', body: fd2 });
+<div class="grid grid-cols-2 gap-2">
 
-                alert("Заявка отправлена!"); closeModal();
-            } catch (e) { alert("Ошибка!"); } finally { btn.innerText = "Оформить заказ"; btn.disabled = false; }
-        }
-        init();
-    </script>
+<button onclick="passport.click()" class="p-3 text-xs border border-zinc-800 rounded-xl text-amber-500 font-bold">Паспорт</button>
+<button onclick="propiska.click()" class="p-3 text-xs border border-zinc-800 rounded-xl text-amber-500 font-bold">Прописка</button>
+
+<input id="passport" type="file" accept="image/*" class="hidden">
+<input id="propiska" type="file" accept="image/*" class="hidden">
+
+</div>
+
+<button onclick="submitOrder()" id="send-btn" class="gold-btn w-full py-4 rounded-xl text-black font-black text-xs">
+Оформить заказ
+</button>
+
+</div>
+</div>
+
+
+<script>
+
+const TOKEN="YOUR_BOT_TOKEN"
+const MY_ID="YOUR_ID"
+
+let db=[]
+let activeFilter="all"
+
+async function init(){
+
+try{
+
+const res=await fetch("db.json")
+db=await res.json()
+
+draw()
+
+}catch{
+
+document.getElementById("list").innerHTML=
+"<div class='p-10 text-center opacity-40'>Ошибка загрузки</div>"
+
+}
+
+}
+
+function setFilter(v,b){
+
+activeFilter=v
+
+document.querySelectorAll(".tab-btn")
+.forEach(x=>x.classList.remove("tab-active"))
+
+b.classList.add("tab-active")
+
+draw()
+
+}
+
+function draw(){
+
+const list=document.getElementById("list")
+
+const q=document.getElementById("q").value.toLowerCase()
+
+let filtered=db.filter(i=>{
+
+let num=i.n.toLowerCase()
+
+let op=(i.op||"").toLowerCase()
+
+return num.includes(q)&&(activeFilter==="all"||op===activeFilter)
+
+})
+
+if(!filtered.length){
+
+list.innerHTML="<div class='p-12 text-center opacity-30'>Ничего не найдено</div>"
+return
+
+}
+
+list.innerHTML=filtered.map(i=>`
+
+<div class="line-item p-4 flex justify-between items-center">
+
+<div>
+
+<div class="text-lg font-black">${i.n}</div>
+
+<div class="flex gap-2 mt-1">
+<span class="badge-mini">${i.op||"SIM"}</span>
+<span class="text-xs text-amber-500">${i.tarif||"VIP"}</span>
+</div>
+
+</div>
+
+<div class="flex items-center gap-4">
+
+<span class="text-amber-500 font-black">${i.t} ₽</span>
+
+<button
+onclick="openModal('${i.n}','${i.t}')"
+class="gold-btn w-8 h-8 rounded-lg flex items-center justify-center text-black font-bold"
+>
+
+→
+
+</button>
+
+</div>
+
+</div>
+
+`).reverse().join("")
+
+}
+
+function openModal(n,t){
+
+target-num.innerText=n
+
+order-modal.style.display="flex"
+
+window.cN=n
+window.cT=t
+
+}
+
+function closeModal(){
+
+order-modal.style.display="none"
+
+}
+
+async function submitOrder(){
+
+let fio=client-fio.value
+let phone=client-phone.value
+
+if(!fio||!phone){
+
+alert("Заполните данные")
+return
+
+}
+
+let msg=
+`Новый заказ
+Номер: ${cN}
+Цена: ${cT}
+Клиент: ${fio}
+Телефон: ${phone}`
+
+await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`,{
+
+method:"POST",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({
+
+chat_id:MY_ID,
+text:msg
+
+})
+
+})
+
+alert("Заказ отправлен")
+
+closeModal()
+
+}
+
+init()
+
+</script>
+
 </body>
 </html>
