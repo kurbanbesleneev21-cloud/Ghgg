@@ -6,222 +6,75 @@
     <title>SIM MARKET | LUXURY</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;600;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@800&display=swap');
         
         body { background: #050505; color: #fff; font-family: 'Manrope', sans-serif; -webkit-font-smoothing: antialiased; }
 
-        /* ЭЛЕГАНТНЫЙ ЛОГОТИП */
-        .logo-container { display: flex; align-items: center; gap: 8px; }
-        .logo-sim { font-weight: 300; letter-spacing: 4px; color: rgba(255,255,255,0.6); font-size: 14px; text-transform: uppercase; }
-        
-        .logo-market {
+        /* ЕДИНЫЙ ЗОЛОТОЙ ПЕРЕЛИВАЮЩИЙСЯ ЛОГОТИП */
+        .logo-gold {
             font-weight: 800;
-            font-size: 24px;
+            font-size: 28px;
             letter-spacing: -1px;
             text-transform: uppercase;
-            background: linear-gradient(90deg, #d4af37, #f7ef8a, #d4af37, #f7ef8a);
-            background-size: 300% auto;
+            background: linear-gradient(90deg, #bf953f, #fcf6ba, #b38728, #fcf6ba, #bf953f);
+            background-size: 200% auto;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            animation: luxuryShine 4s ease-in-out infinite;
+            animation: goldFlow 3s linear infinite;
         }
 
-        @keyframes luxuryShine {
-            0% { background-position: 0% center; }
-            50% { background-position: 100% center; }
-            100% { background-position: 0% center; }
+        @keyframes goldFlow {
+            to { background-position: 200% center; }
         }
 
-        /* КАРТОЧКИ И ГРАДИЕНТЫ */
+        /* ДИЗАЙН КАРТОЧЕК */
         .glass-card {
-            background: linear-gradient(145deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%);
-            border: 1px solid rgba(255,255,255,0.08);
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 24px;
-            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: 0.3s ease;
         }
-        
+
         .tab-btn {
-            font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;
-            color: #555; transition: 0.4s; padding: 12px 24px; border-radius: 14px;
+            font-size: 11px; font-weight: 800; text-transform: uppercase;
+            color: #71717a; padding: 12px 24px; border-radius: 14px; transition: 0.3s;
         }
-        .tab-active { background: #fff; color: #000; box-shadow: 0 10px 30px rgba(255,255,255,0.1); }
+        .tab-active { background: #fff; color: #000; }
 
         .input-luxury {
             background: #0f0f0f; border: 1px solid #1a1a1a; border-radius: 18px;
-            padding: 18px; width: 100%; color: #fff; outline: none; transition: 0.3s;
+            padding: 18px; width: 100%; color: #fff; outline: none;
         }
-        .input-luxury:focus { border-color: #d4af37; box-shadow: 0 0 15px rgba(212,175,55,0.1); }
 
-        /* Кнопка заказа */
-        .btn-order {
-            background: linear-gradient(135deg, #d4af37 0%, #b38728 100%);
-            color: #000; font-weight: 800; border-radius: 16px;
-            box-shadow: 0 8px 25px rgba(179, 135, 40, 0.2);
-            transition: 0.3s;
+        /* КАСТОМНЫЕ КНОПКИ ЗАГРУЗКИ ФАЙЛОВ */
+        .file-label {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            width: 100%; p: 20px; border: 2px dashed rgba(255,255,255,0.1);
+            border-radius: 20px; background: rgba(255,255,255,0.02);
+            cursor: pointer; transition: 0.3s;
         }
-        .btn-order:active { transform: scale(0.95); }
+        .file-label:hover { border-color: #fbbf24; background: rgba(251, 191, 36, 0.05); }
+        .file-text { font-size: 11px; font-weight: 800; text-transform: uppercase; color: #fbbf24; letter-spacing: 1px; }
 
         .no-scrollbar::-webkit-scrollbar { display: none; }
     </style>
 </head>
 <body class="pb-10">
 
-    <header class="sticky top-0 z-50 px-6 py-8 backdrop-blur-xl border-b border-white/5 flex flex-col items-center gap-2">
-        <div class="logo-container">
-            <span class="logo-sim">Sim</span>
-            <span class="logo-market">Market</span>
-        </div>
-        <div class="flex items-center gap-2 opacity-40">
-            <div class="w-1 h-1 rounded-full bg-amber-500"></div>
-            <span class="text-[8px] font-bold uppercase tracking-[3px]">Luxury Connectivity</span>
+    <header class="sticky top-0 z-50 px-6 py-8 backdrop-blur-xl border-b border-white/5 flex flex-col items-center">
+        <div class="logo-gold">SIM MARKET</div>
+        <div class="flex items-center gap-2 opacity-30 mt-1">
+            <span class="text-[8px] font-bold uppercase tracking-[4px]">Premium Numbers</span>
         </div>
     </header>
 
     <main class="max-w-xl mx-auto p-6">
-        
         <div class="mb-10">
-            <input type="text" id="q" oninput="draw()" placeholder="Поиск эксклюзивного номера..." class="input-luxury text-center">
+            <input type="text" id="q" oninput="draw()" placeholder="Поиск номера..." class="input-luxury text-center border-white/10">
         </div>
 
-        <div class="flex gap-2 overflow-x-auto no-scrollbar mb-10 justify-start md:justify-center">
+        <div class="flex gap-2 overflow-x-auto no-scrollbar mb-10 pb-2">
             <button onclick="setFilter('all', this)" class="tab-btn tab-active">Все</button>
             <button onclick="setFilter('mts', this)" class="tab-btn">МТС</button>
             <button onclick="setFilter('megafon', this)" class="tab-btn">Мегафон</button>
-            <button onclick="setFilter('beeline', this)" class="tab-btn">Билайн</button>
-            <button onclick="setFilter('yota', this)" class="tab-btn">Yota</button>
-            <button onclick="setFilter('tele2', this)" class="tab-btn">Tele2</button>
-        </div>
-
-        <div id="list" class="space-y-4"></div>
-    </main>
-
-    <div id="order-modal" class="fixed inset-0 z-[100] hidden items-center justify-center p-5 bg-black/95 backdrop-blur-md">
-        <div class="glass-card w-full max-w-md p-8 relative border-white/10">
-            <button onclick="closeModal()" class="absolute top-6 right-6 text-zinc-600">✕</button>
-            
-            <h3 class="text-xs font-bold text-amber-500 uppercase tracking-widest mb-2">Оформление заказа</h3>
-            <p id="selected-num" class="text-3xl font-black mb-8 tracking-tighter"></p>
-
-            <form id="tg-form" class="space-y-4">
-                <input type="text" id="fio" placeholder="ФИО как в паспорте" class="input-luxury" required>
-                <input type="tel" id="contact" placeholder="Контактный телефон" class="input-luxury" required>
-                
-                <div class="grid grid-cols-1 gap-3">
-                    <div class="p-4 rounded-xl bg-white/5 border border-white/10">
-                        <p class="text-[8px] font-bold uppercase opacity-40 mb-3 tracking-widest text-center">Паспорт (Разворот и Прописка)</p>
-                        <div class="flex flex-col gap-3">
-                            <input type="file" id="p1" accept="image/*" class="text-[10px]" required>
-                            <input type="file" id="p2" accept="image/*" class="text-[10px]" required>
-                        </div>
-                    </div>
-                </div>
-
-                <button type="submit" id="sub-btn" class="w-full btn-order py-5 text-sm uppercase tracking-widest mt-4">
-                    Подтвердить заявку
-                </button>
-            </form>
-        </div>
-    </div>
-
-    <script>
-        // ДАННЫЕ КУРБАНА
-        const BOT_TOKEN = '8666944440:AAFAmQuYaYmnJjhuQ9AmdBQim9V-kxNnxAo';
-        const CHAT_ID = '8768514374';
-        const BIN_ID = '69c9d640aaba882197a65742';
-        const MASTER_KEY = '$2a$10$BIVZfOXmYVaG9NpPRW61Le//5yePRuieGl/ph3o6UYlHw4uOJQKtW';
-
-        let database = [], filter = 'all';
-
-        async function init() {
-            try {
-                const r = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, { headers: {'X-Master-Key': MASTER_KEY} });
-                const d = await r.json();
-                database = d.record.record || d.record;
-                draw();
-            } catch(e) { console.error('DB Error'); }
-        }
-
-        function setFilter(val, el) {
-            filter = val.toLowerCase();
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('tab-active'));
-            el.classList.add('tab-active');
-            draw();
-        }
-
-        function draw() {
-            const list = document.getElementById('list');
-            const q = document.getElementById('q').value.toLowerCase();
-            const filtered = database.filter(i => {
-                const n = String(i.n).toLowerCase();
-                const op = String(i.op).toLowerCase();
-                return n.includes(q) && (filter === 'all' || op === filter);
-            });
-
-            list.innerHTML = filtered.map(i => `
-                <div class="glass-card p-7 flex justify-between items-center">
-                    <div>
-                        <div class="flex items-center gap-2 mb-2">
-                            <span class="w-1.5 h-1.5 rounded-full ${i.op === 'mts' ? 'bg-red-500' : (i.op === 'megafon' ? 'bg-green-500' : 'bg-amber-500')}"></span>
-                            <span class="text-[9px] font-black uppercase tracking-widest opacity-50">${i.op}</span>
-                        </div>
-                        <div class="text-2xl font-black tracking-tight">${i.n}</div>
-                        <div class="text-[11px] font-bold text-amber-500/80 mt-2">${i.t} ₽</div>
-                    </div>
-                    <button onclick="openModal('${i.n}')" class="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white transition-all group">
-                        <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" class="group-hover:stroke-black" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"></path></svg>
-                    </button>
-                </div>
-            `).reverse().join('');
-        }
-
-        function openModal(n) {
-            document.getElementById('selected-num').innerText = n;
-            document.getElementById('order-modal').style.display = 'flex';
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeModal() {
-            document.getElementById('order-modal').style.display = 'none';
-            document.body.style.overflow = 'auto';
-        }
-
-        document.getElementById('tg-form').onsubmit = async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById('sub-btn');
-            btn.innerText = "ОТПРАВКА..."; btn.disabled = true;
-
-            const fio = document.getElementById('fio').value;
-            const contact = document.getElementById('contact').value;
-            const num = document.getElementById('selected-num').innerText;
-
-            const msg = `👑 <b>НОВЫЙ VIP ЗАКАЗ</b>\n\n🔟 <b>НОМЕР:</b> <code>${num}</code>\n👤 <b>ФИО:</b> ${fio}\n📞 <b>СВЯЗЬ:</b> ${contact}`;
-
-            try {
-                // Текст
-                await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ chat_id: CHAT_ID, text: msg, parse_mode: 'HTML' })
-                });
-
-                // Фото
-                const sendPh = async (id, cap) => {
-                    const fd = new FormData();
-                    fd.append('chat_id', CHAT_ID);
-                    fd.append('photo', document.getElementById(id).files[0]);
-                    fd.append('caption', cap);
-                    return fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, { method: 'POST', body: fd });
-                };
-
-                await sendPh('p1', `Лицевая: ${num}`);
-                await sendPh('p2', `Прописка: ${num}`);
-
-                alert('✅ Заявка отправлена! Курбан свяжется с вами.');
-                closeModal();
-            } catch (err) { alert('Ошибка'); } finally { btn.innerText = "Подтвердить заявку"; btn.disabled = false; }
-        };
-
-        init();
-    </script>
-</body>
-</html>
+            <button onclick="setFilter('beeline',
