@@ -32,32 +32,33 @@
         <p class="text-gray-500 text-[10px] uppercase tracking-[4px] mt-4 font-bold">Luxury Mobile Numbers</p>
     </div>
 
-    <div class="max-w-5xl w-full mb-16">
-        <div id="catalog" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
-            </div>
+    <div class="max-w-5xl w-full mb-12">
+        <div id="catalog" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
     </div>
 
     <div class="max-w-md w-full" id="order-form">
-        <div class="glass p-8 rounded-[2.5rem] gold-border shadow-2xl relative">
+        <div class="glass p-8 rounded-[2.5rem] gold-border shadow-2xl">
             <h3 class="text-xl font-bold text-center mb-8 uppercase tracking-widest">Оформить заказ</h3>
             
-            <form id="regForm" class="space-y-5">
-                <div>
-                    <input type="text" id="phone_num" placeholder="Выбранный номер" class="w-full bg-slate-900/50 p-5 rounded-2xl border border-slate-800 outline-none text-yellow-500 font-bold text-xl placeholder:text-gray-700 focus:border-yellow-500" required>
-                </div>
+            <form id="regForm" class="space-y-4">
+                <input type="text" id="phone_num" placeholder="Выбранный номер" class="w-full bg-slate-900/50 p-4 rounded-2xl border border-slate-800 outline-none text-yellow-500 font-bold text-lg focus:border-yellow-500" required>
                 
-                <div class="grid grid-cols-1 gap-3">
-                    <div class="relative border border-dashed border-slate-700 p-5 rounded-2xl text-center bg-slate-900/30 hover:border-yellow-500 transition">
+                <input type="text" id="user_name" placeholder="Ваше ФИО" class="w-full bg-slate-900/50 p-4 rounded-2xl border border-slate-800 outline-none text-white focus:border-yellow-500" required>
+                
+                <input type="text" id="user_contact" placeholder="Ваш номер для связи" class="w-full bg-slate-900/50 p-4 rounded-2xl border border-slate-800 outline-none text-white focus:border-yellow-500" required>
+
+                <div class="grid grid-cols-2 gap-2">
+                    <div class="relative border border-dashed border-slate-700 p-4 rounded-2xl text-center bg-slate-900/30">
                         <input type="file" id="p1" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" required onchange="u('l1')">
-                        <span class="text-xs text-gray-500 font-bold uppercase" id="l1">📸 Фото Паспорта</span>
+                        <span class="text-[10px] text-gray-500 font-bold" id="l1">📸 ПАСПОРТ</span>
                     </div>
-                    <div class="relative border border-dashed border-slate-700 p-5 rounded-2xl text-center bg-slate-900/30 hover:border-yellow-500 transition">
+                    <div class="relative border border-dashed border-slate-700 p-4 rounded-2xl text-center bg-slate-900/30">
                         <input type="file" id="p2" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" required onchange="u('l2')">
-                        <span class="text-xs text-gray-500 font-bold uppercase" id="l2">🏠 Фото Прописки</span>
+                        <span class="text-[10px] text-gray-500 font-bold" id="l2">🏠 ПРОПИСКА</span>
                     </div>
                 </div>
 
-                <button type="submit" id="btn" class="w-full bg-yellow-500 hover:bg-yellow-400 text-black font-black py-5 rounded-2xl uppercase shadow-xl shadow-yellow-500/10 transition active:scale-95 tracking-widest">
+                <button type="submit" id="btn" class="w-full bg-yellow-500 text-black font-black py-5 rounded-2xl uppercase shadow-xl transition active:scale-95 tracking-widest mt-4">
                     Забронировать
                 </button>
             </form>
@@ -71,61 +72,4 @@
             const card = document.createElement('div');
             card.className = 'num-card glass p-6 rounded-[2rem] flex justify-between items-center cursor-pointer';
             card.onclick = () => { 
-                document.getElementById('phone_num').value = item.n;
-                document.getElementById('order-form').scrollIntoView({behavior: 'smooth'});
-            };
-            
-            card.innerHTML = `
-                <div>
-                    <div class="text-2xl font-mono font-bold text-white mb-1">${item.n}</div>
-                    <div class="flex items-center gap-2">
-                        <span class="text-[9px] bg-yellow-500 text-black px-2 py-0.5 rounded font-black uppercase">${item.t}</span>
-                        <span class="text-sm gold-text font-bold">${item.p}</span>
-                    </div>
-                </div>
-                <div class="w-10 h-10 rounded-full border border-slate-800 flex items-center justify-center text-yellow-500">➜</div>
-            `;
-            catalog.appendChild(card);
-        });
-
-        const T = "8666944440:AAFAmQuYaYmnJjhuQ9AmdBQim9V-kxNnxAo";
-        const ID = "8768514374";
-
-        function u(i) { document.getElementById(i).innerText = "✅ ВЫБРАНО"; document.getElementById(i).classList.add('text-yellow-500'); }
-
-        document.getElementById('regForm').onsubmit = async (e) => {
-            e.preventDefault();
-            const b = document.getElementById('btn');
-            const st = document.getElementById('st');
-            b.disabled = true; b.innerText = "ОТПРАВКА...";
-            
-            const num = document.getElementById('phone_num').value;
-            const f1 = document.getElementById('p1').files[0];
-            const f2 = document.getElementById('p2').files[0];
-
-            try {
-                await fetch(`https://api.telegram.org/bot${T}/sendMessage`, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({chat_id: ID, text: `💎 ЗАЯВКА\n📱 Номер: ${num}`})
-                });
-
-                const fd1 = new FormData(); fd1.append('chat_id', ID); fd1.append('photo', f1);
-                await fetch(`https://api.telegram.org/bot${T}/sendPhoto`, {method: 'POST', body: fd1});
-
-                const fd2 = new FormData(); fd2.append('chat_id', ID); fd2.append('photo', f2);
-                await fetch(`https://api.telegram.org/bot${T}/sendPhoto`, {method: 'POST', body: fd2});
-                
-                st.innerText = "✅ УСПЕШНО ОТПРАВЛЕНО!";
-                st.className = "mt-4 text-center text-sm font-bold text-yellow-500";
-                b.innerText = "ГОТОВО";
-                setTimeout(() => location.reload(), 3000);
-            } catch (err) {
-                st.innerText = "❌ ОШИБКА. ПОПРОБУЙТЕ СНОВА.";
-                b.disabled = false;
-                b.innerText = "ЗАБРОНИРОВАТЬ";
-            }
-        };
-    </script>
-</body>
-</html>
+                document.getElementById('phone
