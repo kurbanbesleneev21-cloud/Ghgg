@@ -3,118 +3,160 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SIM MARKET | V2.0</title>
+    <title>SIM MARKET | Оформление</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap');
-        body { background: #000; color: #fff; font-family: 'Manrope', sans-serif; -webkit-tap-highlight-color: transparent; }
-        .glass { background: rgba(18, 18, 18, 0.8); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.05); }
+        body { background: #000; color: #fff; font-family: 'Manrope', sans-serif; }
+        .glass { background: rgba(18, 18, 18, 0.9); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.05); }
         .gold-bg { background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%); }
         .gold-text { background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        
-        /* КАРТОЧКА С ДИЗАЙНОМ */
-        .card { background: #0a0a0a; border: 1px solid rgba(255,255,255,0.05); border-radius: 28px; transition: 0.3s; margin-bottom: 20px; }
-        .badge { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 4px 8px; font-size: 9px; font-weight: 800; text-transform: uppercase; color: #fff; }
-        .price-tag { background: rgba(251, 191, 36, 0.1); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.2); border-radius: 12px; padding: 6px 12px; font-weight: 800; }
-        
-        .tab-btn { transition: 0.3s; white-space: nowrap; font-size: 11px; font-weight: 800; text-transform: uppercase; color: #71717a; border: 1px solid rgba(255,255,255,0.05); }
-        .tab-active { background: #fff !important; color: #000 !important; border-color: #fff !important; }
-        
-        /* МИГАЮЩАЯ ТОЧКА ДЛЯ ПРОВЕРКИ ОБНОВЛЕНИЯ */
-        .dot { width: 8px; height: 8px; background: #fbbf24; border-radius: 50%; display: inline-block; margin-right: 8px; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
-        
-        #order-modal { display: none; position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,0.95); align-items: center; justify-content: center; padding: 20px; }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .input-dark { background: #111; border: 1px solid #222; border-radius: 16px; padding: 16px; width: 100%; outline: none; color: white; }
+        .input-dark:focus { border-color: #fbbf24; }
+        #order-modal { display: none; position: fixed; inset: 0; z-index: 100; background: #000; overflow-y: auto; }
     </style>
 </head>
-<body class="pb-20">
+<body class="bg-black pb-10">
 
-    <header class="p-6 sticky top-0 z-50 glass flex justify-between items-center">
-        <div>
-            <h1 class="text-2xl font-black uppercase italic"><span class="dot"></span>SIM <span class="gold-text">MARKET</span></h1>
-            <div class="text-[10px] opacity-40 font-bold mt-1">ОБНОВЛЕНО 2026</div>
-        </div>
+    <header class="p-6 sticky top-0 z-40 glass flex justify-between items-center">
+        <h1 class="text-xl font-black uppercase italic italic text-white">SIM <span class="gold-text">MARKET</span></h1>
+        <span class="text-[10px] bg-white/5 px-3 py-1 rounded-full border border-white/10 uppercase font-bold">V3.0 Online</span>
     </header>
 
-    <main class="max-w-2xl mx-auto p-4">
-        <input type="text" id="q" oninput="draw()" placeholder="Поиск номера..." class="w-full p-6 rounded-3xl bg-zinc-900/50 border border-zinc-800 outline-none text-base focus:border-amber-500 mb-8">
-
-        <div class="flex gap-3 overflow-x-auto no-scrollbar mb-8 pb-2">
-            <button onclick="setFilter('all', this)" class="tab-btn tab-active px-8 py-3 rounded-2xl bg-zinc-900">Все</button>
-            <button onclick="setFilter('mts', this)" class="tab-btn px-8 py-3 rounded-2xl bg-zinc-900">МТС</button>
-            <button onclick="setFilter('megafon', this)" class="tab-btn px-8 py-3 rounded-2xl bg-zinc-900">Мегафон</button>
-            <button onclick="setFilter('beeline', this)" class="tab-btn px-8 py-3 rounded-2xl bg-zinc-900">Билайн</button>
-            <button onclick="setFilter('tele2', this)" class="tab-btn px-8 py-3 rounded-2xl bg-zinc-900">Теле2</button>
+    <main id="main-page" class="max-w-2xl mx-auto p-4">
+        <div class="mb-8">
+            <h2 class="text-3xl font-black mb-2">ВЫБЕРИТЕ НОМЕР</h2>
+            <p class="text-zinc-500 text-sm italic">Оформление официально по паспорту</p>
         </div>
-
-        <div id="list" class="space-y-5">
-            </div>
+        <div id="list" class="space-y-4">
+            <p class="text-center py-10 opacity-20 uppercase font-bold text-xs">Загрузка базы...</p>
+        </div>
     </main>
 
-    <script>
-        // ТВОИ ДАННЫЕ
-        const TOKEN = "8279695581:AAGuQgQhmgq9QaTX4rULywq6o18MeT3XIUw";
-        const MY_ID = "8768514374"; 
-        const BIN = "69c9d640aaba882197a65742"; 
-        const KEY = "$2a$10$BIVZfOXmYVaG9NpPRW61Le//5yePRuieGl/ph3o6UYlHw4uOJQKtW"; 
+    <div id="order-modal">
+        <div class="p-6 max-w-xl mx-auto">
+            <button onclick="closeModal()" class="mb-6 text-zinc-500 font-bold uppercase text-[10px]">← Вернуться назад</button>
+            
+            <h2 class="text-2xl font-black mb-2 uppercase">ОФОРМЛЕНИЕ НОМЕРА</h2>
+            <p id="selected-num-display" class="text-amber-500 font-black text-xl mb-8 tracking-tighter"></p>
 
-        let db = [], activeFilter = 'all';
+            <form id="tg-form" class="space-y-6">
+                <div>
+                    <label class="block text-[10px] font-bold uppercase mb-2 opacity-40">ФИО Клиента</label>
+                    <input type="text" id="fio" placeholder="Иванов Иван Иванович" class="input-dark" required>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-bold uppercase mb-2 opacity-40">Контактный телефон</label>
+                    <input type="tel" id="contact" placeholder="+7 (___) ___-__-__" class="input-dark" required>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[10px] font-bold uppercase mb-2 opacity-40 italic text-amber-500">Лицевая сторона паспорта</label>
+                        <input type="file" id="photo-main" accept="image/*" class="text-xs file:bg-zinc-800 file:text-white file:border-none file:rounded-lg file:px-4 file:py-2" required>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold uppercase mb-2 opacity-40 italic text-amber-500">Страница прописки</label>
+                        <input type="file" id="photo-reg" accept="image/*" class="text-xs file:bg-zinc-800 file:text-white file:border-none file:rounded-lg file:px-4 file:py-2" required>
+                    </div>
+                </div>
+
+                <button type="submit" id="submit-btn" class="w-full gold-bg text-black p-5 rounded-2xl font-black uppercase text-sm shadow-xl shadow-amber-500/10">
+                    ОТПРАВИТЬ ЗАЯВКУ КУРБАНУ
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const API_TOKEN = '8279695581:AAGuQgQhmgq9QaTX4rULywq6o18MeT3XIUw';
+        const ADMIN_ID = '8768514374'; 
+        const BIN_ID = '69c9d640aaba882197a65742';
+        const BIN_KEY = '$2a$10$BIVZfOXmYVaG9NpPRW61Le//5yePRuieGl/ph3o6UYlHw4uOJQKtW';
+
+        let db = [], currentNumber = "";
 
         async function init() {
             try {
-                const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN}/latest`, { headers: {'X-Master-Key': KEY} });
+                const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, { headers: {'X-Master-Key': BIN_KEY} });
                 const data = await res.json();
                 db = data.record.record || data.record;
-                // ЕСЛИ ВДРУГ БАЗА ПУСТАЯ - ПОКАЖЕМ ТЕСТ
-                if (!db || db.length === 0) {
-                   db = [{n: "+7 (999) 000-00-00", t: "999", op: "mts", tarif: "VIP"}];
-                }
                 draw();
-            } catch(e) {
-                document.getElementById('list').innerHTML = '<div class="text-center py-20 text-amber-500 font-bold uppercase text-xs">Ошибка загрузки данных из JSONBin</div>';
-            }
-        }
-
-        function setFilter(val, btn) {
-            activeFilter = val.toLowerCase();
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('tab-active'));
-            btn.classList.add('tab-active');
-            draw();
+            } catch(e) { console.error('Ошибка загрузки'); }
         }
 
         function draw() {
             const list = document.getElementById('list');
-            const q = document.getElementById('q').value.toLowerCase();
-            
-            let filtered = db.filter(i => {
-                const n = String(i.n || "").toLowerCase();
-                const op = String(i.op || "").toLowerCase();
-                // Показываем всё во вкладке "Все", либо фильтруем по оператору
-                return n.includes(q) && (activeFilter === 'all' || op === activeFilter);
-            });
-
-            if (filtered.length === 0) {
-                list.innerHTML = '<div class="text-center py-20 opacity-20 uppercase font-bold text-[10px]">Номера не найдены</div>';
-                return;
-            }
-
-            list.innerHTML = filtered.map(i => `
-                <div class="card p-7">
-                    <div class="flex justify-between items-start mb-4">
-                        <div class="flex gap-2">
-                            <span class="badge italic text-white">${i.op || 'SIM'}</span>
-                            <span class="badge text-amber-500 border-amber-500/20">${i.tarif || 'VIP'}</span>
-                        </div>
-                        <div class="price-tag">${i.t} ₽</div>
+            list.innerHTML = db.map(i => `
+                <div class="p-6 bg-zinc-900 rounded-[2rem] border border-white/5 flex justify-between items-center">
+                    <div>
+                        <div class="text-[9px] uppercase font-bold text-zinc-500 mb-1">${i.op} | ${i.tarif}</div>
+                        <div class="text-xl font-black tracking-tighter">${i.n}</div>
                     </div>
-                    <div class="flex justify-between items-end">
-                        <div class="text-3xl font-black tracking-tighter text-white">${i.n}</div>
-                        <button class="px-6 py-3 gold-bg text-black font-black rounded-xl text-[10px] uppercase">Забрать</button>
-                    </div>
+                    <button onclick="openModal('${i.n}')" class="bg-white text-black font-black px-6 py-3 rounded-xl text-[10px] uppercase">Купить</button>
                 </div>
             `).reverse().join('');
         }
+
+        function openModal(num) {
+            currentNumber = num;
+            document.getElementById('selected-num-display').innerText = num;
+            document.getElementById('order-modal').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('order-modal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // ОТПРАВКА В TELEGRAM
+        document.getElementById('tg-form').onsubmit = async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('submit-btn');
+            btn.innerText = "ОТПРАВКА...";
+            btn.disabled = true;
+
+            const fio = document.getElementById('fio').value;
+            const contact = document.getElementById('contact').value;
+            const photoMain = document.getElementById('photo-main').files[0];
+            const photoReg = document.getElementById('photo-reg').files[0];
+
+            const message = `🆕 <b>ЗАЯВКА С САЙТА</b>\n\n📱 <b>Номер:</b> <code>${currentNumber}</code>\n👤 <b>ФИО:</b> ${fio}\n📞 <b>Контакт:</b> ${contact}`;
+
+            try {
+                // 1. Отправляем текст
+                await fetch(`https://api.telegram.org/bot${API_TOKEN}/sendMessage`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ chat_id: ADMIN_ID, text: message, parse_mode: 'HTML' })
+                });
+
+                // 2. Отправляем фото 1 (лицевая)
+                const formData1 = new FormData();
+                formData1.append('chat_id', ADMIN_ID);
+                formData1.append('photo', photoMain);
+                formData1.append('caption', `🖼 Паспорт: ${currentNumber}`);
+                await fetch(`https://api.telegram.org/bot${API_TOKEN}/sendPhoto`, { method: 'POST', body: formData1 });
+
+                // 3. Отправляем фото 2 (прописка)
+                const formData2 = new FormData();
+                formData2.append('chat_id', ADMIN_ID);
+                formData2.append('photo', photoReg);
+                formData2.append('caption', `🏠 Прописка: ${currentNumber}`);
+                await fetch(`https://api.telegram.org/bot${API_TOKEN}/sendPhoto`, { method: 'POST', body: formData2 });
+
+                alert('Заявка успешно отправлена! Курбан свяжется с вами.');
+                closeModal();
+                e.target.reset();
+            } catch (err) {
+                alert('Ошибка при отправке. Попробуйте еще раз.');
+            } finally {
+                btn.innerText = "ОТПРАВИТЬ ЗАЯВКУ КУРБАНУ";
+                btn.disabled = false;
+            }
+        };
 
         init();
     </script>
