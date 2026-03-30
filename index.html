@@ -1,53 +1,102 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIM MARKET | Регистрация</title>
+    <title>SIM MARKET | Премиум номера</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background: #0f172a; color: #f8fafc; font-family: sans-serif; }
-        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border: 1px solid rgba(251, 191, 36, 0.3); }
-        .step-hidden { display: none; }
+        body { background-color: #0b0f1a; color: #f8fafc; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; overflow-x: hidden; }
+        .gold-border { border: 1px solid rgba(251, 191, 36, 0.4); }
+        .gold-text { color: #fbbf24; }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .num-card { transition: all 0.3s ease; }
+        .num-card:hover { transform: translateY(-8px); border-color: #fbbf24; box-shadow: 0 10px 30px -10px rgba(251, 191, 36, 0.3); }
+        .num-card:active { transform: translateY(-2px) scale(0.98); }
+        .shadow-gold { box-shadow: 0 4px 14px 0 rgba(251, 191, 36, 0.3); }
     </style>
 </head>
-<body class="p-4 flex items-center justify-center min-h-screen">
+<body class="p-4 md:p-8 flex flex-col items-center min-h-screen">
 
-    <div class="max-w-md w-full glass p-8 rounded-3xl shadow-2xl">
-        <h1 class="text-3xl font-black text-yellow-500 text-center mb-2 uppercase">SIM MARKET</h1>
-        <p class="text-center text-gray-400 text-xs mb-8 uppercase tracking-widest">Система регистрации номеров</p>
+    <script>
+        const MY_NUMBERS = [
+            { phone: "+7 (928) 111-22-33", price: "7 000 ₽", type: "GOLD" },
+            { phone: "+7 (938) 555-55-55", price: "25 000 ₽", type: "VIP" },
+            { phone: "+7 (999) 777-88-99", price: "5 000 ₽", type: "BRONZE" },
+            { phone: "+7 (900) 000-00-01", price: "15 000 ₽", type: "GOLD" },
+            { phone: "+7 (928) 123-45-67", price: "10 000 ₽", type: "VIP" },
+            { phone: "+7 (938) 999-00-99", price: "6 000 ₽", type: "BRONZE" }
+        ];
+    </script>
 
-        <form id="regForm" class="space-y-6">
-            <div id="step1">
-                <label class="block text-xs text-gray-500 mb-2 font-bold uppercase">Шаг 1/5: Выбранный номер</label>
-                <input type="text" id="chosen_num" placeholder="+7 (___) ___-__-__" class="w-full bg-slate-800 p-4 rounded-xl border border-slate-700 outline-none focus:border-yellow-500 text-white font-bold" required>
-                <button type="button" onclick="nextStep(2)" class="w-full bg-yellow-500 text-black font-black py-4 rounded-xl mt-6 uppercase">Далее</button>
+    <div class="max-w-6xl w-full flex flex-col items-center mb-12">
+        <div class="glass p-6 md:p-8 rounded-3xl gold-border shadow-2xl text-center w-full max-w-4xl">
+            <h1 class="text-4xl md:text-5xl font-extrabold gold-text uppercase tracking-tighter mb-1">SIM MARKET</h1>
+            <p class="text-gray-400 text-sm md:text-base uppercase tracking-widest font-medium opacity-80">Ваш эксклюзивный номер в Хасавюрте</p>
+        </div>
+    </div>
+
+    <div class="max-w-6xl w-full mb-16">
+        <h2 class="text-2xl font-bold gold-text mb-6 pl-2 italic">💎 Номера в наличии:</h2>
+        <div id="catalog" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             </div>
+    </div>
 
-            <div id="step2" class="step-hidden text-center">
-                <label class="block text-xs text-gray-500 mb-4 font-bold uppercase text-left">Шаг 2/5: Фото паспорта (Лицо)</label>
-                <div class="border-2 border-dashed border-slate-700 p-8 rounded-2xl bg-slate-800/50 relative cursor-pointer hover:border-yellow-500">
-                    <input type="file" id="photo_main" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" required onchange="updateLabel('l1')">
-                    <span id="l1" class="text-sm text-gray-400 font-medium">📸 Пришлите фото разворота</span>
-                </div>
-                <div class="grid grid-cols-2 gap-2 mt-4">
-                    <button type="button" onclick="nextStep(1)" class="bg-slate-700 text-white py-3 rounded-xl font-bold uppercase">Назад</button>
-                    <button type="button" onclick="nextStep(3)" class="bg-yellow-500 text-black py-3 rounded-xl font-bold uppercase">Далее</button>
-                </div>
+    <div class="max-w-xl w-full">
+        <div class="glass p-10 rounded-3xl gold-border shadow-2xl relative">
+            <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-[#0b0f1a] px-6 py-2 rounded-full gold-border">
+                <h3 class="text-xl font-bold gold-text uppercase">Оформить заявку</h3>
             </div>
-
-            <div id="step3" class="step-hidden text-center">
-                <label class="block text-xs text-gray-500 mb-4 font-bold uppercase text-left">Шаг 3/5: Фото прописки</label>
-                <div class="border-2 border-dashed border-slate-700 p-8 rounded-2xl bg-slate-800/50 relative cursor-pointer hover:border-yellow-500">
-                    <input type="file" id="photo_reg" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" required onchange="updateLabel('l2')">
-                    <span id="l2" class="text-sm text-gray-400 font-medium">🏠 Фото страницы с адресом</span>
+            
+            <form id="regForm" class="space-y-6 mt-6">
+                <div>
+                    <label class="block text-xs uppercase tracking-widest text-gray-500 mb-2 font-semibold">Выбранный вами номер:</label>
+                    <input type="text" id="phone_num" placeholder="+7 (___) ___-__-__" class="w-full bg-slate-800 p-5 rounded-2xl border border-slate-700 outline-none text-yellow-500 font-bold text-xl placeholder:text-gray-600 focus:border-yellow-500" required>
                 </div>
-                <div class="grid grid-cols-2 gap-2 mt-4">
-                    <button type="button" onclick="nextStep(2)" class="bg-slate-700 text-white py-3 rounded-xl font-bold uppercase">Назад</button>
-                    <button type="button" onclick="nextStep(4)" class="bg-yellow-500 text-black py-3 rounded-xl font-bold uppercase">Далее</button>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="relative border-2 border-dashed border-slate-600 p-6 rounded-2xl text-center bg-slate-800/50 hover:border-yellow-500 cursor-pointer transition">
+                        <input type="file" id="p1" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" required onchange="updateLabel('l1')">
+                        <span class="text-sm text-gray-400 font-medium" id="l1">📸 Фото Паспорта (Лицо)</span>
+                    </div>
+                    <div class="relative border-2 border-dashed border-slate-600 p-6 rounded-2xl text-center bg-slate-800/50 hover:border-yellow-500 cursor-pointer transition">
+                        <input type="file" id="p2" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" required onchange="updateLabel('l2')">
+                        <span class="text-sm text-gray-400 font-medium" id="l2">🏠 Фото Прописки</span>
+                    </div>
                 </div>
-            </div>
 
-            <div id="step4" class="step-hidden">
-                <label class="block text-xs text-gray-500 mb-2 font-bold uppercase">Шаг 4/5: Ваши ФИО полностью</label>
-                <input type="text" id="user_name" placeholder="Иванов Иван Иванович" class="w-full bg-slate-800 p-4 rounded-xl border border-slate-700 outline-none focus:border-yellow-500 text-white" required>
+                <button type="submit" id="submitBtn" class="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-extrabold py-5 rounded-2xl uppercase shadow-gold transition active:scale-95 text-lg tracking-wider">
+                    Забронировать номер
+                </button>
+            </form>
+            <p id="status" class="mt-4 text-center text-sm font-medium"></p>
+        </div>
+    </div>
+
+    <div class="max-w-6xl w-full mt-16 text-center text-gray-600 text-xs uppercase tracking-widest py-6 border-t border-slate-800">
+        © SIM MARKET. Все права защищены.
+    </div>
+
+    <script>
+        const catalog = document.getElementById('catalog');
+        
+        MY_NUMBERS.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'num-card glass p-6 rounded-2xl border border-slate-800 flex flex-col justify-between cursor-pointer';
+            card.onclick = () => { 
+                document.getElementById('phone_num').value = item.phone;
+                window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'});
+                document.getElementById('phone_num').focus();
+            };
+            
+            let badgeColor = 'bg-gray-600';
+            if(item.type === 'GOLD') badgeColor = 'bg-yellow-500 text-black';
+            if(item.type === 'VIP') badgeColor = 'bg-yellow-400 text-black font-extrabold';
+            if(item.type === 'BRONZE') badgeColor = 'bg-orange-700';
+
+            card.innerHTML = `
+                <div class="flex justify-between items-start mb-4">
+                    <span class="text-2xl font-mono font-bold text-white tracking-tight">${item.phone}</span>
+                    <span class="${badgeColor} text-[10px] px-3 py-1 rounded-full font-bold uppercase tracking-wider">${item.type}</span>
+                </div>
+                <div class="flex justify-between
