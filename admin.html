@@ -3,232 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>СИМ МАРКЕТ | ПАНЕЛЬ УПРАВЛЕНИЯ</title>
+    <title>SIM MARKET | АДМИН-ПАНЕЛЬ</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;900&display=swap');
-        body { background: #010204; color: #a1a1aa; font-family: 'Inter', sans-serif; }
-        .neon-border { border: 1px solid rgba(251, 191, 36, 0.2); }
-        .gold-gradient { background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%); }
-        .glass-panel { background: rgba(10, 12, 16, 0.8); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.05); }
-        input, select { background: #0d1117 !important; border: 1px solid #30363d !important; color: white !important; outline: none; }
+        @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap');
+        body { background: #09090b; color: #f4f4f5; font-family: 'Manrope', sans-serif; }
+        .glass { background: rgba(24, 24, 27, 0.9); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.08); }
+        .gold-text { background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .input-dark { background: #18181b; border: 1px solid #27272a; border-radius: 12px; padding: 12px; font-size: 14px; outline: none; transition: 0.3s; }
+        .input-dark:focus { border-color: #f59e0b; }
+        .btn-gold { background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%); color: #000; font-weight: 800; border-radius: 12px; transition: 0.3s; }
+        .btn-gold:active { transform: scale(0.95); }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
     </style>
 </head>
-<body class="pb-32">
+<body class="p-4 md:p-10">
 
-    <div id="auth" class="fixed inset-0 z-[500] bg-black flex items-center justify-center p-6 text-center">
-        <div class="max-w-xs w-full">
-            <div class="mb-6 text-4xl">🔐</div>
-            <h1 class="text-white font-black text-2xl mb-2 uppercase tracking-tighter">Доступ ограничен</h1>
-            <p class="text-gray-500 text-[10px] mb-8 uppercase tracking-widest">Введите секретный код</p>
-            <input type="password" id="p_word" placeholder="КОД" class="w-full bg-transparent border-b-2 border-yellow-600 text-center text-3xl text-yellow-500 py-3 outline-none mb-8 font-black">
-            <button onclick="unlock()" class="w-full gold-gradient text-black font-black py-4 rounded-full uppercase text-xs tracking-widest active:scale-95 transition-all">Авторизация</button>
+    <div class="max-w-6xl mx-auto space-y-8">
+        
+        <div class="flex justify-between items-center">
+            <h1 class="text-3xl font-black uppercase tracking-tighter">ADMIN <span class="gold-text">PANEL</span></h1>
+            <button onclick="location.reload()" class="bg-zinc-900 p-3 rounded-full border border-white/5">🔄 Обновить</button>
         </div>
-    </div>
 
-    <div id="app" style="display:none;">
-        <header class="p-6 sticky top-0 z-50 glass-panel border-b border-white/5">
-            <div class="max-w-6xl mx-auto flex justify-between items-center">
-                <div>
-                    <h1 class="text-white font-black text-xl leading-none uppercase">СИМ МАРКЕТ <span class="text-yellow-600 text-[10px]">v4.0</span></h1>
-                    <div id="live_stats" class="flex gap-4 mt-2 text-[9px] font-bold uppercase tracking-widest text-gray-500">
-                        </div>
-                </div>
-                <div class="flex gap-2">
-                    <button onclick="exportData()" class="p-3 glass-panel rounded-xl text-xs" title="Скачать базу">💾</button>
-                    <button onclick="toggleConfig()" class="p-3 glass-panel rounded-xl text-xs">⚙️</button>
-                </div>
-            </div>
-        </header>
-
-        <main class="max-w-6xl mx-auto p-4 grid lg:grid-cols-12 gap-6 mt-6">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
             
-            <aside class="lg:col-span-5 space-y-6">
-                <div class="glass-panel p-8 rounded-[2.5rem] neon-border">
-                    <h2 class="text-[10px] font-black mb-6 uppercase tracking-widest text-yellow-600 text-center">Новый номер</h2>
-                    <div class="space-y-4">
-                        <input type="text" id="n_num" placeholder="Номер (напр. 928-111-14-14)" class="w-full p-4 rounded-2xl text-white font-bold">
-                        <div class="grid grid-cols-2 gap-3">
-                            <input type="number" id="n_price" placeholder="Цена ₽" class="p-4 rounded-2xl text-yellow-500 font-black">
-                            <select id="n_op" class="p-4 rounded-2xl text-[10px] uppercase font-bold">
-                                <option value="megafon">Мегафон</option>
-                                <option value="beeline">Билайн</option>
-                                <option value="mts">МТС</option>
-                                <option value="tele2">Tele2</option>
-                            </select>
-                        </div>
-                        <div class="grid grid-cols-2 gap-3">
-                            <input type="text" id="n_tarif" placeholder="Тариф" class="p-4 rounded-2xl text-xs">
-                            <input type="number" id="n_tarif_p" placeholder="Абонплата ₽" class="p-4 rounded-2xl text-xs">
-                        </div>
-                        <select id="n_cat" class="w-full p-4 rounded-2xl text-[10px] font-black uppercase text-gray-400">
-                            <option value="std">ОБЫЧНЫЙ НОМЕР</option>
-                            <option value="gold">ЗОЛОТОЙ (GOLD)</option>
-                            <option value="vip">ВИП (VIP)</option>
+            <section class="glass p-8 rounded-[2.5rem]">
+                <h2 class="text-xl font-bold mb-6 gold-text uppercase tracking-widest">Добавить номер</h2>
+                <form id="add-form" class="space-y-4">
+                    <input type="text" id="n" placeholder="Номер (например, +7 999 999 99 99)" class="w-full input-dark" required>
+                    <div class="grid grid-cols-2 gap-4">
+                        <select id="op" class="input-dark">
+                            <option value="megafon">Мегафон</option>
+                            <option value="mts">МТС</option>
+                            <option value="beeline">Билайн</option>
+                            <option value="yota">Yota</option>
                         </select>
-                        <button onclick="processAdd()" id="add_btn" class="w-full gold-gradient text-black font-black py-5 rounded-3xl uppercase tracking-widest mt-2 shadow-lg shadow-yellow-600/20 active:scale-95 transition-all">Опубликовать</button>
+                        <select id="cat" class="input-dark">
+                            <option value="standard">Обычный</option>
+                            <option value="vip">VIP / Gold</option>
+                        </select>
                     </div>
-                </div>
-
-                <div class="glass-panel p-6 rounded-[2rem]">
-                    <p class="text-[10px] font-bold text-gray-600 mb-4 uppercase">Быстрые фильтры:</p>
-                    <div class="flex flex-wrap gap-2">
-                        <button onclick="setF('all')" class="text-[9px] font-bold border border-white/10 px-4 py-2 rounded-full uppercase">Все</button>
-                        <button onclick="setF('vip')" class="text-[9px] font-bold border border-yellow-600/30 px-4 py-2 rounded-full uppercase text-yellow-500">VIP/Gold</button>
-                        <button onclick="setF('megafon')" class="text-[9px] font-bold border border-green-600/30 px-4 py-2 rounded-full uppercase text-green-500">Мегафон</button>
-                    </div>
-                </div>
-            </aside>
-
-            <section class="lg:col-span-7">
-                <input type="text" id="fast_search" oninput="draw()" placeholder="🔍 Поиск по номеру или тарифу..." class="w-full glass-panel p-5 rounded-2xl mb-6 border-none text-white">
-                <div id="data_grid" class="space-y-4">
-                    </div>
+                    <input type="text" id="tarif" placeholder="Тариф (напр. Безлимит)" class="w-full input-dark">
+                    <input type="number" id="t" placeholder="Цена (руб)" class="w-full input-dark" required>
+                    <button type="submit" class="w-full btn-gold py-4 uppercase tracking-widest text-sm">Опубликовать номер</button>
+                </form>
             </section>
-        </main>
-    </div>
 
-    <div id="cfg" style="display:none;" class="fixed inset-0 z-[600] bg-black/95 backdrop-blur-xl flex items-center justify-center p-6">
-        <div class="glass-panel p-10 rounded-[3rem] w-full max-w-sm border border-white/10 text-center">
-            <h2 class="text-white font-black mb-8 uppercase tracking-widest">Настройки терминала</h2>
-            <div class="space-y-4">
-                <button onclick="copyBackup()" class="w-full p-5 bg-white/5 rounded-2xl text-[10px] uppercase font-black tracking-widest">Копировать резерв базы</button>
-                <button onclick="changePass()" class="w-full p-5 bg-white/5 rounded-2xl text-[10px] uppercase font-black tracking-widest">Сменить пароль входа</button>
-                <div class="h-px bg-white/10 my-4"></div>
-                <button onclick="nuke()" class="w-full p-5 bg-red-900/20 text-red-500 rounded-2xl text-[10px] uppercase font-black tracking-widest">Удалить все данные</button>
-                <button onclick="toggleConfig()" class="mt-6 text-gray-500 text-[10px] uppercase font-bold">Вернуться назад</button>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        const API_ID = "69c9d640aaba882197a65742";
-        const API_KEY = "$2a$10$BIVZfOXmYVaG9NpPRW61Le//5yePRuieGl/ph3o6UYlHw4uOJQKtW";
-        let MASTER = localStorage.getItem('s_pass') || "1414";
-        let db = [];
-        let filter = 'all';
-
-        function unlock() {
-            if(document.getElementById('p_word').value === MASTER) {
-                document.getElementById('auth').style.display = 'none';
-                document.getElementById('app').style.display = 'block';
-                sync();
-            } else alert("НЕВЕРНЫЙ КОД ДОСТУПА");
-        }
-
-        async function sync() {
-            try {
-                const res = await fetch(`https://api.jsonbin.io/v3/b/${API_ID}/latest`, { headers: {'X-Master-Key': API_KEY} });
-                const data = await res.json();
-                db = data.record || [];
-                draw();
-            } catch (e) { alert("Ошибка сети!"); }
-        }
-
-        function draw() {
-            const grid = document.getElementById('data_grid');
-            const q = document.getElementById('fast_search').value.toLowerCase();
-            
-            let items = db.filter(i => i.n.includes(q) || (i.tarif && i.tarif.toLowerCase().includes(q)));
-            if(filter === 'vip') items = items.filter(i => i.cat === 'vip' || i.cat === 'gold');
-            else if(filter !== 'all') items = items.filter(i => i.op === filter);
-
-            let totalVal = db.reduce((acc, curr) => acc + Number(curr.t), 0);
-            document.getElementById('live_stats').innerHTML = `
-                <span>НОМЕРОВ: ${db.length}</span>
-                <span class="text-yellow-600">ОЦЕНКА СКЛАДА: ${totalVal.toLocaleString()}₽</span>
-                <span class="text-green-500">СЕТЬ: OK</span>
-            `;
-
-            grid.innerHTML = items.map((item, idx) => {
-                const isVip = item.cat === 'vip' || item.cat === 'gold';
-                return `
-                <div class="glass-panel p-6 rounded-[2.5rem] flex justify-between items-center group hover:border-yellow-600/40 transition-all">
-                    <div>
-                        <div class="flex items-center gap-3">
-                            <span class="text-white font-black text-xl tracking-tighter">${item.n}</span>
-                            ${isVip ? `<span class="bg-yellow-600 text-black text-[8px] px-2 py-0.5 rounded font-black">${item.cat.toUpperCase()}</span>` : ''}
-                        </div>
-                        <div class="text-[10px] uppercase font-bold text-gray-600 mt-2">
-                            ${item.o} / ${item.tarif || 'Без тарифа'} / ${item.tarif_p || 0}₽ мес.
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-4">
-                        <div class="text-right">
-                            <div class="text-lg font-black text-white">${item.t}₽</div>
-                        </div>
-                        <div class="flex gap-2">
-                            <button onclick="editItem(${db.indexOf(item)})" class="p-3 bg-white/5 rounded-xl hover:bg-white/10 transition-all">✏️</button>
-                            <button onclick="delItem(${db.indexOf(item)})" class="p-3 bg-red-900/10 text-red-500 rounded-xl hover:bg-red-500 hover:text-white transition-all">🗑️</button>
-                        </div>
-                    </div>
-                </div>
-            `}).reverse().join('');
-        }
-
-        async function processAdd() {
-            const n = document.getElementById('n_num').value;
-            const t = document.getElementById('n_price').value;
-            const tarif = document.getElementById('n_tarif').value;
-            const tarif_p = document.getElementById('n_tarif_p').value;
-            
-            if(!n || !t) return alert("Введите номер и цену!");
-            if(db.some(i => i.n === n)) return alert("Такой номер уже есть в базе!");
-
-            db.push({
-                n, t, tarif, tarif_p,
-                op: document.getElementById('n_op').value,
-                o: document.getElementById('n_op').selectedOptions[0].text,
-                cat: document.getElementById('n_cat').value
-            });
-            await push();
-            document.getElementById('n_num').value = '';
-            document.getElementById('n_price').value = '';
-        }
-
-        async function push() {
-            document.getElementById('add_btn').innerText = "СОХРАНЕНИЕ...";
-            await fetch(`https://api.jsonbin.io/v3/b/${API_ID}`, {
-                method: 'PUT',
-                headers: {'Content-Type': 'application/json', 'X-Master-Key': API_KEY},
-                body: JSON.stringify(db)
-            });
-            document.getElementById('add_btn').innerText = "Опубликовать";
-            draw();
-        }
-
-        async function delItem(idx) {
-            if(confirm("Удалить номер безвозвратно?")) {
-                db.splice(idx, 1);
-                await push();
-            }
-        }
-
-        async function editItem(idx) {
-            const p = prompt("Новая цена для " + db[idx].n + ":", db[idx].t);
-            if(p !== null) { db[idx].t = p; await push(); }
-        }
-
-        function setF(val) { filter = val; draw(); }
-        function toggleConfig() { 
-            const s = document.getElementById('cfg'); 
-            s.style.display = s.style.display === 'none' ? 'flex' : 'none'; 
-        }
-
-        function changePass() {
-            const newP = prompt("Введите новый пароль (минимум 4 знака):");
-            if(newP && newP.length >= 4) {
-                localStorage.setItem('s_pass', newP);
-                MASTER = newP;
-                alert("Пароль изменен!");
-            }
-        }
-
-        async function nuke() {
-            if(confirm("ВНИМАНИЕ! Это действие удалит ВСЕ номера. Вы уверены?")) {
-                db = []; await push(); toggleConfig();
-            }
-        }
-    </script>
-</body>
-</html>
+            <section class="glass p-8 rounded-[2.5rem] flex flex-col h-[500px]">
+                <h2 class="text-xl font-bold mb-6 gold-text uppercase tracking-widest">Поддержка (Чат)</h2>
+                
+                <div class="flex-1
