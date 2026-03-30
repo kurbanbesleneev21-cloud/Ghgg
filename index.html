@@ -1,4 +1,4 @@
-       <!DOCTYPE html>
+.<!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
@@ -11,11 +11,34 @@
 <style>
 
 body{
-background:
-radial-gradient(circle at 20% 20%, #0f172a, #020617);
+background: radial-gradient(circle at top,#0f172a,#020617);
 color:white;
 font-family:system-ui;
+overflow-x:hidden;
 }
+
+/* animated background */
+
+body::before{
+content:"";
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:
+radial-gradient(circle at 20% 30%,rgba(255,215,0,0.08),transparent 40%),
+radial-gradient(circle at 80% 70%,rgba(59,130,246,0.08),transparent 40%);
+animation:bgMove 15s infinite alternate;
+z-index:-1;
+}
+
+@keyframes bgMove{
+0%{transform:translateY(0)}
+100%{transform:translateY(-80px)}
+}
+
+/* glass */
 
 .glass{
 background:rgba(255,255,255,0.05);
@@ -23,16 +46,33 @@ backdrop-filter:blur(20px);
 border:1px solid rgba(255,255,255,0.08);
 }
 
+/* header */
+
+.header{
+background:rgba(2,6,23,0.6);
+backdrop-filter:blur(20px);
+border-bottom:1px solid rgba(255,255,255,0.05);
+}
+
+/* cards */
+
 .card{
-transition:all .35s ease;
+transition:.35s;
 }
 
 .card:hover{
 transform:translateY(-6px) scale(1.02);
 box-shadow:
 0 20px 40px rgba(0,0,0,0.6),
-0 0 25px rgba(255,215,0,0.15);
+0 0 25px rgba(255,215,0,0.2);
 }
+
+.vip{
+border:1px solid rgba(255,215,0,0.4);
+background:rgba(255,215,0,0.05);
+}
+
+/* gold text */
 
 .gold{
 background:linear-gradient(135deg,#FFD700,#FF8C00);
@@ -40,33 +80,29 @@ background:linear-gradient(135deg,#FFD700,#FF8C00);
 -webkit-text-fill-color:transparent;
 }
 
+/* button */
+
 .btn{
 background:linear-gradient(135deg,#facc15,#f59e0b);
 color:black;
 font-weight:800;
-letter-spacing:1px;
-transition:0.25s;
+transition:.25s;
 }
 
 .btn:hover{
-transform:scale(1.03);
+transform:scale(1.05);
 box-shadow:0 0 25px rgba(255,200,0,0.5);
 }
 
-.vip{
-border:1px solid rgba(255,215,0,0.4);
-background:rgba(255,215,0,0.06);
+/* search */
+
+.search{
+background:rgba(255,255,255,0.05);
+border:1px solid rgba(255,255,255,0.08);
 }
 
 input{
-background:rgba(255,255,255,0.06);
-border:1px solid rgba(255,255,255,0.1);
-}
-
-input:focus{
 outline:none;
-border-color:#facc15;
-box-shadow:0 0 10px rgba(250,204,21,0.4);
 }
 
 </style>
@@ -74,89 +110,99 @@ box-shadow:0 0 10px rgba(250,204,21,0.4);
 
 <body class="pb-20">
 
-<header class="glass sticky top-0 z-50 flex justify-between items-center px-6 py-5">
+<header class="header sticky top-0 z-50 px-6 py-5 flex justify-between items-center">
 
-<div class="text-2xl font-black tracking-tight gold">
+<div class="text-2xl font-black gold tracking-tight">
 SIM MARKET
 </div>
 
-<div class="text-xs text-gray-400 uppercase tracking-widest">
+<div class="text-xs uppercase text-gray-400 tracking-widest">
 premium numbers
 </div>
 
 </header>
 
 
-<main class="max-w-3xl mx-auto p-6">
+<main class="max-w-4xl mx-auto p-6 space-y-6">
 
-<div id="list" class="space-y-4">
+<!-- stats -->
 
-<div class="text-center p-16 text-gray-500 animate-pulse uppercase text-xs tracking-widest">
-загрузка витрины
+<div class="grid grid-cols-3 gap-4">
+
+<div class="glass p-4 rounded-xl text-center">
+<div class="text-xl font-bold" id="count">0</div>
+<div class="text-xs text-gray-400 uppercase">номеров</div>
+</div>
+
+<div class="glass p-4 rounded-xl text-center">
+<div class="text-xl font-bold gold">VIP</div>
+<div class="text-xs text-gray-400 uppercase">категория</div>
+</div>
+
+<div class="glass p-4 rounded-xl text-center">
+<div class="text-xl font-bold">24/7</div>
+<div class="text-xs text-gray-400 uppercase">оформление</div>
 </div>
 
 </div>
+
+<!-- search -->
+
+<div class="glass p-4 rounded-xl flex gap-3">
+
+<input
+id="search"
+placeholder="поиск номера..."
+class="search w-full p-3 rounded-lg text-sm"
+/>
+
+<select id="operator" class="search p-3 rounded-lg text-sm">
+
+<option value="">все операторы</option>
+<option value="mts">МТС</option>
+<option value="megafon">Мегафон</option>
+<option value="beeline">Билайн</option>
+<option value="tele2">Tele2</option>
+
+</select>
+
+</div>
+
+
+<!-- list -->
+
+<div id="list" class="space-y-4"></div>
 
 </main>
 
 
 
-<!-- MODAL -->
+<!-- modal -->
 
 <div id="modal" style="display:none"
-class="fixed inset-0 bg-black/90 z-[100] flex items-center justify-center p-6">
+class="fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-6">
 
-<div class="glass w-full max-w-md rounded-3xl p-8 space-y-6">
+<div class="glass w-full max-w-md p-8 rounded-3xl space-y-5">
 
-<div>
 <h2 class="text-xl font-bold gold">Оформление номера</h2>
-<p id="target-num" class="text-lg font-mono mt-2"></p>
-</div>
 
+<div id="target-num" class="text-lg font-mono"></div>
 
 <form id="regForm" class="space-y-4">
 
-<input
-type="text"
-id="fio"
-placeholder="ФИО по паспорту"
-class="w-full p-4 rounded-xl"
-/>
+<input id="fio" placeholder="ФИО" class="w-full p-3 rounded-lg glass">
 
-<input
-type="tel"
-id="client_phone"
-placeholder="Контактный телефон"
-class="w-full p-4 rounded-xl"
-/>
+<input id="client_phone" placeholder="Телефон" class="w-full p-3 rounded-lg glass">
 
-<div class="space-y-2">
-<label class="text-xs text-gray-400 uppercase">
-Фото паспорта
-</label>
 <input type="file" id="photo_pass">
-</div>
 
-<div class="space-y-2">
-<label class="text-xs text-gray-400 uppercase">
-Фото прописки
-</label>
 <input type="file" id="photo_reg">
-</div>
 
-
-<button
-id="sendBtn"
-class="btn w-full py-4 rounded-xl"
->
-ОТПРАВИТЬ ЗАЯВКУ
+<button class="btn w-full py-3 rounded-xl">
+ОТПРАВИТЬ
 </button>
 
-<button
-type="button"
-onclick="closeM()"
-class="w-full text-xs text-gray-400 uppercase"
->
+<button type="button" onclick="closeM()" class="w-full text-xs text-gray-400">
 закрыть
 </button>
 
@@ -173,9 +219,7 @@ class="w-full text-xs text-gray-400 uppercase"
 const BIN_ID="69c9d640aaba882197a65742"
 const MASTER_KEY="$2a$10$BIVZfOXmYVaG9NpPRW61Le//5yePRuieGl/ph3o6UYlHw4uOJQKtW"
 
-const TG_TOKEN="8569235049:AAEsaW4ME-Ql6036i04tIbj--IPNT6JdroE"
-const TG_CHAT_ID="8768514374"
-
+let items=[]
 let selectedNum=""
 
 async function loadData(){
@@ -186,54 +230,48 @@ headers:{'X-Master-Key':MASTER_KEY}
 
 const data=await r.json()
 
-render(data.record||[])
+items=data.record||[]
+
+document.getElementById("count").innerText=items.length
+
+render(items)
 
 }
 
-
-
-function render(items){
+function render(data){
 
 const list=document.getElementById("list")
 
-list.innerHTML=items.map(i=>{
+list.innerHTML=data.map(i=>{
 
 const vip=i.cat==="vip"||i.cat==="gold"
 
 return`
 
-<div
-onclick="openM('${i.n}')"
-class="card glass p-5 rounded-2xl flex justify-between items-center cursor-pointer ${vip?'vip':''}"
->
+<div onclick="openM('${i.n}')"
+class="card glass p-5 rounded-2xl flex justify-between cursor-pointer ${vip?'vip':''}">
 
 <div>
 
 <div class="flex items-center gap-2">
 
-<div class="text-xl font-mono font-bold">
-${i.n}
-</div>
+<div class="text-xl font-mono font-bold">${i.n}</div>
 
-${vip?`<span class="text-[9px] px-2 py-0.5 bg-yellow-500 text-black rounded uppercase font-bold">${i.cat}</span>`:''}
+${vip?`<span class="text-[9px] bg-yellow-500 text-black px-2 py-0.5 rounded uppercase font-bold">${i.cat}</span>`:''}
 
 </div>
 
 <div class="text-xs text-gray-400 mt-1 uppercase">
-${i.o} • ${i.tarif||"базовый"}
+${i.o}
 </div>
 
 </div>
 
 <div class="text-right">
 
-<div class="text-lg font-bold gold">
-${i.t}₽
-</div>
+<div class="text-lg font-bold gold">${i.t}₽</div>
 
-<div class="text-[10px] text-gray-500 uppercase">
-купить
-</div>
+<div class="text-[10px] text-gray-500 uppercase">купить</div>
 
 </div>
 
@@ -245,19 +283,31 @@ ${i.t}₽
 
 }
 
+document.getElementById("search").oninput=filter
+document.getElementById("operator").onchange=filter
 
+function filter(){
+
+const s=document.getElementById("search").value.toLowerCase()
+const o=document.getElementById("operator").value
+
+const filtered=items.filter(i=>{
+
+return(!s||i.n.includes(s))&&(!o||i.op===o)
+
+})
+
+render(filtered)
+
+}
 
 function openM(num){
 
 selectedNum=num
-
 document.getElementById("target-num").innerText=num
-
 document.getElementById("modal").style.display="flex"
 
 }
-
-
 
 function closeM(){
 
@@ -265,66 +315,9 @@ document.getElementById("modal").style.display="none"
 
 }
 
-
-
-document.getElementById("regForm").onsubmit=async e=>{
-
-e.preventDefault()
-
-const btn=document.getElementById("sendBtn")
-
-btn.innerText="Отправка..."
-btn.disabled=true
-
-const fio=document.getElementById("fio").value
-const phone=document.getElementById("client_phone").value
-const p1=document.getElementById("photo_pass").files[0]
-const p2=document.getElementById("photo_reg").files[0]
-
-const text=`💰 Новая заявка
-
-Номер: ${selectedNum}
-ФИО: ${fio}
-Телефон: ${phone}`
-
-await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`,{
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({chat_id:TG_CHAT_ID,text})
-})
-
-const f1=new FormData()
-f1.append("chat_id",TG_CHAT_ID)
-f1.append("photo",p1)
-
-await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendPhoto`,{
-method:"POST",
-body:f1
-})
-
-const f2=new FormData()
-f2.append("chat_id",TG_CHAT_ID)
-f2.append("photo",p2)
-
-await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendPhoto`,{
-method:"POST",
-body:f2
-})
-
-alert("Заявка отправлена")
-
-closeM()
-
-btn.disabled=false
-btn.innerText="ОТПРАВИТЬ ЗАЯВКУ"
-
-}
-
-
-
 window.onload=loadData
 
 </script>
 
 </body>
-</html>        
+</html>
