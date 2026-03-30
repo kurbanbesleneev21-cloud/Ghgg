@@ -3,166 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIM MARKET | ADMIN</title>
+    <title>SIM ADMIN</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap');
-        body { background: #09090b; color: #f4f4f5; font-family: 'Manrope', sans-serif; min-height: 100vh; margin: 0; }
+        body { background: #09090b; color: #f4f4f5; font-family: 'Manrope', sans-serif; margin: 0; }
         .glass { background: rgba(24, 24, 27, 0.9); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.08); }
         .gold-text { background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .input-dark { background: #18181b; border: 1px solid #27272a; border-radius: 12px; padding: 14px; font-size: 14px; outline: none; transition: 0.3s; width: 100%; color: white; }
-        .btn-gold { background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%); color: #000; font-weight: 800; border-radius: 12px; transition: 0.3s; width: 100%; padding: 16px; text-transform: uppercase; }
-        #login-screen { display: flex; align-items: center; justify-center: center; position: fixed; inset: 0; z-index: 100; background: #09090b; }
+        .input-dark { background: #18181b; border: 1px solid #27272a; border-radius: 12px; padding: 14px; outline: none; width: 100%; color: white; }
+        .btn-gold { background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%); color: #000; font-weight: 800; border-radius: 12px; width: 100%; padding: 16px; text-transform: uppercase; cursor: pointer; border: none; }
     </style>
 </head>
-<body>
+<body class="p-4">
 
-    <div id="login-screen">
-        <div class="max-w-sm w-full mx-auto p-8 glass rounded-[2.5rem] text-center">
-            <h1 class="text-2xl font-black uppercase tracking-tighter mb-6">SIM <span class="gold-text">ADMIN</span></h1>
-            <div class="space-y-4">
-                <input type="email" id="login-email" placeholder="Gmail почта" class="input-dark text-center">
-                <input type="password" id="login-pass" placeholder="Пароль" class="input-dark text-center">
-                <button onclick="checkAuth()" class="btn-gold">Войти</button>
-            </div>
-            <p id="error-msg" class="text-red-500 text-[10px] mt-4 font-bold hidden uppercase">Ошибка входа</p>
+    <div id="login-box" class="fixed inset-0 z-50 flex items-center justify-center bg-[#09090b]">
+        <div class="max-w-xs w-full p-8 glass rounded-[2rem] text-center">
+            <h1 class="text-xl font-black mb-6 uppercase tracking-tighter">SIM <span class="gold-text">ADMIN</span></h1>
+            <input type="email" id="user-email" placeholder="Gmail" class="input-dark mb-3 text-center">
+            <input type="password" id="user-pass" placeholder="Пароль" class="input-dark mb-6 text-center">
+            <button onclick="tryLogin()" class="btn-gold">Войти</button>
+            <p id="err" class="text-red-500 text-[10px] mt-4 font-bold hidden uppercase">Ошибка данных</p>
         </div>
     </div>
 
-    <div id="main-admin" class="hidden max-w-2xl mx-auto w-full p-5 space-y-8 py-10">
+    <div id="admin-ui" class="hidden max-w-xl mx-auto space-y-6 py-6">
         <div class="flex justify-between items-center">
-            <h1 class="text-xl font-black uppercase">SIM <span class="gold-text">MARKET</span></h1>
-            <button onclick="logout()" class="text-[10px] font-bold text-red-500 uppercase bg-red-500/10 px-3 py-1 rounded-lg">Выйти ✕</button>
+            <h2 class="font-black uppercase tracking-tighter">SIM <span class="gold-text">MARKET</span></h2>
+            <button onclick="exit()" class="text-[9px] font-black text-red-500 uppercase bg-red-500/10 px-3 py-1 rounded-lg">Выход</button>
         </div>
 
-        <section class="glass p-6 rounded-[2rem]">
-            <form id="add-form" class="space-y-4">
-                <input type="text" id="n" placeholder="Номер телефона" class="input-dark" required>
-                <div class="grid grid-cols-2 gap-4">
-                    <select id="op" class="input-dark">
+        <div class="glass p-5 rounded-[1.5rem]">
+            <form id="num-form" class="space-y-3">
+                <input type="text" id="num-val" placeholder="Номер телефона" class="input-dark" required>
+                <div class="grid grid-cols-2 gap-3">
+                    <select id="op-val" class="input-dark">
                         <option value="megafon">Мегафон</option>
                         <option value="mts">МТС</option>
                         <option value="beeline">Билайн</option>
                         <option value="yota">Yota</option>
                     </select>
-                    <select id="cat" class="input-dark">
+                    <select id="cat-val" class="input-dark">
                         <option value="standard">Обычный</option>
-                        <option value="vip">VIP / Gold</option>
+                        <option value="vip">VIP</option>
                     </select>
                 </div>
-                <input type="text" id="tarif" placeholder="Тариф" class="input-dark">
-                <input type="number" id="t" placeholder="Цена" class="input-dark" required>
-                <button type="submit" id="save-btn" class="btn-gold">Опубликовать</button>
+                <input type="text" id="tar-val" placeholder="Тариф" class="input-dark">
+                <input type="number" id="price-val" placeholder="Цена" class="input-dark" required>
+                <button type="submit" id="sub-btn" class="btn-gold">Добавить</button>
             </form>
-        </section>
+        </div>
 
-        <section class="glass p-6 rounded-[2rem]">
-            <h2 class="text-xs font-black uppercase tracking-widest mb-6 text-amber-500">Активные номера</h2>
-            <div id="num-list" class="space-y-3">
-                <div class="text-center py-5 opacity-20 text-xs">Загрузка...</div>
-            </div>
-        </section>
+        <div id="list-container" class="glass p-5 rounded-[1.5rem] space-y-3">
+            <p class="text-[10px] uppercase opacity-30 font-bold tracking-widest text-center">Загрузка номеров...</p>
+        </div>
     </div>
 
     <script>
-        const ADMIN_EMAIL = "kurban@gmail.com"; 
-        const ADMIN_PASS = "777"; 
-        const BIN_ID = "69c9d640aaba882197a65742"; 
-        const KEY = "$2a$10$BIVZfOXmYVaG9NpPRW61Le//5yePRuieGl/ph3o6UYlHw4uOJQKtW"; 
+        const LOGIN = "kurban@gmail.com";
+        const PASS = "777";
+        const B_ID = "69c9d640aaba882197a65742";
+        const B_KEY = "$2a$10$BIVZfOXmYVaG9NpPRW61Le//5yePRuieGl/ph3o6UYlHw4uOJQKtW";
 
-        let fullData = { record: [] };
+        let dataStore = { record: [] };
 
-        // ПРОВЕРКА ВХОДА ПРИ ЗАГРУЗКЕ
-        window.onload = () => {
-            if (localStorage.getItem('sim_admin_auth') === 'true') {
-                showAdminView();
-            }
-        };
+        // Проверка при открытии
+        if(localStorage.getItem('auth_ok') === 'yes') { openAdmin(); }
 
-        function checkAuth() {
-            const e = document.getElementById('login-email').value;
-            const p = document.getElementById('login-pass').value;
-            if(e === ADMIN_EMAIL && p === ADMIN_PASS) {
-                localStorage.setItem('sim_admin_auth', 'true');
-                showAdminView();
+        function tryLogin() {
+            const m = document.getElementById('user-email').value;
+            const p = document.getElementById('user-pass').value;
+            if(m === LOGIN && p === PASS) {
+                localStorage.setItem('auth_ok', 'yes');
+                openAdmin();
             } else {
-                const err = document.getElementById('error-msg');
-                err.classList.remove('hidden');
-                setTimeout(() => err.classList.add('hidden'), 2000);
+                document.getElementById('err').classList.remove('hidden');
             }
         }
 
-        function showAdminView() {
-            document.getElementById('login-screen').classList.add('hidden');
-            document.getElementById('main-admin').classList.remove('hidden');
-            loadData();
+        function openAdmin() {
+            document.getElementById('login-box').style.display = 'none';
+            document.getElementById('admin-ui').classList.remove('hidden');
+            sync();
         }
 
-        function logout() {
-            localStorage.removeItem('sim_admin_auth');
+        function exit() {
+            localStorage.removeItem('auth_ok');
             location.reload();
         }
 
-        async function loadData() {
-            try {
-                const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, { headers: {'X-Master-Key': KEY} });
-                const data = await res.json();
-                // Универсальная проверка структуры базы
-                fullData = data.record.record ? data.record : { record: data.record, support: [] };
-                render();
-            } catch (e) { console.error("Data error"); }
+        async function sync() {
+            const r = await fetch(`https://api.jsonbin.io/v3/b/${B_ID}/latest`, { headers: {'X-Master-Key': B_KEY} });
+            const d = await r.json();
+            dataStore = d.record.record ? d.record : { record: d.record };
+            renderList();
         }
-
-        function render() {
-            const list = document.getElementById('num-list');
-            const items = fullData.record || [];
-            if(items.length === 0) { list.innerHTML = "<div class='text-center opacity-20'>ПУСТО</div>"; return; }
-            
-            list.innerHTML = items.map((i, idx) => `
-                <div class="flex justify-between items-center p-4 bg-white/5 rounded-xl border border-white/5">
-                    <div>
-                        <div class="font-black text-sm text-white">${i.n}</div>
-                        <div class="text-[9px] opacity-40 uppercase">${i.op} • ${i.t} ₽</div>
-                    </div>
-                    <button onclick="deleteNum(${idx})" class="w-8 h-8 flex items-center justify-center bg-red-500/10 text-red-500 rounded-lg hover:bg-red-500 hover:text-white transition-all text-xs font-bold">✕</button>
-                </div>
-            `).reverse().join('');
-        }
-
-        document.getElementById('add-form').onsubmit = async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById('save-btn');
-            btn.innerText = "СОХРАНЕНИЕ..."; btn.disabled = true;
-
-            const newNum = {
-                n: document.getElementById('n').value,
-                op: document.getElementById('op').value,
-                cat: document.getElementById('cat').value,
-                tarif: document.getElementById('tarif').value || 'Базовый',
-                t: document.getElementById('t').value
-            };
-
-            fullData.record.push(newNum);
-            await save();
-            e.target.reset();
-            btn.innerText = "Опубликовать"; btn.disabled = false;
-        };
-
-        async function deleteNum(index) {
-            if(!confirm("Удалить номер?")) return;
-            const realIndex = fullData.record.length - 1 - index;
-            fullData.record.splice(realIndex, 1);
-            await save();
-        }
-
-        async function save() {
-            await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
-                method: 'PUT',
-                headers: {'Content-Type': 'application/json', 'X-Master-Key': KEY},
-                body: JSON.stringify(fullData)
-            });
-            render();
-        }
-    </script>
-</body>
-</html>
