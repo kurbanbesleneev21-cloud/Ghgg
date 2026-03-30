@@ -3,69 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SIM MARKET | PREMIUM</title>
+    <title>SIM MARKET | LINE</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap');
         body { background: #000; color: #fff; font-family: 'Manrope', sans-serif; -webkit-tap-highlight-color: transparent; }
-        .glass { background: rgba(18, 18, 18, 0.8); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .glass { background: rgba(10, 10, 10, 0.9); backdrop-filter: blur(15px); border-bottom: 1px solid rgba(255,255,255,0.05); }
         .gold-bg { background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%); }
         .gold-text { background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .card { background: #0a0a0a; border: 1px solid rgba(255,255,255,0.05); border-radius: 28px; }
-        .badge { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 4px 8px; font-size: 9px; font-weight: 800; text-transform: uppercase; color: #a1a1aa; }
-        .price-tag { background: rgba(251, 191, 36, 0.1); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.2); border-radius: 12px; padding: 6px 12px; font-weight: 800; }
-        .tab-btn { transition: 0.3s; white-space: nowrap; font-size: 11px; font-weight: 800; text-transform: uppercase; color: #71717a; border: 1px solid rgba(255,255,255,0.05); cursor: pointer; }
-        .tab-active { background: #fff !important; color: #000 !important; border-color: #fff !important; }
+        
+        /* СТИЛЬ СТРОКИ */
+        .line-item { background: #0a0a0a; border-bottom: 1px solid rgba(255,255,255,0.03); transition: 0.2s; }
+        .line-item:active { background: #111; }
+        
+        .badge-mini { font-size: 8px; font-weight: 800; text-transform: uppercase; color: #52525b; border: 1px solid rgba(255,255,255,0.05); padding: 2px 5px; rounded: 4px; }
+        .tab-btn { transition: 0.3s; white-space: nowrap; font-size: 10px; font-weight: 800; text-transform: uppercase; color: #52525b; }
+        .tab-active { color: #fbbf24 !important; border-bottom: 2px solid #fbbf24; }
         #order-modal { display: none; position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,0.95); align-items: center; justify-content: center; padding: 20px; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
     </style>
 </head>
-<body class="pb-20">
+<body class="pb-10">
 
-    <header class="p-6 sticky top-0 z-50 glass flex justify-between items-center">
-        <div>
-            <h1 class="text-2xl font-black uppercase italic">SIM <span class="gold-text">MARKET</span></h1>
-            <div class="h-1 w-12 gold-bg rounded-full mt-1"></div>
-        </div>
+    <header class="p-5 sticky top-0 z-50 glass flex justify-between items-center">
+        <h1 class="text-lg font-black uppercase italic">SIM <span class="gold-text">MARKET</span></h1>
+        <div class="text-[10px] font-bold opacity-30 uppercase tracking-widest">Premium Numbers</div>
     </header>
 
-    <main class="max-w-2xl mx-auto p-4">
-        <input type="text" id="q" oninput="draw()" placeholder="Найти красивый номер..." class="w-full p-6 rounded-3xl bg-zinc-900/50 border border-zinc-800 outline-none text-base focus:border-amber-500 mb-8">
-
-        <div class="flex gap-3 overflow-x-auto no-scrollbar mb-8 pb-2">
-            <button onclick="setFilter('all', this)" class="tab-btn tab-active px-8 py-3 rounded-2xl bg-zinc-900">Все</button>
-            <button onclick="setFilter('mts', this)" class="tab-btn px-8 py-3 rounded-2xl bg-zinc-900">МТС</button>
-            <button onclick="setFilter('megafon', this)" class="tab-btn px-8 py-3 rounded-2xl bg-zinc-900">Мегафон</button>
-            <button onclick="setFilter('beeline', this)" class="tab-btn px-8 py-3 rounded-2xl bg-zinc-900">Билайн</button>
-            <button onclick="setFilter('tele2', this)" class="tab-btn px-8 py-3 rounded-2xl bg-zinc-900">Теле2</button>
-            <button onclick="setFilter('yota', this)" class="tab-btn px-8 py-3 rounded-2xl bg-zinc-900">Yota</button>
+    <main class="max-w-2xl mx-auto">
+        <div class="p-4">
+            <input type="text" id="q" oninput="draw()" placeholder="Поиск номера..." class="w-full p-4 rounded-xl bg-zinc-900 border border-zinc-800 outline-none text-sm focus:border-amber-500">
         </div>
 
-        <div id="list" class="space-y-5">
-            <div class="text-center py-20 opacity-30 animate-pulse uppercase font-bold">Загрузка номеров...</div>
+        <div class="flex gap-6 overflow-x-auto no-scrollbar px-6 mb-4 border-b border-white/5">
+            <button onclick="setFilter('all', this)" class="tab-btn tab-active pb-3">Все</button>
+            <button onclick="setFilter('mts', this)" class="tab-btn pb-3">МТС</button>
+            <button onclick="setFilter('megafon', this)" class="tab-btn pb-3">Мегафон</button>
+            <button onclick="setFilter('beeline', this)" class="tab-btn pb-3">Билайн</button>
+            <button onclick="setFilter('tele2', this)" class="tab-btn pb-3">Теле2</button>
+            <button onclick="setFilter('yota', this)" class="tab-btn pb-3">Yota</button>
+        </div>
+
+        <div id="list" class="divide-y divide-white/5">
+            <div class="text-center py-20 opacity-20 text-xs font-bold uppercase">Загрузка...</div>
         </div>
     </main>
 
     <div id="order-modal">
-        <div class="bg-zinc-950 w-full max-w-sm p-8 rounded-[3rem] border border-zinc-800 space-y-5 relative">
+        <div class="bg-zinc-950 w-full max-w-sm p-8 rounded-[2.5rem] border border-zinc-800 space-y-4 relative">
             <button onclick="closeModal()" class="absolute top-6 right-6 text-zinc-500">✕</button>
-            <h2 id="target-num" class="text-3xl font-black text-center gold-text"></h2>
-            <input type="text" id="client-fio" placeholder="ФИО полностью" class="w-full p-4 bg-zinc-900 border border-zinc-800 rounded-2xl outline-none">
-            <input type="tel" id="client-phone" placeholder="Ваш телефон" class="w-full p-4 bg-zinc-900 border border-zinc-800 rounded-2xl outline-none">
-            
-            <div class="grid grid-cols-2 gap-3 text-center">
-                <div class="p-3 bg-zinc-900 border border-zinc-800 rounded-2xl">
-                    <label class="block text-[7px] uppercase font-black mb-1 opacity-40 text-white">Паспорт</label>
+            <h2 id="target-num" class="text-3xl font-black text-center text-white tracking-tighter"></h2>
+            <div class="space-y-3">
+                <input type="text" id="client-fio" placeholder="ФИО полностью" class="w-full p-4 bg-zinc-900 border border-zinc-800 rounded-xl outline-none text-sm">
+                <input type="tel" id="client-phone" placeholder="Ваш телефон" class="w-full p-4 bg-zinc-900 border border-zinc-800 rounded-xl outline-none text-sm">
+                <div class="grid grid-cols-2 gap-2 text-center">
+                    <button onclick="document.getElementById('client-passport').click()" class="p-3 bg-zinc-900 border border-zinc-800 rounded-xl text-[9px] font-bold uppercase text-amber-500">Паспорт</button>
+                    <button onclick="document.getElementById('client-prodiska').click()" class="p-3 bg-zinc-900 border border-zinc-800 rounded-xl text-[9px] font-bold uppercase text-amber-500">Прописка</button>
                     <input type="file" id="client-passport" accept="image/*" class="hidden">
-                    <button onclick="document.getElementById('client-passport').click()" class="text-[9px] font-bold text-amber-500 uppercase">Выбрать</button>
-                </div>
-                <div class="p-3 bg-zinc-900 border border-zinc-800 rounded-2xl">
-                    <label class="block text-[7px] uppercase font-black mb-1 opacity-40 text-white">Прописка</label>
                     <input type="file" id="client-prodiska" accept="image/*" class="hidden">
-                    <button onclick="document.getElementById('client-prodiska').click()" class="text-[9px] font-bold text-amber-500 uppercase">Выбрать</button>
                 </div>
             </div>
-            <button onclick="submitOrder()" id="send-btn" class="w-full py-5 gold-bg text-black font-black rounded-2xl uppercase text-xs">Подтвердить заказ</button>
+            <button onclick="submitOrder()" id="send-btn" class="w-full py-4 gold-bg text-black font-black rounded-xl uppercase text-xs active:scale-95 transition-all">Оформить заказ</button>
         </div>
     </div>
 
@@ -79,17 +77,11 @@
 
         async function init() {
             try {
-                const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN}/latest`, {
-                    headers: { 'X-Master-Key': KEY }
-                });
+                const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN}/latest`, { headers: { 'X-Master-Key': KEY } });
                 const data = await res.json();
-                // Проверка структуры JSON
                 db = data.record.record || data.record;
-                if (!Array.isArray(db)) db = [];
                 draw();
-            } catch (e) {
-                document.getElementById('list').innerHTML = '<div class="text-center py-20 text-red-500">Ошибка загрузки базы. Проверьте интернет.</div>';
-            }
+            } catch (e) { document.getElementById('list').innerHTML = '<div class="p-10 text-center">Ошибка базы</div>'; }
         }
 
         function setFilter(val, btn) {
@@ -103,35 +95,31 @@
             const list = document.getElementById('list');
             const query = document.getElementById('q').value.toLowerCase();
             
-            // Фильтрация
-            let filtered = db.filter(item => {
-                const numStr = String(item.n || "").toLowerCase();
-                const opStr = String(item.op || "").toLowerCase();
-                
-                const matchSearch = numStr.includes(query);
-                // Если "Все", то показываем всё. Если выбран оператор, сравниваем.
-                const matchTab = (activeFilter === 'all') || (opStr === activeFilter);
-                
-                return matchSearch && matchTab;
+            let filtered = db.filter(i => {
+                const num = String(i.n || "").toLowerCase();
+                const op = String(i.op || "").toLowerCase();
+                return num.includes(query) && (activeFilter === 'all' || op === activeFilter);
             });
 
             if (filtered.length === 0) {
-                list.innerHTML = '<div class="text-center py-20 opacity-30 uppercase text-xs font-bold">В этой категории пока нет номеров</div>';
+                list.innerHTML = '<div class="p-10 text-center opacity-20 text-xs">Ничего не найдено</div>';
                 return;
             }
 
-            list.innerHTML = filtered.map(item => `
-                <div class="card p-7 shadow-xl">
-                    <div class="flex justify-between items-start mb-4">
-                        <div class="flex gap-2">
-                            <span class="badge italic">${item.op || 'SIM'}</span>
-                            <span class="badge text-amber-500">${item.tarif || 'VIP'}</span>
+            list.innerHTML = filtered.map(i => `
+                <div class="line-item p-4 flex items-center justify-between">
+                    <div class="flex flex-col">
+                        <span class="text-lg font-extrabold tracking-tighter text-white">${i.n}</span>
+                        <div class="flex gap-2 items-center">
+                            <span class="badge-mini">${i.op || 'SIM'}</span>
+                            <span class="text-[9px] font-bold text-amber-500/50 uppercase">${i.tarif || 'VIP'}</span>
                         </div>
-                        <div class="price-tag">${item.t || '0'} ₽</div>
                     </div>
-                    <div class="flex justify-between items-end">
-                        <div class="text-3xl font-black tracking-tighter text-white">${item.n}</div>
-                        <button onclick="openModal('${item.n}', '${item.t}')" class="px-6 py-3 gold-bg text-black font-black rounded-xl text-[10px] uppercase active:scale-95 transition-all">Забрать</button>
+                    <div class="flex items-center gap-4">
+                        <span class="text-sm font-black text-amber-500">${i.t} ₽</span>
+                        <button onclick="openModal('${i.n}', '${i.t}')" class="w-8 h-8 gold-bg rounded-lg flex items-center justify-center text-black active:scale-90 transition-all">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        </button>
                     </div>
                 </div>
             `).reverse().join('');
@@ -140,7 +128,7 @@
         function openModal(n, t) {
             document.getElementById('target-num').innerText = n;
             document.getElementById('order-modal').style.display = 'flex';
-            window.currentN = n; window.currentT = t;
+            window.cN = n; window.cT = t;
         }
 
         function closeModal() { document.getElementById('order-modal').style.display = 'none'; }
@@ -148,38 +136,26 @@
         async function submitOrder() {
             const fio = document.getElementById('client-fio').value;
             const phone = document.getElementById('client-phone').value;
-            const passImg = document.getElementById('client-passport').files[0];
-            const propImg = document.getElementById('client-prodiska').files[0];
+            const pass = document.getElementById('client-passport').files[0];
+            const prop = document.getElementById('client-prodiska').files[0];
             const btn = document.getElementById('send-btn');
 
-            if(!fio || !phone || !passImg || !propImg) return alert("Пожалуйста, заполните все поля и выберите 2 фото");
-
+            if(!fio || !phone || !pass || !prop) return alert("Заполните все данные и прикрепите 2 фото");
             btn.innerText = "ОТПРАВКА..."; btn.disabled = true;
 
             try {
-                const msg = `🚀 *ЗАКАЗ*\n📱 Номер: \`${window.currentN}\`\n💰 Цена: ${window.currentT} ₽\n👤 Клиент: ${fio}\n📞 Связь: ${phone}`;
+                const msg = `👑 *НОВЫЙ ЗАКАЗ*\n📱 Номер: \`${window.cN}\`\n💰 Цена: ${window.cT} ₽\n👤 Клиент: ${fio}\n📞 Связь: ${phone}`;
+                await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ chat_id: MY_ID, text: msg, parse_mode: 'Markdown' }) });
                 
-                // Текст
-                await fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ chat_id: MY_ID, text: msg, parse_mode: 'Markdown' })
-                });
-
-                // Фото 1
-                const fd1 = new FormData(); fd1.append('chat_id', MY_ID); fd1.append('photo', passImg);
+                const fd1 = new FormData(); fd1.append('chat_id', MY_ID); fd1.append('photo', pass);
                 await fetch(`https://api.telegram.org/bot${TOKEN}/sendPhoto`, { method: 'POST', body: fd1 });
 
-                // Фото 2
-                const fd2 = new FormData(); fd2.append('chat_id', MY_ID); fd2.append('photo', propImg);
+                const fd2 = new FormData(); fd2.append('chat_id', MY_ID); fd2.append('photo', prop);
                 await fetch(`https://api.telegram.org/bot${TOKEN}/sendPhoto`, { method: 'POST', body: fd2 });
 
-                alert("Заявка успешно отправлена Курбану!");
-                closeModal();
-            } catch (e) { alert("Ошибка отправки! Попробуйте позже."); } 
-            finally { btn.innerText = "Подтвердить заказ"; btn.disabled = false; }
+                alert("Заявка отправлена!"); closeModal();
+            } catch (e) { alert("Ошибка!"); } finally { btn.innerText = "Оформить заказ"; btn.disabled = false; }
         }
-
         init();
     </script>
 </body>
