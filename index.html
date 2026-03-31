@@ -7,56 +7,94 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap');
-        body { background: #050505; color: #fff; font-family: 'Manrope', sans-serif; margin: 0; -webkit-font-smoothing: antialiased; }
+        
+        body { 
+            background: #050505; 
+            color: #fff; 
+            font-family: 'Manrope', sans-serif; 
+            margin: 0; 
+            overflow-x: hidden;
+        }
 
-        /* ЛОГОТИП */
+        /* Золотой переливающийся логотип */
         .logo-shine {
-            font-weight: 800; font-size: 28px; letter-spacing: -1px; text-transform: uppercase;
+            font-weight: 800; font-size: 32px; letter-spacing: -1px; text-transform: uppercase;
             background: linear-gradient(90deg, #bf953f, #fcf6ba, #b38728, #fcf6ba, #bf953f);
             background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             animation: shine 3s linear infinite; font-style: italic;
         }
         @keyframes shine { to { background-position: 200% center; } }
 
-        /* КАРТОЧКА */
-        .glass-card {
-            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 28px; padding: 24px; transition: 0.3s;
+        /* Стеклянные карточки */
+        .glass-card { 
+            background: rgba(255,255,255,0.03); 
+            border: 1px solid rgba(255,255,255,0.08); 
+            border-radius: 24px; 
+            padding: 20px; 
+            transition: 0.3s; 
         }
-        .buy-btn {
-            background: #fff; color: #000; font-weight: 800; font-size: 10px;
-            text-transform: uppercase; letter-spacing: 1px; padding: 14px;
-            border-radius: 14px; transition: 0.3s; border: none; cursor: pointer; width: 100%;
-        }
-        .buy-btn:active { transform: scale(0.96); background: #fbbf24; }
 
-        /* ФИЛЬТРЫ */
-        .tab-btn {
-            background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05);
-            padding: 12px 20px; border-radius: 14px; font-size: 11px; font-weight: 800;
-            text-transform: uppercase; color: #71717a; transition: 0.3s; cursor: pointer;
+        .buy-btn { 
+            background: #fff; 
+            color: #000; 
+            font-weight: 800; 
+            font-size: 11px; 
+            text-transform: uppercase; 
+            padding: 16px; 
+            border-radius: 14px; 
+            width: 100%; 
+            border: none; 
+            cursor: pointer; 
+        }
+
+        .tab-btn { 
+            background: rgba(255,255,255,0.02); 
+            border: 1px solid rgba(255,255,255,0.05); 
+            padding: 10px 18px; 
+            border-radius: 12px; 
+            font-size: 10px; 
+            font-weight: 800; 
+            text-transform: uppercase; 
+            color: #71717a; 
+            white-space: nowrap; 
         }
         .tab-active { background: #fff !important; color: #000 !important; }
 
-        /* МОДАЛКА */
-        .input-luxury {
-            background: #0f0f0f; border: 1px solid #1a1a1a; border-radius: 18px;
-            padding: 18px; width: 100%; color: #fff; outline: none; text-align: center;
+        .input-luxury { 
+            background: #0f0f0f; 
+            border: 1px solid #1a1a1a; 
+            border-radius: 18px; 
+            padding: 18px; 
+            width: 100%; 
+            color: #fff; 
+            text-align: center; 
+            outline: none; 
         }
-        #order-modal { display: none; position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,0.97); backdrop-filter: blur(15px); align-items: center; justify-content: center; }
+
+        #order-modal { 
+            display: none; 
+            position: fixed; 
+            inset: 0; 
+            z-index: 100; 
+            background: rgba(0,0,0,0.98); 
+            backdrop-filter: blur(10px); 
+            align-items: center; 
+            justify-content: center; 
+        }
+
         .no-scrollbar::-webkit-scrollbar { display: none; }
     </style>
 </head>
 <body>
 
-    <header class="flex flex-col items-center py-10 border-b border-white/5">
+    <header class="flex flex-col items-center py-12 border-b border-white/5">
         <h1 class="logo-shine">SIM MARKET</h1>
-        <p class="text-[9px] font-bold opacity-30 tracking-[4px] mt-2 uppercase">Premium Store</p>
+        <p class="text-[10px] font-bold opacity-30 tracking-[5px] mt-2 uppercase text-center">Elite Phone Numbers</p>
     </header>
 
-    <main class="max-w-xl mx-auto p-6">
-        <input type="text" id="q" oninput="draw()" placeholder="Поиск по цифрам..." class="input-luxury mb-8 focus:border-amber-500/50 transition-all">
-
+    <main class="max-w-md mx-auto p-6">
+        <input type="text" id="q" oninput="draw()" placeholder="Поиск по цифрам..." class="input-luxury mb-8">
+        
         <div class="flex gap-2 overflow-x-auto no-scrollbar mb-10 pb-2">
             <button onclick="setFilter('all', this)" class="tab-btn tab-active">Все</button>
             <button onclick="setFilter('mts', this)" class="tab-btn">МТС</button>
@@ -66,164 +104,16 @@
             <button onclick="setFilter('tele2', this)" class="tab-btn">Tele2</button>
         </div>
 
-        <div id="list" class="space-y-6"></div>
+        <div id="list" class="space-y-4">
+            <div class="text-center py-20 opacity-20 uppercase font-bold text-[10px] tracking-widest animate-pulse">Загрузка коллекции...</div>
+        </div>
     </main>
 
     <div id="order-modal">
-        <div class="glass-card w-[90%] max-w-md relative border-white/10">
-            <button onclick="closeModal()" class="absolute top-5 right-5 text-zinc-500 text-xl">✕</button>
-            <h3 class="text-[10px] font-bold text-amber-500 uppercase tracking-widest text-center mb-6">Оформление заказа</h3>
-            <p id="selected-num" class="text-3xl font-black text-center mb-8 italic tracking-tighter"></p>
-
+        <div class="glass-card w-[92%] relative text-center border-white/10">
+            <button onclick="closeModal()" class="absolute top-5 right-5 text-xl opacity-30">✕</button>
+            <h3 class="text-[10px] font-bold text-amber-500 uppercase tracking-widest mb-4">Бронирование</h3>
+            <p id="selected-num" class="text-3xl font-black mb-8 italic tracking-tighter"></p>
             <form id="tg-form" class="space-y-4">
-                <input type="text" id="fio" placeholder="Ваше полное ФИО" class="input-luxury text-sm" required>
-                <input type="tel" id="contact" placeholder="Номер для связи" class="input-luxury text-sm" required>
-                
-                <label class="flex flex-col items-center p-5 border-2 border-dashed border-white/10 rounded-2xl bg-white/5 cursor-pointer hover:border-amber-500/50 transition-all group">
-                    <span class="text-[11px] font-black uppercase text-amber-500 group-hover:scale-105 transition-transform">Выбрать фото паспорта</span>
-                    <span id="p1-info" class="text-[8px] opacity-40 mt-1 uppercase font-bold">Лицевая сторона</span>
-                    <input type="file" id="p1" class="hidden" accept="image/*" required onchange="showStatus('p1', 'p1-info')">
-                </label>
-
-                <label class="flex flex-col items-center p-5 border-2 border-dashed border-white/10 rounded-2xl bg-white/5 cursor-pointer hover:border-amber-500/50 transition-all group">
-                    <span class="text-[11px] font-black uppercase text-amber-500 group-hover:scale-105 transition-transform">Выбрать фото прописки</span>
-                    <span id="p2-info" class="text-[8px] opacity-40 mt-1 uppercase font-bold">Страница с адресом</span>
-                    <input type="file" id="p2" class="hidden" accept="image/*" required onchange="showStatus('p2', 'p2-info')">
-                </label>
-
-                <button type="submit" id="sub-btn" class="w-full bg-gradient-to-r from-amber-500 to-amber-700 text-black font-black py-5 rounded-2xl uppercase text-[11px] tracking-[3px] mt-4">Отправить Курбану</button>
-            </form>
-        </div>
-    </div>
-
-    <script>
-        const BOT_TOKEN = '8666944440:AAFAmQuYaYmnJjhuQ9AmdBQim9V-kxNnxAo';
-        const CHAT_ID = '8768514374';
-        const BIN_ID = '69c9d640aaba882197a65742';
-        const MASTER_KEY = '$2a$10$BIVZfOXmYVaG9NpPRW61Le//5yePRuieGl/ph3o6UYlHw4uOJQKtW';
-
-        let database = [], currentFilter = 'all';
-
-        async function init() {
-            const list = document.getElementById('list');
-            list.innerHTML = '<div class="text-center py-20 opacity-20 uppercase font-bold text-[10px] tracking-widest animate-pulse">Загрузка эксклюзивных предложений...</div>';
-
-            try {
-                // 1. Загрузка из твоей базы
-                const r = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, { headers: {'X-Master-Key': MASTER_KEY} });
-                const d = await r.json();
-                database = d.record.record || d.record || [];
-
-                // 2. Попытка забрать номера с внешнего сайта через ПРОКСИ
-                const targetUrl = 'https://your-number.net/7aYAVvw5Yn';
-                const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
-                
-                const extResponse = await fetch(proxyUrl);
-                const extData = await extResponse.json();
-
-                if (extData.contents) {
-                    const parser = new DOMParser();
-                    const doc = parser.parseFromString(extData.contents, 'text/html');
-                    const elements = doc.querySelectorAll('td, div, span, b');
-
-                    elements.forEach(el => {
-                        const text = el.innerText.trim();
-                        // Ищем номера формата +7... или 8...
-                        const phoneMatch = text.match(/(?:\+7|8|7)[\s\-\(]*(\d[\s\-\(]*){10}/);
-                        if (phoneMatch) {
-                            const cleanNum = phoneMatch[0].replace(/[^\d+]/g, '');
-                            if (!database.some(i => i.n === cleanNum)) {
-                                // Ищем цену в том же блоке или соседнем
-                                const priceMatch = el.parentElement.innerText.match(/(\d[\d\s]*)(?=₽|руб| руб)/);
-                                const price = priceMatch ? priceMatch[0].replace(/\s/g, '') : "Договорная";
-                                
-                                database.push({ n: cleanNum, t: price, op: "VIP" });
-                            }
-                        }
-                    });
-                }
-            } catch(e) { console.error("Ошибка синхронизации"); }
-            draw();
-        }
-
-        function setFilter(val, el) {
-            currentFilter = val.toLowerCase();
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('tab-active'));
-            el.classList.add('tab-active');
-            draw();
-        }
-
-        function draw() {
-            const list = document.getElementById('list');
-            const q = document.getElementById('q').value.toLowerCase();
-            const filtered = database.filter(i => (i.n.includes(q)) && (currentFilter === 'all' || i.op.toLowerCase() === currentFilter));
-
-            if (filtered.length === 0) {
-                list.innerHTML = '<div class="text-center py-20 opacity-20 uppercase font-bold text-[10px] tracking-widest">Номера не найдены</div>';
-                return;
-            }
-
-            list.innerHTML = filtered.map(i => `
-                <div class="glass-card flex flex-col items-center text-center gap-4 hover:border-white/20 transition-all">
-                    <div>
-                        <div class="text-[10px] font-bold uppercase opacity-40 mb-1 tracking-widest tracking-[2px]">${i.op}</div>
-                        <div class="text-3xl font-black italic tracking-tighter mb-1">${i.n}</div>
-                        <div class="text-xl font-bold text-amber-500">${i.t} ₽</div>
-                    </div>
-                    <button onclick="openModal('${i.n}')" class="buy-btn">Заказать</button>
-                </div>
-            `).reverse().join('');
-        }
-
-        function showStatus(id, infoId) {
-            const span = document.getElementById(infoId);
-            span.innerText = "ФОТО ПОДГОТОВЛЕНО ✅";
-            span.classList.add('text-green-500', 'opacity-100');
-        }
-
-        function openModal(n) {
-            document.getElementById('selected-num').innerText = n;
-            document.getElementById('order-modal').style.display = 'flex';
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeModal() {
-            document.getElementById('order-modal').style.display = 'none';
-            document.body.style.overflow = 'auto';
-        }
-
-        document.getElementById('tg-form').onsubmit = async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById('sub-btn');
-            btn.innerText = "ОТПРАВКА..."; btn.disabled = true;
-
-            const msg = `👑 <b>НОВЫЙ ЗАКАЗ</b>\n\n🔟 <b>НОМЕР:</b> <code>${document.getElementById('selected-num').innerText}</code>\n👤 <b>ФИО:</b> ${document.getElementById('fio').value}\n📞 <b>СВЯЗЬ:</b> ${document.getElementById('contact').value}`;
-
-            try {
-                await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ chat_id: CHAT_ID, text: msg, parse_mode: 'HTML' })
-                });
-
-                const sendPhoto = async (id, caption) => {
-                    const fd = new FormData();
-                    fd.append('chat_id', CHAT_ID);
-                    fd.append('photo', document.getElementById(id).files[0]);
-                    fd.append('caption', caption);
-                    return fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, { method: 'POST', body: fd });
-                };
-
-                if(document.getElementById('p1').files[0]) await sendPhoto('p1', 'Паспорт: ' + document.getElementById('selected-num').innerText);
-                if(document.getElementById('p2').files[0]) await sendPhoto('p2', 'Прописка: ' + document.getElementById('selected-num').innerText);
-
-                alert('✅ Успешно! Курбан свяжется с вами.');
-                closeModal();
-                e.target.reset();
-            } catch(e) { alert('Ошибка сети'); } finally { btn.innerText = "Отправить Курбану"; btn.disabled = false; }
-        };
-
-        init();
-    </script>
-</body>
-</html>
+                <input type="text" id="fio" placeholder="Ваше ФИО" class="input-luxury" required>
+                <input type="tel
