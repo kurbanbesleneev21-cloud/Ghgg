@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SIM MARKET | PREMIUM</title>
+    <title>SIM MARKET | LUXURY STOCK</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
@@ -13,73 +13,73 @@
         
         .gold-grad { background: linear-gradient(90deg, #bf953f, #fcf6ba, #bf953f); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         
-        /* БАННЕР */
-        #banner-box { display: none; background: rgba(191,149,63,0.1); border-y: 1px solid #bf953f; padding: 12px 0; overflow: hidden; margin-bottom: 20px; }
+        /* БЕГУЩАЯ СТРОКА */
+        #banner-box { display: none; background: rgba(191,149,63,0.1); border-top: 1px solid #bf953f; border-bottom: 1px solid #bf953f; padding: 12px 0; overflow: hidden; margin-bottom: 25px; }
         .marquee { display: inline-block; white-space: nowrap; animation: marquee 20s linear infinite; color: #fcf6ba; font-weight: 800; font-size: 11px; text-transform: uppercase; }
         @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
 
-        /* КНОПКИ ФИЛЬТРОВ */
-        .tab-btn { background: rgba(255,255,255,0.05); padding: 10px 18px; border-radius: 12px; font-size: 10px; font-weight: 800; text-transform: uppercase; color: #555; transition: 0.3s; border: 1px solid transparent; }
-        .tab-active { background: #bf953f; color: #000; box-shadow: 0 5px 15px rgba(191,149,63,0.4); }
-
-        /* КАРТОЧКА НОМЕРА */
-        .neon-card { position: relative; background: rgba(191,149,63,0.1); border-radius: 24px; padding: 2px; overflow: hidden; margin-bottom: 20px; }
+        /* ВРАЩАЮЩАЯСЯ НЕОНОВАЯ РАМКА КАРТОЧКИ */
+        .neon-card { position: relative; background: rgba(191, 149, 63, 0.1); border-radius: 28px; padding: 2px; overflow: hidden; margin-bottom: 30px; }
         .neon-card::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: conic-gradient(transparent, #bf953f, #fcf6ba, #bf953f, transparent); animation: rotate 4s linear infinite; }
         @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        .card-content { position: relative; background: #0d0d0d; border-radius: 22px; padding: 25px; z-index: 1; display: flex; flex-direction: column; align-items: center; }
-        .buy-btn { background: #bf953f; color: #000; font-weight: 900; width: 100%; padding: 16px; border-radius: 16px; text-transform: uppercase; font-size: 12px; border: none; cursor: pointer; }
+        
+        .card-content { position: relative; background: #0d0d0d; border-radius: 26px; padding: 30px 20px; z-index: 1; display: flex; flex-direction: column; align-items: center; }
+        .price-text { font-size: 32px; font-weight: 800; color: #bf953f; margin: 15px 0; }
+        .buy-btn { background: linear-gradient(135deg, #bf953f, #fcf6ba); color: #000; font-weight: 900; font-size: 11px; text-transform: uppercase; padding: 18px; border-radius: 18px; width: 100%; border: none; cursor: pointer; }
 
-        /* АНИМИРОВАННАЯ КНОПКА ЧАТА */
-        @keyframes floatChat {
-            0% { transform: translateY(0px) scale(1); box-shadow: 0 5px 15px rgba(191,149,63,0.3); }
-            50% { transform: translateY(-10px) scale(1.05); box-shadow: 0 15px 25px rgba(191,149,63,0.5); }
-            100% { transform: translateY(0px) scale(1); box-shadow: 0 5px 15px rgba(191,149,63,0.3); }
-        }
-        .chat-trigger { animation: floatChat 3s ease-in-out infinite; background: #bf953f; width: 60px; height: 60px; border-radius: 50%; display: flex; items-center; justify-content: center; font-size: 28px; cursor: pointer; position: fixed; bottom: 25px; right: 25px; z-index: 1000; border: none; }
+        /* МОДАЛЬНОЕ ОКНО ОФОРМЛЕНИЯ */
+        #modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(10px); }
+        .modal-content { position: relative; background: #0d0d0d; width: 100%; max-width: 350px; border-radius: 30px; padding: 30px; border: 1px solid #bf953f; box-shadow: 0 0 30px rgba(191,149,63,0.2); }
+        
+        /* КРАСИВЫЕ ПОЛЯ ВВОДА */
+        .input-box { position: relative; margin-bottom: 20px; width: 100%; }
+        .input-box input { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(191,149,63,0.3); padding: 15px; border-radius: 15px; color: #fff; outline: none; font-size: 14px; transition: 0.3s; }
+        .input-box input:focus { border-color: #bf953f; background: rgba(191,149,63,0.05); box-shadow: 0 0 15px rgba(191,149,63,0.2); }
+        .input-label { font-size: 9px; font-weight: 800; color: #bf953f; text-transform: uppercase; margin-bottom: 6px; display: block; letter-spacing: 1px; }
 
-        /* ОКНО ЧАТА */
-        #chat-window { display: none; position: fixed; bottom: 100px; right: 25px; width: 320px; height: 450px; background: #0d0d0d; border: 1px solid #bf953f; border-radius: 25px; z-index: 1000; flex-direction: column; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
-        .chat-header { background: #bf953f; padding: 15px; color: #000; font-weight: 900; font-size: 12px; text-transform: uppercase; display: flex; justify-content: space-between; }
-        #chat-messages { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
-        .msg { max-width: 80%; padding: 10px 14px; border-radius: 18px; font-size: 13px; font-weight: 600; }
-        .msg-user { align-self: flex-end; background: #bf953f; color: #000; }
-        .msg-admin { align-self: flex-start; background: rgba(255,255,255,0.1); color: #fff; }
+        /* ЧАТ */
+        @keyframes bounceChat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+        .chat-trigger { animation: bounceChat 3s ease-in-out infinite; background: #bf953f; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; position: fixed; bottom: 25px; right: 25px; z-index: 1000; border: none; }
     </style>
 </head>
-<body class="p-5 pb-28">
+<body class="p-5 pb-32">
 
     <header class="text-center py-12">
-        <h1 class="text-4xl font-black italic gold-grad">SIM MARKET</h1>
-        <p class="text-[10px] tracking-[5px] opacity-20 uppercase mt-2 font-bold">Premium Stock</p>
+        <h1 class="text-4xl font-black italic gold-grad tracking-tighter">SIM MARKET</h1>
+        <p class="text-[9px] tracking-[5px] opacity-30 uppercase mt-2 font-extrabold">Premium Numbers</p>
     </header>
 
     <div id="banner-box"><div class="marquee" id="banner-txt"></div></div>
 
-    <div class="max-w-md mx-auto flex gap-2 overflow-x-auto no-scrollbar mb-8">
-        <button onclick="setFilter('all', this)" class="tab-btn tab-active">Все</button>
-        <button onclick="setFilter('mts', this)" class="tab-btn">МТС</button>
-        <button onclick="setFilter('megafon', this)" class="tab-btn">Мегафон</button>
-        <button onclick="setFilter('beeline', this)" class="tab-btn">Билайн</button>
-        <button onclick="setFilter('tele2', this)" class="tab-btn">Tele2</button>
+    <div class="max-w-md mx-auto flex gap-2 overflow-x-auto no-scrollbar mb-8 pb-2">
+        <button onclick="setFilter('all', this)" class="bg-[#bf953f] text-black px-4 py-2 rounded-xl text-[10px] font-bold">Все</button>
+        <button onclick="setFilter('mts', this)" class="bg-white/5 text-white px-4 py-2 rounded-xl text-[10px] font-bold">МТС</button>
+        <button onclick="setFilter('megafon', this)" class="bg-white/5 text-white px-4 py-2 rounded-xl text-[10px] font-bold">Мегафон</button>
     </div>
 
-    <div id="list" class="max-w-md mx-auto">
-        <p class="text-center opacity-20 py-20 uppercase text-[10px]">Загрузка...</p>
+    <div id="list" class="max-w-md mx-auto"></div>
+
+    <div id="modal">
+        <div class="modal-content">
+            <h2 id="m-num" class="text-2xl font-black text-center mb-1"></h2>
+            <p class="text-center text-[9px] opacity-40 uppercase mb-8 gold-grad font-bold">Оформление заявки</p>
+            
+            <div class="input-box">
+                <span class="input-label">Фамилия Имя Отчество</span>
+                <input type="text" id="fio" placeholder="Иванов Иван Иванович">
+            </div>
+            
+            <div class="input-box">
+                <span class="input-label">Контактный телефон</span>
+                <input type="tel" id="contact" placeholder="+7 (___) ___-__-__">
+            </div>
+
+            <button onclick="sendOrder()" class="buy-btn mt-4">Отправить данные</button>
+            <p onclick="closeModal()" class="text-center mt-6 text-[10px] opacity-30 uppercase font-bold cursor-pointer hover:opacity-100">Отмена</p>
+        </div>
     </div>
 
-    <button class="chat-trigger" onclick="toggleChat()">💬</button>
-    
-    <div id="chat-window">
-        <div class="chat-header">
-            <span>Поддержка Online</span>
-            <button onclick="toggleChat()" style="background:none; border:none; font-weight:bold; cursor:pointer;">✕</button>
-        </div>
-        <div id="chat-messages"></div>
-        <div class="p-3 border-t border-white/5 flex gap-2">
-            <input type="text" id="chat-input" placeholder="Ваш вопрос..." class="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white outline-none text-sm">
-            <button onclick="sendMessage()" class="bg-[#bf953f] text-black px-4 rounded-xl font-black">></button>
-        </div>
-    </div>
+    <button class="chat-trigger" onclick="alert('Чат открывается...')">💬</button>
 
     <script>
         const firebaseConfig = { 
@@ -91,100 +91,53 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // 1. Учет визитов
-        db.ref('stats/visits').transaction(c => (c || 0) + 1);
-
-        // 2. Баннер
-        db.ref('settings/banner').on('value', s => {
-            const box = document.getElementById('banner-box');
-            const val = s.val();
-            if(val && val.trim() !== "") {
-                box.style.display = 'block';
-                document.getElementById('banner-txt').innerText = val + " • " + val + " • " + val;
-            } else { box.style.display = 'none'; }
-        });
-
-        // 3. Загрузка номеров
         let allNumbers = {};
-        let currentFilter = 'all';
+        let selNum = '';
 
-        db.ref('inventory').on('value', s => {
-            allNumbers = s.val() || {};
-            render();
-        });
-
-        function setFilter(op, btn) {
-            currentFilter = op;
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('tab-active'));
-            btn.classList.add('tab-active');
-            render();
-        }
+        db.ref('inventory').on('value', s => { allNumbers = s.val() || {}; render(); });
+        db.ref('stats/visits').transaction(c => (c || 0) + 1);
 
         function render() {
             const list = document.getElementById('list');
             list.innerHTML = "";
-            const keys = Object.keys(allNumbers).reverse();
-            let count = 0;
-
-            keys.forEach(k => {
+            Object.keys(allNumbers).reverse().forEach(k => {
                 const item = allNumbers[k];
-                if(currentFilter !== 'all' && item.op !== currentFilter) return;
-                count++;
                 list.innerHTML += `
                     <div class="neon-card">
                         <div class="card-content">
-                            <div class="text-[9px] opacity-30 uppercase font-bold w-full flex justify-between mb-4">
-                                <span>${item.op}</span><span style="color:#bf953f">Premium</span>
+                            <div class="w-full flex justify-between items-center opacity-30 text-[9px] font-bold uppercase mb-4 px-1">
+                                <span>${item.op}</span><span class="gold-grad italic">Elite Number</span>
                             </div>
-                            <div class="text-3xl font-black italic tracking-tighter text-white">+7 ${item.num}</div>
-                            <div class="text-2xl font-bold text-[#bf953f] my-4">${parseInt(item.price).toLocaleString()} ₽</div>
-                            <button class="buy-btn" onclick="alert('Заявка на номер +7 ${item.num} отправлена!')">Купить номер</button>
+                            <div class="text-4xl font-black italic tracking-tighter text-white">+7 ${item.num}</div>
+                            <div class="price-text">${parseInt(item.price).toLocaleString()} ₽</div>
+                            <button class="buy-btn" onclick="openModal('${item.num}')">Оформить номер</button>
                         </div>
                     </div>`;
             });
-
-            if(count === 0) {
-                list.innerHTML = '<p class="text-center opacity-20 py-20 uppercase text-[10px]">Номеров пока нет</p>';
-            }
         }
 
-        // 4. Логика ЧАТА
-        let userId = localStorage.getItem('user_chat_id') || 'u' + Math.floor(Math.random() * 10000);
-        localStorage.setItem('user_chat_id', userId);
-
-        function toggleChat() {
-            const win = document.getElementById('chat-window');
-            const isHidden = win.style.display === 'none' || win.style.display === '';
-            win.style.display = isHidden ? 'flex' : 'none';
-            if(isHidden) loadChat();
+        function openModal(n) {
+            selNum = n;
+            document.getElementById('m-num').innerText = '+7 ' + n;
+            document.getElementById('modal').style.display = 'flex';
         }
 
-        function loadChat() {
-            db.ref('chats/' + userId + '/messages').on('value', s => {
-                const container = document.getElementById('chat-messages');
-                container.innerHTML = "";
-                const msgs = s.val() || {};
-                Object.values(msgs).forEach(m => {
-                    const isUser = m.role === 'user';
-                    container.innerHTML += `<div class="msg ${isUser ? 'msg-user' : 'msg-admin'}">${m.text}</div>`;
-                });
-                container.scrollTop = container.scrollHeight;
+        function closeModal() { document.getElementById('modal').style.display = 'none'; }
+
+        function sendOrder() {
+            const fio = document.getElementById('fio').value;
+            const con = document.getElementById('contact').value;
+            if(!fio || !con) return alert("Пожалуйста, заполните все поля!");
+
+            db.ref('leads').push({
+                num: selNum,
+                fio: fio,
+                contact: con,
+                ts: Date.now()
+            }).then(() => {
+                alert("Заявка успешно отправлена! Мы свяжемся с вами.");
+                closeModal();
             });
-        }
-
-        function sendMessage() {
-            const input = document.getElementById('chat-input');
-            const text = input.value.trim();
-            if(!text) return;
-
-            const msg = { text: text, role: 'user', ts: Date.now() };
-            db.ref('chats/' + userId + '/messages').push(msg);
-            db.ref('chats/' + userId + '/metadata').set({
-                lastMsg: text,
-                ts: Date.now(),
-                id: userId
-            });
-            input.value = "";
         }
     </script>
 </body>
