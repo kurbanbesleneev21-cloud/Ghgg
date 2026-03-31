@@ -3,239 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SIM MARKET | GOLD 1000</title>
+    <title>SIM MARKET | LIVE</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap');
-        
-        body {
-            font-family: 'Manrope', sans-serif;
-            margin: 0;
-            overflow-x: hidden;
-            -webkit-tap-highlight-color: transparent;
-            color: #fff;
-            background: linear-gradient(135deg, #050505, #1a150a, #050505);
-            background-size: 400% 400%;
-            animation: gradient-alive 8s ease infinite;
-        }
-
-        @keyframes gradient-alive {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        .logo-shine {
-            font-weight: 800; font-size: 32px; letter-spacing: -1px; text-transform: uppercase;
-            background: linear-gradient(90deg, #bf953f, #fcf6ba, #b38728, #fcf6ba, #bf953f);
-            background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            animation: shine 3s linear infinite; font-style: italic;
-        }
+        body { font-family: 'Manrope', sans-serif; background: #050505; color: #fff; }
+        .logo-shine { font-weight: 800; font-size: 32px; background: linear-gradient(90deg, #bf953f, #fcf6ba, #bf953f); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shine 3s linear infinite; }
         @keyframes shine { to { background-position: 200% center; } }
-
-        .neon-card {
-            position: relative;
-            background: rgba(191, 149, 63, 0.1);
-            border-radius: 24px;
-            padding: 1.5px; 
-            overflow: hidden;
-        }
-
-        .neon-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: conic-gradient(transparent, #bf953f, #fcf6ba, #bf953f, transparent);
-            animation: rotate 3s linear infinite;
-        }
-
-        .card-content {
-            position: relative;
-            background: #0a0a0a;
-            border-radius: 22.5px;
-            padding: 24px 20px;
-            z-index: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        .buy-btn { background: #bf953f; color: #fff; font-weight: 800; font-size: 11px; text-transform: uppercase; padding: 16px; border-radius: 14px; width: 100%; border: none; cursor: pointer; margin-top: 16px; transition: 0.3s; }
-        .buy-btn:active { transform: scale(0.98); opacity: 0.9; }
-        
-        .tab-btn { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); padding: 10px 18px; border-radius: 12px; font-size: 10px; font-weight: 800; text-transform: uppercase; color: #71717a; white-space: nowrap; transition: 0.2s; }
-        .tab-active { background: #bf953f !important; color: #fff !important; }
-        
-        .input-luxury { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 18px; padding: 18px; width: 100%; color: #fff; text-align: center; outline: none; }
-        
-        #order-modal { display: none; position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,0.98); backdrop-filter: blur(15px); align-items: center; justify-content: center; }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .neon-card { position: relative; background: rgba(191, 149, 63, 0.1); border-radius: 24px; padding: 1.5px; overflow: hidden; margin-bottom: 20px; }
+        .card-content { position: relative; background: #0a0a0a; border-radius: 22.5px; padding: 24px 20px; z-index: 1; display: flex; flex-direction: column; align-items: center; }
+        .buy-btn { background: #bf953f; color: #fff; font-weight: 800; font-size: 11px; text-transform: uppercase; padding: 16px; border-radius: 14px; width: 100%; margin-top: 16px; }
     </style>
 </head>
 <body>
-
-    <header class="flex flex-col items-center py-12 border-b border-white/5">
-        <h1 class="logo-shine">SIM MARKET</h1>
-        <p class="text-[10px] font-bold opacity-30 tracking-[5px] mt-2 uppercase">Premium Fixed Price</p>
+    <header class="text-center py-12 border-b border-white/5">
+        <h1 class="logo-shine italic">SIM MARKET</h1>
+        <p class="text-[10px] font-bold opacity-30 tracking-[5px] mt-2 uppercase">Live Stock from Admin</p>
     </header>
 
     <main class="max-w-md mx-auto p-6">
-        <input type="text" id="q" oninput="draw()" placeholder="Поиск по цифрам..." class="input-luxury mb-8">
-        
-        <div class="flex gap-2 overflow-x-auto no-scrollbar mb-10 pb-2">
-            <button onclick="setFilter('all', this)" class="tab-btn tab-active">Все</button>
-            <button onclick="setFilter('mts', this)" class="tab-btn">МТС</button>
-            <button onclick="setFilter('megafon', this)" class="tab-btn">Мегафон</button>
-            <button onclick="setFilter('beeline', this)" class="tab-btn">Билайн</button>
-            <button onclick="setFilter('yota', this)" class="tab-btn">Yota</button>
-            <button onclick="setFilter('tele2', this)" class="tab-btn">Tele2</button>
+        <div id="list" class="space-y-6 pb-20">
+            <p class="text-center opacity-20 py-10">Загрузка номеров...</p>
         </div>
-
-        <div id="list" class="space-y-6 pb-20"></div>
     </main>
 
-    <div id="order-modal">
-        <div class="neon-card w-[92%] relative">
-            <div class="card-content">
-                <button onclick="closeModal()" class="absolute top-5 right-5 text-xl opacity-30">✕</button>
-                <p id="selected-num" class="text-3xl font-black mb-8 italic tracking-tighter pt-6"></p>
-                <form id="tg-form" class="space-y-4 w-full">
-                    <input type="text" id="fio" placeholder="Ваше ФИО" class="input-luxury" required>
-                    <input type="tel" id="contact" placeholder="Ваш телефон" class="input-luxury" required>
-                    <button type="submit" id="sub-btn" class="buy-btn">Отправить заказ</button>
-                </form>
-            </div>
-        </div>
-    </div>
-
     <script>
-        // ТВОИ КЛЮЧИ FIREBASE
         const firebaseConfig = {
             apiKey: "AIzaSyCRjRJkH4dPxvyYD-37emejFvK11g6hZ44",
             authDomain: "nnnmb-a0b52.firebaseapp.com",
             databaseURL: "https://nnnmb-a0b52-default-rtdb.firebaseio.com",
-            projectId: "nnnmb-a0b52",
-            storageBucket: "nnnmb-a0b52.firebasestorage.app",
-            messagingSenderId: "289986339050",
-            appId: "1:289986339050:web:0e6a5e801e102379d63793"
+            projectId: "nnnmb-a0b52"
         };
-
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        const BOT_TOKEN = '8666944440:AAFAmQuYaYmnJjhuQ9AmdBQim9V-kxNnxAo';
-        const CHAT_ID = '8768514374';
-        
-        const database = [
-            "964-274-80-80", "964-273-63-63", "915-442-54-47", "901-830-77-61", "980-421-22-88", 
-            "916-178-58-77", "995-444-78-58", "901-55-999-55", "964-274-40-40", "986-111-42-49", 
-            "964-807-40-40", "901-833-23-42", "901-771-78-78", "901-551-53-53", "964-803-60-60", 
-            "901-830-81-55", "901-514-95-95", "980-421-22-77", "964-805-90-90", "964-274-60-60", 
-            "964-804-30-30", "985-073-22-00", "986-111-57-75", "964-802-72-72", "985-428-77-99", 
-            "901-562-08-08", "964-274-94-94", "986-333-02-42", "964-275-40-40", "964-803-40-40", 
-            "964-275-20-20", "901-833-09-19", "910-485-11-66", "980-444-52-12", "964-275-90-90", 
-            "901-552-59-59", "915-445-14-49", "916-349-11-00", "916-494-85-90", "964-806-90-90", 
-            "915-234-99-44", "964-803-63-63", "901-830-86-50", "980-419-55-99", "986-333-79-97", 
-            "980-444-50-57", "901-831-75-95", "986-333-80-40", "901-55555-28", "901-833-08-92", 
-            "915-425-66-22", "901-55-333-55", "901-557-56-56", "964-275-80-80", "985-042-99-77", 
-            "901-554-95-95", "985-167-44-11", "901-512-5555", "980-444-65-05", "986-333-84-48", 
-            "901-833-42-82", "915-113-41-12", "901-830-81-15", "964-802-92-92", "916-105-22-66", 
-            "901-554-51-51", "964-274-70-70", "964-802-10-10", "985-246-77-99", "964-801-30-30", 
-            "995-444-70-10", "980-421-22-55", "901-554-1111", "901-558-35-35", "916-042-99-22", 
-            "901-569-3333", "964-274-90-90", "901-513-8888", "999-999-82-64", "977-826-1111", 
-            "901-503-04-04", "901-55555-48", "964-806-40-40", "901-519-3333", "901-547-6666"
-        ];
-
-        function getOp(num) {
-            if (num.startsWith('91') || num.startsWith('985') || num.startsWith('980') || num.startsWith('910')) return 'mts';
-            if (num.startsWith('964')) return 'beeline';
-            if (num.startsWith('986') || num.startsWith('995')) return 'megafon';
-            if (num.startsWith('901') || num.startsWith('977')) return 'tele2';
-            if (num.startsWith('999')) return 'yota';
-            return 'all';
-        }
-
-        let currentFilter = 'all';
-
-        function setFilter(val, el) {
-            currentFilter = val.toLowerCase();
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('tab-active'));
-            el.classList.add('tab-active');
-            draw();
-        }
-
-        function draw() {
+        // СИНХРОНИЗАЦИЯ С АДМИНКОЙ
+        db.ref('inventory').on('value', snapshot => {
             const list = document.getElementById('list');
-            const q = document.getElementById('q').value.toLowerCase();
-            const filtered = database.filter(n => {
-                const cleanNum = n.replace(/-/g, '');
-                const op = getOp(n);
-                return cleanNum.includes(q) && (currentFilter === 'all' || op === currentFilter);
-            });
+            const data = snapshot.val();
             
-            list.innerHTML = filtered.map(n => `
-                <div class="neon-card">
-                    <div class="card-content">
-                        <div class="w-full flex justify-between items-center opacity-40 px-1 text-[9px] font-bold uppercase tracking-widest mb-3">
-                            <span>${getOp(n)}</span><span style="color:#bf953f">Elite</span>
-                        </div>
-                        <div class="text-3xl font-black italic tracking-tighter mb-1">+7 ${n}</div>
-                        <div class="text-2xl font-bold" style="color: #bf953f">1 000 ₽</div>
-                        <button onclick="openModal('${n}')" class="buy-btn">Заказать номер</button>
-                    </div>
-                </div>
-            `).reverse().join('');
-        }
-
-        function openModal(n) { document.getElementById('selected-num').innerText = '+7 ' + n; document.getElementById('order-modal').style.display = 'flex'; }
-        function closeModal() { document.getElementById('order-modal').style.display = 'none'; }
-
-        document.getElementById('tg-form').onsubmit = async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById('sub-btn');
-            const fio = document.getElementById('fio').value;
-            const contact = document.getElementById('contact').value;
-            const num = document.getElementById('selected-num').innerText;
-
-            btn.innerText = "ОТПРАВКА..."; btn.disabled = true;
-
-            try {
-                // 1. ОТПРАВКА В TELEGRAM
-                const msg = `👑 <b>ЗАКАЗ SIM MARKET</b>\n\n🔟 <b>НОМЕР:</b> <code>${num}</code>\n👤 <b>ФИО:</b> ${fio}\n📞 <b>СВЯЗЬ:</b> ${contact}\n💰 <b>ЦЕНА:</b> 1000 руб.`;
-                await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ chat_id: CHAT_ID, text: msg, parse_mode: 'HTML' })
-                });
-
-                // 2. ОТПРАВКА В АДМИНКУ FIREBASE
-                await db.ref('leads').push({
-                    num: num,
-                    fio: fio,
-                    contact: contact,
-                    ts: Date.now()
-                });
-
-                alert('Заказ успешно отправлен!');
-                closeModal();
-            } catch(e) { 
-                alert('Ошибка отправки. Проверьте соединение.'); 
-            } finally { 
-                btn.innerText = "Отправить заказ"; btn.disabled = false; 
+            if (!data) {
+                list.innerHTML = '<p class="text-center opacity-20 py-10">Товара пока нет в админке</p>';
+                return;
             }
-        };
 
-        draw();
+            list.innerHTML = "";
+            Object.keys(data).reverse().forEach(key => {
+                const item = data[key];
+                list.innerHTML += `
+                    <div class="neon-card">
+                        <div class="card-content">
+                            <div class="w-full flex justify-between items-center opacity-40 px-1 text-[9px] font-bold uppercase tracking-widest mb-3">
+                                <span>${item.op}</span><span style="color:#bf953f italic">Elite</span>
+                            </div>
+                            <div class="text-3xl font-black italic tracking-tighter mb-1">+7 ${item.num}</div>
+                            <div class="text-2xl font-bold" style="color: #bf953f">${item.price} ₽</div>
+                            <button onclick="sendOrder('${item.num}')" class="buy-btn">Заказать номер</button>
+                        </div>
+                    </div>`;
+            });
+        });
+
+        function sendOrder(num) {
+            const name = prompt("Введите ваше имя:");
+            const phone = prompt("Введите ваш контактный телефон:");
+            if (name && phone) {
+                db.ref('leads').push({
+                    num: num,
+                    fio: name,
+                    contact: phone,
+                    ts: Date.now()
+                }).then(() => alert("Заявка отправлена!"));
+            }
+        }
     </script>
 </body>
 </html>
