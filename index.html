@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SIM MARKET | LUXURY v2.5</title>
+    <title>SIM MARKET | SECURE v2.7</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
@@ -20,94 +20,85 @@
         }
         @keyframes gold-flow { to { background-position: 200% center; } }
         
-        /* Стили вкладок навигации */
-        .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #0d0d0d; border-top: 1px solid #bf953f; display: flex; justify-content: space-around; padding: 15px 0; z-index: 1000; box-shadow: 0 -10px 30px rgba(0,0,0,0.8); }
-        .nav-item { font-size: 10px; font-weight: 800; text-transform: uppercase; color: #555; text-align: center; cursor: pointer; transition: 0.3s; }
-        .nav-item.active { color: #bf953f; transform: translateY(-3px); }
+        .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #0d0d0d; border-top: 1px solid #bf953f; display: flex; justify-content: space-around; padding: 15px 0; z-index: 1000; }
+        .nav-item { font-size: 10px; font-weight: 800; text-transform: uppercase; color: #555; text-align: center; cursor: pointer; }
+        .nav-item.active { color: #bf953f; }
         .nav-icon { font-size: 20px; display: block; margin-bottom: 4px; }
 
-        .page { display: none; padding: 20px; padding-bottom: 100px; animation: fadeIn 0.5s ease; }
+        .page { display: none; padding: 20px; padding-bottom: 100px; }
         .page.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         .neon-card { position: relative; background: rgba(191, 149, 63, 0.1); border-radius: 28px; padding: 2px; overflow: hidden; margin-bottom: 25px; }
         .card-content { position: relative; background: #0d0d0d; border-radius: 26px; padding: 25px; z-index: 1; }
         
-        .buy-btn { background: linear-gradient(135deg, #bf953f, #fcf6ba); color: #000; font-weight: 900; font-size: 11px; text-transform: uppercase; padding: 16px; border-radius: 16px; width: 100%; cursor: pointer; }
-        
-        /* Модалка входа */
-        #auth-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 2000; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(15px); }
-        .auth-content { background: #0d0d0d; width: 100%; max-width: 350px; border-radius: 30px; padding: 35px; border: 1px solid #bf953f; }
+        .buy-btn { background: linear-gradient(135deg, #bf953f, #fcf6ba); color: #000; font-weight: 900; font-size: 11px; text-transform: uppercase; padding: 18px; border-radius: 18px; width: 100%; cursor: pointer; transition: 0.3s; }
+        .buy-btn:disabled { background: #333; color: #666; cursor: not-allowed; }
+
+        #auth-overlay { display: none; position: fixed; inset: 0; background: #0a0a0a; z-index: 3000; align-items: center; justify-content: center; padding: 20px; }
+        .auth-box { width: 100%; max-width: 350px; background: #0d0d0d; border-radius: 35px; padding: 40px 30px; border: 1px solid #bf953f; }
+        .input-field { width: 100%; background: rgba(255,255,255,0.03); border: 1px solid rgba(191,149,63,0.2); padding: 18px; border-radius: 20px; color: #fff; outline: none; margin-bottom: 15px; }
     </style>
 </head>
 <body>
 
-    <div class="nav-bar">
-        <div class="nav-item active" onclick="showPage('market', this)">
-            <span class="nav-icon">💎</span>Маркет
-        </div>
-        <div class="nav-item" onclick="showPage('cabinet', this)">
-            <span class="nav-icon">👤</span>Кабинет
+    <div id="auth-overlay">
+        <div class="auth-box">
+            <div id="auth-step-1">
+                <h2 class="text-3xl font-black text-center mb-2 gold-grad italic">ACCESS</h2>
+                <p class="text-center text-[9px] opacity-40 uppercase tracking-widest mb-10 font-bold">Верификация устройства</p>
+                
+                <div id="reg-fields">
+                    <input type="text" id="user-name" placeholder="Ваше Имя" class="input-field">
+                </div>
+                <input type="tel" id="user-phone" placeholder="+7 (___) ___-__-__" class="input-field">
+                
+                <button id="send-code-btn" onclick="sendAuthCode()" class="buy-btn mt-4">Получить доступ</button>
+                
+                <p id="toggle-auth-text" class="text-center mt-6 text-[10px] opacity-40 uppercase font-bold cursor-pointer" onclick="toggleAuthMode()">
+                    Уже в клубе? <span class="text-[#bf953f] underline">Войти</span>
+                </p>
+            </div>
+
+            <div id="auth-step-2" style="display: none;">
+                <h2 class="text-2xl font-black text-center mb-1 gold-grad">КОД В PUSH</h2>
+                <input type="text" id="auth-code" placeholder="0000" maxlength="4" class="w-full bg-transparent border-b-2 border-[#bf953f] text-center text-4xl tracking-[15px] font-black outline-none my-10 text-white">
+                <button onclick="verifyAndLogin()" class="buy-btn">Подтвердить</button>
+                <p id="auth-timer" class="text-center mt-6 text-[10px] opacity-40 font-bold"></p>
+            </div>
         </div>
     </div>
 
-    <div id="market" class="page active">
-        <header class="text-center py-10">
-            <h1 class="text-3xl font-black gold-grad tracking-tighter">SIM MARKET</h1>
-            <p class="text-[8px] tracking-[4px] opacity-30 uppercase font-bold text-[#bf953f]">Luxury Numbers Hub</p>
-        </header>
+    <div class="nav-bar">
+        <div class="nav-item active" onclick="showPage('market', this)"><span class="nav-icon">💎</span>Маркет</div>
+        <div class="nav-item" onclick="showPage('cabinet', this)"><span class="nav-icon">👤</span>Кабинет</div>
+    </div>
 
+    <div id="market" class="page active">
+        <header class="text-center py-10"><h1 class="text-4xl font-black gold-grad italic">SIM MARKET</h1></header>
         <div id="list" class="max-w-md mx-auto"></div>
     </div>
 
     <div id="cabinet" class="page">
-        <header class="py-10 text-center">
-            <h1 class="text-3xl font-black gold-grad tracking-tighter">ПРОФИЛЬ</h1>
-        </header>
-
+        <header class="py-10 text-center"><h1 class="text-3xl font-black gold-grad">MY PROFILE</h1></header>
         <div class="max-w-md mx-auto">
             <div class="neon-card">
                 <div class="card-content flex items-center gap-5">
-                    <div class="w-16 h-16 rounded-full bg-[#bf953f] flex items-center justify-center text-2xl">👤</div>
+                    <div class="w-16 h-16 rounded-full bg-[#bf953f]/20 border border-[#bf953f] flex items-center justify-center text-2xl">👑</div>
                     <div>
-                        <h3 id="user-name-display" class="font-black text-lg">Загрузка...</h3>
-                        <p id="user-phone-display" class="text-xs opacity-50"></p>
-                        <span class="text-[9px] bg-[#bf953f]/20 text-[#bf953f] px-2 py-1 rounded-full font-bold uppercase mt-2 inline-block">VIP MEMBER</span>
+                        <h3 id="display-name" class="font-black text-xl uppercase italic">...</h3>
+                        <p id="display-phone" class="text-xs opacity-50 font-bold"></p>
                     </div>
                 </div>
             </div>
-
-            <h4 class="text-[10px] font-black uppercase tracking-widest mb-4 opacity-40">Ваши заявки</h4>
-            <div id="my-orders" class="space-y-4">
-                <p class="text-center text-xs opacity-30 py-10">Заявок пока нет</p>
+            
+            <div class="mt-8">
+                <h4 class="text-[10px] font-black uppercase opacity-30 mb-4 tracking-[3px]">Ваши заказы</h4>
+                <div id="order-list" class="space-y-4"></div>
             </div>
 
-            <button onclick="logout()" class="w-full mt-10 text-[10px] text-red-500 font-black uppercase opacity-50 hover:opacity-100 transition">Выйти из аккаунта</button>
-        </div>
-    </div>
-
-    <div id="auth-modal">
-        <div class="auth-content">
-            <div id="step-1">
-                <h2 class="text-2xl font-black text-center mb-1">VIP ВХОД</h2>
-                <p class="text-center text-[9px] opacity-40 uppercase mb-8 gold-grad font-bold">Введите ваши данные</p>
-                <div class="mb-4">
-                    <input type="text" id="reg-name" placeholder="Ваше Имя" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-[#bf953f] text-sm">
-                </div>
-                <div class="mb-6">
-                    <input type="tel" id="reg-phone" placeholder="+7 (___) ___-__-__" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-[#bf953f] text-sm">
-                </div>
-                <button onclick="startAuth()" class="buy-btn">Получить код доступа</button>
-            </div>
-
-            <div id="step-2" style="display: none;">
-                <h2 class="text-2xl font-black text-center mb-1 italic">PUSH КОД</h2>
-                <p class="text-center text-[9px] opacity-60 uppercase mb-8 text-green-500 font-bold">Проверьте уведомления</p>
-                <input type="text" id="ver-code" placeholder="0000" maxlength="4" class="w-full bg-white/5 border border-[#bf953f] p-4 rounded-2xl text-center text-2xl tracking-[12px] font-black outline-none mb-4">
-                <button onclick="completeAuth()" class="buy-btn">Подтвердить вход</button>
-                <p id="auth-timer" class="text-center mt-6 text-[10px] opacity-50 uppercase font-bold"></p>
-                <button id="auth-retry" onclick="startAuth()" style="display: none;" class="w-full text-center mt-4 text-[10px] text-[#bf953f] underline uppercase font-bold">Повторить отправку</button>
-            </div>
+            <button onclick="logout()" class="w-full mt-20 py-4 border border-red-900/30 rounded-2xl text-[10px] text-red-500 font-black uppercase tracking-widest hover:bg-red-500/10 transition">
+                Выйти из аккаунта
+            </button>
         </div>
     </div>
 
@@ -121,144 +112,144 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
+        let isLoginMode = false;
         let generatedCode = null;
-        let timerInt = null;
+        let timer = null;
 
-        // ПРОВЕРКА ВХОДА ПРИ ЗАГРУЗКЕ
         window.onload = () => {
-            const user = localStorage.getItem('sim_user');
-            if(!user) {
-                document.getElementById('auth-modal').style.display = 'flex';
+            const savedUser = localStorage.getItem('luxury_user');
+            if (!savedUser) {
+                document.getElementById('auth-overlay').style.display = 'flex';
             } else {
-                updateCabinetUI();
+                updateUI();
+                loadMarket();
             }
             if (Notification.permission !== "granted") { Notification.requestPermission(); }
-            loadMarket();
         };
 
-        // НАВИГАЦИЯ МЕЖДУ СТРАНИЦАМИ
-        function showPage(pageId, btn) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-            document.getElementById(pageId).classList.add('active');
-            btn.classList.add('active');
-            
-            if(pageId === 'cabinet') loadUserOrders();
+        function toggleAuthMode() {
+            isLoginMode = !isLoginMode;
+            document.getElementById('reg-fields').style.display = isLoginMode ? 'none' : 'block';
+            document.getElementById('toggle-auth-text').innerHTML = isLoginMode ? 
+                'Нет аккаунта? <span class="text-[#bf953f] underline">Регистрация</span>' : 
+                'Уже есть аккаунт? <span class="text-[#bf953f] underline">Войти</span>';
         }
 
-        // ЛОГИКА АВТОРИЗАЦИИ
-        function startAuth() {
-            const name = document.getElementById('reg-name').value.trim();
-            const phone = document.getElementById('reg-phone').value.trim();
-            if(!name || !phone) return alert("Заполните данные!");
+        // ЗАЩИТА ОТ ПОВТОРНОЙ ГЕНЕРАЦИИ
+        function sendAuthCode() {
+            const phone = document.getElementById('user-phone').value.trim();
+            if(!phone) return alert("Введите номер!");
+
+            // Проверка: делал ли этот номер запрос недавно (защита от дублей)
+            const lastRequest = localStorage.getItem('last_code_ts');
+            if(lastRequest && Date.now() - lastRequest < 60000) {
+                alert("Подождите 1 минуту перед повторным запросом кодом.");
+                return;
+            }
 
             generatedCode = Math.floor(1000 + Math.random() * 9000).toString();
+            localStorage.setItem('last_code_ts', Date.now()); // Запоминаем время запроса
+
             if (Notification.permission === "granted") {
-                new Notification("SIM MARKET", { body: `Ваш секретный код: ${generatedCode}` });
+                new Notification("SECURITY", { body: `Ваш код подтверждения: ${generatedCode}` });
             } else { alert("Ваш код: " + generatedCode); }
 
-            document.getElementById('step-1').style.display = 'none';
-            document.getElementById('step-2').style.display = 'block';
-            startAuthTimer();
+            document.getElementById('auth-step-1').style.display = 'none';
+            document.getElementById('auth-step-2').style.display = 'block';
+            startTimer();
         }
 
-        function startAuthTimer() {
-            let sec = 30;
-            const t = document.getElementById('auth-timer');
-            const r = document.getElementById('auth-retry');
-            r.style.display = 'none';
-            t.style.display = 'block';
-            if(timerInt) clearInterval(timerInt);
-            timerInt = setInterval(() => {
-                sec--;
-                t.innerText = `Регенерация через ${sec}с`;
-                if(sec <= 0) { clearInterval(timerInt); t.style.display = 'none'; r.style.display = 'block'; }
+        function startTimer() {
+            let s = 30;
+            timer = setInterval(() => {
+                s--;
+                document.getElementById('auth-timer').innerText = `Запрос кода доступен через ${s}с`;
+                if(s<=0) { 
+                    clearInterval(timer); 
+                    document.getElementById('auth-timer').innerText = ""; 
+                }
             }, 1000);
         }
 
-        function completeAuth() {
-            const code = document.getElementById('ver-code').value.trim();
+        function verifyAndLogin() {
+            const code = document.getElementById('auth-code').value.trim();
             if(code === generatedCode) {
-                const userData = {
-                    name: document.getElementById('reg-name').value,
-                    phone: document.getElementById('reg-phone').value,
-                    id: 'u' + Date.now()
-                };
-                localStorage.setItem('sim_user', JSON.stringify(userData));
-                db.ref('users/' + userData.id).set(userData);
+                const phone = document.getElementById('user-phone').value;
+                const name = isLoginMode ? "Клиент" : document.getElementById('user-name').value;
                 
-                document.getElementById('auth-modal').style.display = 'none';
-                updateCabinetUI();
-                alert("Добро пожаловать, " + userData.name);
+                const userData = { name, phone, id: 'u' + phone.replace(/\D/g, '') };
+                localStorage.setItem('luxury_user', JSON.stringify(userData));
+                db.ref('users/' + userData.id).update(userData);
+                
+                document.getElementById('auth-overlay').style.display = 'none';
+                updateUI();
+                loadMarket();
             } else { alert("Неверный код!"); }
         }
 
-        function updateCabinetUI() {
-            const user = JSON.parse(localStorage.getItem('sim_user'));
+        function updateUI() {
+            const user = JSON.parse(localStorage.getItem('luxury_user'));
             if(user) {
-                document.getElementById('user-name-display').innerText = user.name;
-                document.getElementById('user-phone-display').innerText = user.phone;
+                document.getElementById('display-name').innerText = user.name || "Гость";
+                document.getElementById('display-phone').innerText = user.phone;
             }
         }
 
-        // ЗАГРУЗКА МАРКЕТА
+        function showPage(id, btn) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            btn.classList.add('active');
+            if(id === 'cabinet') loadOrders();
+        }
+
         function loadMarket() {
             db.ref('inventory').on('value', s => {
                 const list = document.getElementById('list');
                 list.innerHTML = "";
-                const data = s.val() || {};
-                Object.keys(data).reverse().forEach(k => {
-                    const item = data[k];
+                Object.entries(s.val() || {}).forEach(([id, item]) => {
                     list.innerHTML += `
                         <div class="neon-card">
                             <div class="card-content">
-                                <div class="text-[9px] opacity-30 font-bold uppercase mb-2">${item.op}</div>
-                                <div class="text-3xl font-black tracking-tighter italic text-white">+7 ${item.num}</div>
-                                <div class="text-xl font-bold text-[#bf953f] my-3">${parseInt(item.price).toLocaleString()} ₽</div>
-                                <button onclick="buyNumber('${item.num}')" class="buy-btn">Оставить заявку</button>
+                                <p class="text-[10px] opacity-30 font-bold uppercase mb-2">${item.op}</p>
+                                <h2 class="text-3xl font-black text-white italic tracking-tighter">+7 ${item.num}</h2>
+                                <p class="text-xl font-bold text-[#bf953f] mt-3 mb-5">${item.price} ₽</p>
+                                <button onclick="bookNumber('${item.num}')" class="buy-btn">Забронировать</button>
                             </div>
                         </div>`;
                 });
             });
         }
 
-        // ОФОРМЛЕНИЕ ЗАЯВКИ
-        function buyNumber(num) {
-            const user = JSON.parse(localStorage.getItem('sim_user'));
-            db.ref('leads').push({
-                userId: user.id,
-                num: num,
-                fio: user.name,
-                contact: user.phone,
-                ts: Date.now()
-            }).then(() => alert("Заявка принята! Она появится в вашем кабинете."));
+        function bookNumber(num) {
+            const user = JSON.parse(localStorage.getItem('luxury_user'));
+            db.ref('leads').push({ num, userId: user.id, name: user.name, phone: user.phone, ts: Date.now() });
+            alert("Заявка отправлена!");
         }
 
-        // ЗАГРУЗКА ИСТОРИИ ЗАЯВОК В ЛК
-        function loadUserOrders() {
-            const user = JSON.parse(localStorage.getItem('sim_user'));
+        function loadOrders() {
+            const user = JSON.parse(localStorage.getItem('luxury_user'));
             db.ref('leads').orderByChild('userId').equalTo(user.id).once('value', s => {
-                const container = document.getElementById('my-orders');
-                container.innerHTML = "";
-                const data = s.val();
-                if(!data) { container.innerHTML = '<p class="text-center text-xs opacity-30 py-10">У вас пока нет заявок</p>'; return; }
-                
-                Object.values(data).reverse().forEach(ord => {
-                    container.innerHTML += `
-                        <div class="bg-white/5 p-4 rounded-2xl border border-white/10 flex justify-between items-center">
-                            <div>
-                                <p class="text-white font-bold">+7 ${ord.num}</p>
-                                <p class="text-[8px] opacity-40 uppercase">${new Date(ord.ts).toLocaleDateString()}</p>
-                            </div>
-                            <span class="text-[9px] text-green-500 font-bold uppercase">В обработке</span>
-                        </div>`;
+                const out = document.getElementById('order-list');
+                out.innerHTML = "";
+                const val = s.val();
+                if(!val) { out.innerHTML = '<p class="text-center opacity-20 py-10">История пуста</p>'; return; }
+                Object.values(val).reverse().forEach(o => {
+                    out.innerHTML += `<div class="bg-white/5 p-4 rounded-2xl border border-white/5 flex justify-between items-center">
+                        <div><p class="font-bold">+7 ${o.num}</p><p class="text-[8px] opacity-30">${new Date(o.ts).toLocaleDateString()}</p></div>
+                        <span class="text-[9px] text-[#bf953f] font-bold uppercase">В работе</span>
+                    </div>`;
                 });
             });
         }
 
+        // ВЫХОД ИЗ АККАУНТА
         function logout() {
-            localStorage.clear();
-            location.reload();
+            if(confirm("Вы уверены, что хотите выйти из аккаунта?")) {
+                localStorage.removeItem('luxury_user');
+                localStorage.removeItem('last_code_ts'); // Чистим историю запросов тоже
+                location.reload();
+            }
         }
     </script>
 </body>
