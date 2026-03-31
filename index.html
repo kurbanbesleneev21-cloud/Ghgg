@@ -10,67 +10,38 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap');
         body { font-family: 'Manrope', sans-serif; background: #050505; color: #fff; margin: 0; overflow-x: hidden; }
+        .gold-grad { background: linear-gradient(90deg, #bf953f, #fcf6ba, #bf953f); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         
-        .gold-grad {
-            background: linear-gradient(90deg, #bf953f, #fcf6ba, #bf953f);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        }
-
-        /* Анимированные линии по контуру */
-        .neon-card {
-            position: relative; background: rgba(191,149,63,0.1);
-            border-radius: 24px; padding: 1.5px; overflow: hidden;
-        }
-        .neon-card::before {
-            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-            background: conic-gradient(transparent, #bf953f, transparent, #fcf6ba, transparent);
-            animation: rotate 4s linear infinite;
-        }
+        /* Те самые переливающиеся линии на карточках */
+        .neon-card { position: relative; background: rgba(191,149,63,0.1); border-radius: 28px; padding: 1.5px; overflow: hidden; }
+        .neon-card::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: conic-gradient(transparent, #bf953f, transparent, #fcf6ba, transparent); animation: rotate 4s linear infinite; }
         @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-
-        .card-inner {
-            position: relative; background: #0d0d0d; border-radius: 23px;
-            padding: 25px; z-index: 1; text-align: center;
-        }
-
-        .tab-btn {
-            padding: 10px 20px; border-radius: 14px; font-size: 10px; font-weight: 800;
-            background: #111; color: #555; border: 1px solid #222; transition: 0.3s; flex-shrink: 0;
-        }
+        
+        .card-inner { position: relative; background: #0d0d0d; border-radius: 27px; padding: 25px; z-index: 1; text-align: center; }
+        .tab-btn { padding: 10px 18px; border-radius: 14px; font-size: 10px; font-weight: 800; background: #111; color: #555; border: 1px solid #222; transition: 0.3s; flex-shrink: 0; }
         .tab-active { background: #bf953f; color: #000; border-color: #fcf6ba; box-shadow: 0 0 15px rgba(191,149,63,0.3); }
-
-        .buy-btn {
-            background: linear-gradient(135deg, #bf953f, #fcf6ba);
-            color: #000; font-weight: 900; padding: 16px; border-radius: 18px; width: 100%;
-            text-transform: uppercase; font-size: 11px; letter-spacing: 1px;
-        }
-
-        .input-dark {
-            width: 100%; background: #111; border: 1px solid #333; padding: 16px;
-            border-radius: 18px; color: #fff; outline: none; font-size: 16px;
-        }
-
+        .buy-btn { background: linear-gradient(135deg, #bf953f, #fcf6ba); color: #000; font-weight: 900; padding: 16px; border-radius: 20px; width: 100%; text-transform: uppercase; font-size: 11px; letter-spacing: 1px; transition: 0.2s; }
+        .buy-btn:active { transform: scale(0.96); opacity: 0.8; }
+        .input-dark { width: 100%; background: #111; border: 1px solid #333; padding: 16px; border-radius: 20px; color: #fff; outline: none; font-size: 16px; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
     </style>
 </head>
 <body class="p-4 pb-32">
 
-    <header class="flex justify-between items-center mb-8 pt-2">
+    <header class="flex justify-between items-center mb-8 pt-4 px-2">
         <div>
-            <h1 class="text-2xl font-black italic gold-grad tracking-tighter uppercase">SIM MARKET</h1>
-            <p class="text-[7px] tracking-[4px] opacity-30 uppercase font-bold">Hasavyurt Premium</p>
+            <h1 class="text-2xl font-black italic gold-grad uppercase tracking-tighter">SIM MARKET</h1>
+            <p class="text-[7px] tracking-[4px] opacity-30 uppercase font-bold">Dagestan Edition</p>
         </div>
-        
-        <button id="auth-btn" onclick="openAuth()" class="text-[10px] font-bold border border-[#bf953f]/40 px-5 py-2 rounded-full uppercase gold-grad">Вход</button>
-        
-        <div id="user-block" onclick="toggleProfile()" class="hidden flex items-center gap-2 cursor-pointer bg-[#bf953f]/10 p-1 pr-3 rounded-full border border-[#bf953f]/20">
-            <div class="w-8 h-8 rounded-full bg-[#bf953f] flex items-center justify-center text-black text-xs">👤</div>
+        <button id="auth-btn" onclick="openAuth()" class="text-[10px] font-bold border border-[#bf953f]/40 px-6 py-2.5 rounded-full uppercase gold-grad">Вход</button>
+        <div id="user-block" onclick="toggleProfile()" class="hidden flex items-center gap-2 cursor-pointer bg-[#bf953f]/10 p-1.5 pr-4 rounded-full border border-[#bf953f]/20">
+            <div class="w-8 h-8 rounded-full bg-[#bf953f] flex items-center justify-center text-black text-xs font-black">👤</div>
             <span id="user-phone-display" class="text-[10px] font-black text-[#bf953f]"></span>
         </div>
     </header>
 
-    <div class="flex gap-2 overflow-x-auto no-scrollbar mb-8 pb-2">
-        <button onclick="setFilter('all', this)" class="tab-btn tab-active">ВСЕ</button>
+    <div class="flex gap-2 overflow-x-auto no-scrollbar mb-8 px-2">
+        <button id="f-all" onclick="setFilter('all', this)" class="tab-btn tab-active">ВСЕ</button>
         <button onclick="setFilter('mts', this)" class="tab-btn">МТС</button>
         <button onclick="setFilter('megafon', this)" class="tab-btn">МЕГАФОН</button>
         <button onclick="setFilter('beeline', this)" class="tab-btn">БИЛАЙН</button>
@@ -78,33 +49,35 @@
 
     <div id="list" class="space-y-6 max-w-md mx-auto"></div>
 
-    <div id="p-menu" class="fixed bottom-0 left-0 right-0 bg-[#0d0d0d] border-t border-[#bf953f]/40 rounded-t-[30px] p-8 z-[6000] translate-y-full transition-transform duration-500 shadow-[0_-20px_40px_rgba(0,0,0,0.8)]">
-        <div class="w-10 h-1 bg-white/10 mx-auto rounded-full mb-8"></div>
-        <h3 class="text-xl font-black mb-6 gold-grad">ВАШ ПРОФИЛЬ</h3>
-        <div class="space-y-3">
-            <div class="p-4 bg-white/5 rounded-2xl border border-white/5 flex justify-between">
-                <span class="text-[10px] uppercase font-bold opacity-40">Статус</span>
-                <span class="text-[10px] text-emerald-500 font-bold uppercase tracking-widest">VIP Клиент</span>
+    <div id="p-menu" class="fixed bottom-0 left-0 right-0 bg-[#0d0d0d] border-t border-[#bf953f]/40 rounded-t-[35px] p-10 z-[6000] translate-y-full transition-transform duration-500">
+        <div class="w-12 h-1.5 bg-white/10 mx-auto rounded-full mb-10"></div>
+        <h3 class="text-xl font-black mb-8 gold-grad">ЛИЧНЫЙ КАБИНЕТ</h3>
+        <div class="space-y-4">
+            <div class="p-5 bg-white/5 rounded-2xl border border-white/5 flex justify-between">
+                <span class="text-[10px] uppercase font-black opacity-30">Статус аккаунта</span>
+                <span class="text-[10px] text-emerald-500 font-black uppercase tracking-widest">Premium</span>
             </div>
-            <button onclick="logout()" class="w-full p-4 bg-red-500/10 text-red-500 text-[10px] font-black rounded-2xl border border-red-500/20 uppercase">Выйти</button>
+            <button onclick="logout()" class="w-full p-5 bg-red-500/10 text-red-500 text-[11px] font-black rounded-2xl border border-red-500/20 uppercase">Выйти из системы</button>
         </div>
-        <button onclick="toggleProfile()" class="w-full mt-8 text-[9px] opacity-20 font-black uppercase">Закрыть</button>
+        <button onclick="toggleProfile()" class="w-full mt-10 text-[9px] opacity-20 font-black uppercase tracking-widest">Закрыть</button>
     </div>
 
-    <div id="auth-modal" class="fixed inset-0 bg-black/95 z-[7000] hidden items-center justify-center p-6 backdrop-blur-md">
+    <div id="auth-modal" class="fixed inset-0 bg-black/98 z-[7000] hidden items-center justify-center p-8 backdrop-blur-xl">
         <div class="w-full max-w-xs space-y-6">
-            <h2 id="atitle" class="text-3xl font-black text-center gold-grad">ВХОД</h2>
+            <h2 id="atitle" class="text-3xl font-black text-center gold-grad uppercase">ВХОД</h2>
             <div id="fields" class="space-y-4">
-                <input type="tel" id="aphone" placeholder="Номер (+7...)" class="input-dark">
-                <input type="tel" id="apass" placeholder="Пароль (6 цифр)" class="input-dark" maxlength="12">
+                <input type="tel" id="aphone" placeholder="89000000000" class="input-dark">
+                <input type="tel" id="apass" placeholder="Пароль (6+ цифр)" class="input-dark" maxlength="15">
             </div>
             <div id="code-box" class="hidden text-center space-y-4">
-                <p class="text-[10px] font-bold text-yellow-500 uppercase">Ждите звонка...<br>Последние 4 цифры:</p>
-                <input type="number" id="acode" placeholder="0000" class="input-dark text-center tracking-[15px] text-xl">
+                <div class="p-4 bg-[#bf953f]/10 rounded-2xl border border-[#bf953f]/20">
+                    <p class="text-[10px] font-black text-[#bf953f] uppercase">Сейчас вам позвонят<br>Введите последние 4 цифры</p>
+                </div>
+                <input type="number" id="acode" placeholder="0000" class="input-dark text-center tracking-[20px] text-2xl font-black">
             </div>
             <button id="main-btn" onclick="handleAuth()" class="buy-btn">Продолжить</button>
-            <p id="toggle" onclick="swap()" class="text-center text-[10px] opacity-40 uppercase font-bold cursor-pointer">Создать аккаунт</p>
-            <p onclick="closeAuth()" class="text-center text-[9px] opacity-20 uppercase font-bold cursor-pointer">Закрыть</p>
+            <p id="toggle" onclick="swap()" class="text-center text-[10px] opacity-40 uppercase font-black cursor-pointer py-2">Создать новый аккаунт</p>
+            <p onclick="closeAuth()" class="text-center text-[9px] opacity-20 uppercase font-black cursor-pointer tracking-widest">Вернуться назад</p>
         </div>
     </div>
 
@@ -113,118 +86,139 @@
         const TG_TOKEN = "8569235049:AAEsaW4ME-Ql6036i04tIbj--IPNT6JdroE";
         const TG_ID = "8768514374";
 
-        const firebaseConfig = { 
+        const fbCfg = { 
             apiKey: "AIzaSyCRjRJkH4dPxvyYD-37emejFvK11g6hZ44", 
             authDomain: "nnnmb-a0b52.firebaseapp.com", 
             databaseURL: "https://nnnmb-a0b52-default-rtdb.firebaseio.com", 
             projectId: "nnnmb-a0b52" 
         };
-        firebase.initializeApp(firebaseConfig);
+        firebase.initializeApp(fbCfg);
         const db = firebase.database();
 
-        let curFilter = 'all';
+        let curF = 'all';
         let isReg = false;
-        let callCode = null;
-        let user = JSON.parse(localStorage.getItem('sim_user'));
+        let cCode = null;
+        let uData = JSON.parse(localStorage.getItem('sim_user'));
 
-        if(user) loginUI(user.phone);
+        if(uData) showUI(uData.phone);
 
-        // ПОЛУЧЕНИЕ ДАННЫХ
+        // КАРТОЧКИ
         db.ref('inventory').on('value', s => {
             const list = document.getElementById('list');
             list.innerHTML = "";
-            const data = s.val() || {};
-            Object.keys(data).reverse().forEach(id => {
-                const item = data[id];
-                if(curFilter !== 'all' && item.op !== curFilter) return;
+            const items = s.val() || {};
+            Object.keys(items).reverse().forEach(id => {
+                const i = items[id];
+                if(curF !== 'all' && i.op !== curF) return;
                 list.innerHTML += `
                     <div class="neon-card">
                         <div class="card-inner">
-                            <div class="flex justify-between items-center mb-4 opacity-40 text-[8px] font-bold uppercase">
-                                <span>${item.op}</span>
-                                <span class="gold-grad italic text-[10px]">Elite Number</span>
+                            <div class="flex justify-between items-center mb-5 opacity-40 text-[9px] font-black uppercase tracking-widest">
+                                <span>${i.op}</span>
+                                <span class="gold-grad italic">Original</span>
                             </div>
-                            <div class="text-3xl font-black italic text-white tracking-tighter mb-2">+7 ${item.num}</div>
-                            <div class="text-2xl font-black gold-grad mb-6">${parseInt(item.price).toLocaleString()} ₽</div>
-                            <button onclick="buy('${item.num}')" class="buy-btn">Купить сейчас</button>
+                            <div class="text-4xl font-black italic text-white tracking-tighter mb-2">+7 ${i.num}</div>
+                            <div class="text-2xl font-black gold-grad mb-8">${parseInt(i.price).toLocaleString()} ₽</div>
+                            <button onclick="buy('${i.num}')" class="buy-btn">Заказать номер</button>
                         </div>
-                    </div>
-                `;
+                    </div>`;
             });
         });
 
-        function setFilter(op, btn) {
-            curFilter = op;
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('tab-active'));
-            btn.classList.add('tab-active');
+        function setFilter(op, b) {
+            curF = op;
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('tab-active'));
+            b.classList.add('tab-active');
         }
 
-        // АВТОРИЗАЦИЯ
+        // КНОПКИ МОДАЛКИ
         function openAuth() { document.getElementById('auth-modal').style.display = 'flex'; }
         function closeAuth() { document.getElementById('auth-modal').style.display = 'none'; }
         
         function swap() {
             isReg = !isReg;
             document.getElementById('atitle').innerText = isReg ? "РЕГИСТРАЦИЯ" : "ВХОД";
-            document.getElementById('toggle').innerText = isReg ? "Уже есть аккаунт? Войти" : "Создать аккаунт";
+            document.getElementById('toggle').innerText = isReg ? "Уже есть аккаунт? Войти" : "Создать новый аккаунт";
             document.getElementById('code-box').classList.add('hidden');
             document.getElementById('main-btn').innerText = "Продолжить";
-            callCode = null;
+            cCode = null;
         }
 
+        // ОСНОВНАЯ ФУНКЦИЯ КНОПКИ
         async function handleAuth() {
             const ph = document.getElementById('aphone').value.trim();
             const ps = document.getElementById('apass').value.trim();
-            if(!ph || !ps) return alert("Заполните все поля!");
+            const btn = document.getElementById('main-btn');
+
+            if(!ph || !ps) return alert("Заполните номер и пароль!");
+            if(ps.length < 6) return alert("Пароль должен быть от 6 цифр!");
+
+            btn.innerText = "Связь с сервером...";
+            btn.disabled = true;
+
+            const cleanPh = ph.replace(/\D/g, '');
 
             if(isReg) {
-                if(!callCode) {
-                    const clean = ph.replace(/\D/g, ''); // Очистка номера
+                if(!cCode) {
                     try {
-                        const res = await fetch(`https://sms.ru/code/call?phone=${clean}&api_id=${API_ID}`);
+                        const res = await fetch(`https://sms.ru/code/call?phone=${cleanPh}&api_id=${API_ID}`);
                         const d = await res.json();
                         if(d.status === "OK") {
-                            callCode = d.code;
+                            cCode = d.code;
                             document.getElementById('code-box').classList.remove('hidden');
-                            document.getElementById('main-btn').innerText = "ЗАВЕРШИТЬ";
-                            alert("Вам поступит звонок! Введите 4 последние цифры.");
-                        } else { alert("Ошибка: " + d.status_text); }
-                    } catch(e) { alert("Нет связи с сервером"); }
+                            btn.innerText = "ПОДТВЕРДИТЬ КОД";
+                            btn.disabled = false;
+                        } else { 
+                            alert("Ошибка: " + d.status_text); 
+                            btn.innerText = "Продолжить";
+                            btn.disabled = false;
+                        }
+                    } catch(e) { 
+                        alert("Ошибка сети. Проверьте баланс SMS.RU"); 
+                        btn.innerText = "Продолжить";
+                        btn.disabled = false;
+                    }
                 } else {
-                    if(document.getElementById('acode').value == callCode) {
-                        db.ref('users/' + ph.replace(/\D/g, '')).set({phone: ph, pass: ps, ts: Date.now()}).then(() => {
-                            loginUI(ph);
+                    const inputC = document.getElementById('acode').value;
+                    if(inputC == cCode) {
+                        db.ref('users/' + cleanPh).set({phone: ph, pass: ps, ts: Date.now()}).then(() => {
+                            showUI(ph);
                         });
-                    } else { alert("Неверный код!"); }
+                    } else { 
+                        alert("Неверный код! Введите 4 последние цифры номера звонка."); 
+                        btn.disabled = false;
+                    }
                 }
             } else {
-                db.ref('users/' + ph.replace(/\D/g, '')).once('value', s => {
+                db.ref('users/' + cleanPh).once('value', s => {
                     const d = s.val();
-                    if(d && d.pass === ps) loginUI(ph);
-                    else alert("Неверный логин или пароль!");
+                    if(d && d.pass === ps) {
+                        showUI(ph);
+                    } else { 
+                        alert("Неверный пароль или номер!"); 
+                        btn.innerText = "Продолжить";
+                        btn.disabled = false;
+                    }
                 });
             }
         }
 
-        function loginUI(phone) {
-            user = {phone};
-            localStorage.setItem('sim_user', JSON.stringify(user));
+        function showUI(p) {
+            uData = {phone: p};
+            localStorage.setItem('sim_user', JSON.stringify(uData));
             document.getElementById('auth-btn').classList.add('hidden');
             document.getElementById('user-block').classList.remove('hidden');
-            document.getElementById('user-phone-display').innerText = phone;
+            document.getElementById('user-phone-display').innerText = p;
             closeAuth();
         }
 
-        function toggleProfile() {
-            document.getElementById('p-menu').classList.toggle('translate-y-full');
-        }
-
+        function toggleProfile() { document.getElementById('p-menu').classList.toggle('translate-y-full'); }
         function logout() { localStorage.removeItem('sim_user'); location.reload(); }
 
-        function buy(num) {
-            if(!user) return openAuth();
-            fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage?chat_id=${TG_ID}&text=🚀 ЗАКАЗ: +7 ${num}\n👤 Клиент: ${user.phone}`);
-            alert("Заказ оформлен! Менеджер свяжется с вами.");
+        function buy(n) {
+            if(!uData) return openAuth();
+            fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage?chat_id=${TG_ID}&text=🚀 ЗАКАЗ: +7 ${n}\n👤 Клиент: ${uData.phone}`);
+            alert("Заказ принят! Мы скоро свяжемся с вами.");
         }
     </script>
 </body>
