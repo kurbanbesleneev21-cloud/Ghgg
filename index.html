@@ -3,14 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SIM MARKET | PREMUM LIVE</title>
+    <title>SIM MARKET | ELITE LIVE</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap');
         
-        body { font-family: 'Manrope', sans-serif; background: #050505; color: #fff; margin:0; }
+        /* КРУТОЙ ПЕРЕЛИВАЮЩИЙСЯ ФОН */
+        body { 
+            font-family: 'Manrope', sans-serif; 
+            margin: 0;
+            background: linear-gradient(135deg, #0a0a0a, #111111, #0a0a0a);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: #fff; 
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
 
         /* ЛОГОТИП С ЗОЛОТЫМ БЛЕСКОМ */
         .logo-shine {
@@ -31,27 +45,25 @@
         }
         .tab-active {
             background: #bf953f; color: #000; border-color: #bf953f;
+            box-shadow: 0 4px 15px rgba(191, 149, 63, 0.4);
         }
         .no-scrollbar::-webkit-scrollbar { display: none; }
 
-        /* --- ТА САМАЯ ВРАЩАЮЩАЯСЯ И ПЕРЕЛИВАЮЩАЯСЯ РАМКА --- */
+        /* ВРАЩАЮЩАЯСЯ ЗОЛОТАЯ РАМКА */
         .neon-card {
             position: relative;
             background: rgba(191, 149, 63, 0.1);
             border-radius: 24px;
-            padding: 2px; /* Толщина рамки */
+            padding: 2px;
             overflow: hidden;
             margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
         .neon-card::before {
             content: '';
             position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            /* Золотой градиент, который будет вращаться */
+            top: -50%; left: -50%; width: 200%; height: 200%;
             background: conic-gradient(transparent, #bf953f, #fcf6ba, #bf953f, transparent);
             animation: rotate 3s linear infinite;
         }
@@ -63,7 +75,7 @@
 
         .card-content {
             position: relative;
-            background: #0a0a0a;
+            background: #0d0d0d;
             border-radius: 22px;
             padding: 30px 20px;
             z-index: 1;
@@ -72,27 +84,15 @@
             align-items: center;
         }
 
-        /* МАССИВНЫЙ ШРИФТ ЦЕНЫ (КАК БЫЛО РАНЬШЕ) */
         .price-text {
-            font-size: 28px;
-            font-weight: 800;
-            color: #bf953f;
-            margin: 10px 0 20px 0;
-            letter-spacing: -1px;
+            font-size: 28px; font-weight: 800; color: #bf953f;
+            margin: 10px 0 20px 0; letter-spacing: -1px;
         }
 
         .buy-btn {
-            background: #bf953f;
-            color: #000;
-            font-weight: 800;
-            font-size: 12px;
-            text-transform: uppercase;
-            padding: 18px;
-            border-radius: 16px;
-            width: 100%;
-            border: none;
-            cursor: pointer;
-            transition: 0.3s;
+            background: #bf953f; color: #000; font-weight: 800;
+            font-size: 12px; text-transform: uppercase; padding: 18px;
+            border-radius: 16px; width: 100%; border: none; cursor: pointer;
         }
         
         .buy-btn:active { transform: scale(0.96); }
@@ -102,7 +102,7 @@
 
     <header class="flex flex-col items-center py-10">
         <h1 class="logo-shine">SIM MARKET</h1>
-        <p class="text-[10px] font-bold opacity-30 tracking-[5px] mt-2 uppercase">Elite Live Stock</p>
+        <p class="text-[10px] font-bold opacity-30 tracking-[5px] mt-2 uppercase">Premium Store</p>
     </header>
 
     <div class="max-w-md mx-auto mb-8">
@@ -117,7 +117,7 @@
     </div>
 
     <div id="list" class="max-w-md mx-auto pb-20">
-        <p class="text-center opacity-20 py-10">Загрузка витрины...</p>
+        <p class="text-center opacity-20 py-10 text-sm">Загрузка витрины...</p>
     </div>
 
     <script>
