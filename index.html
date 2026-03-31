@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SIM MARKET | LUXURY STOCK</title>
+    <title>SIM MARKET | LUXURY STOCK v2.0</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
@@ -26,7 +26,6 @@
 
         .tab-btn { background: rgba(255,255,255,0.05); padding: 10px 18px; border-radius: 12px; font-size: 10px; font-weight: 800; text-transform: uppercase; color: #555; transition: 0.3s; border: 1px solid transparent; flex-shrink: 0; }
         .tab-active { background: #bf953f; color: #000; box-shadow: 0 5px 15px rgba(191,149,63,0.4); border-color: #fcf6ba; }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
 
         .neon-card { position: relative; background: rgba(191, 149, 63, 0.1); border-radius: 28px; padding: 2px; overflow: hidden; margin-bottom: 30px; }
         .neon-card::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: conic-gradient(transparent, #bf953f, #fcf6ba, #bf953f, transparent); animation: rotate 4s linear infinite; }
@@ -35,7 +34,7 @@
         .card-content { position: relative; background: #0d0d0d; border-radius: 26px; padding: 30px 20px; z-index: 1; display: flex; flex-direction: column; align-items: center; }
         .price-text { font-size: 32px; font-weight: 800; color: #bf953f; margin: 15px 0; }
         .buy-btn { background: linear-gradient(135deg, #bf953f, #fcf6ba); color: #000; font-weight: 900; font-size: 11px; text-transform: uppercase; padding: 18px; border-radius: 18px; width: 100%; border: none; cursor: pointer; transition: 0.3s; }
-        .buy-btn:disabled { opacity: 0.5; filter: grayscale(1); cursor: not-allowed; }
+        .buy-btn:active { transform: scale(0.98); }
 
         #modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 2000; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(10px); }
         .modal-content { position: relative; background: #0d0d0d; width: 100%; max-width: 350px; border-radius: 30px; padding: 30px; border: 1px solid #bf953f; box-shadow: 0 0 40px rgba(191,149,63,0.2); }
@@ -44,8 +43,7 @@
         .input-box input:focus { border-color: #bf953f; background: rgba(191,149,63,0.05); }
         .label { font-size: 9px; font-weight: 800; color: #bf953f; text-transform: uppercase; margin-bottom: 8px; display: block; letter-spacing: 1px; }
 
-        @keyframes bounceChat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
-        .chat-trigger { animation: bounceChat 3s ease-in-out infinite; background: #bf953f; width: 65px; height: 65px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; position: fixed; bottom: 30px; right: 25px; z-index: 1000; border: none; box-shadow: 0 10px 30px rgba(191,149,63,0.4); cursor: pointer; }
+        .chat-trigger { background: #bf953f; width: 65px; height: 65px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; position: fixed; bottom: 30px; right: 25px; z-index: 1000; border: none; box-shadow: 0 10px 30px rgba(191,149,63,0.4); cursor: pointer; }
         #chat-window { display: none; position: fixed; bottom: 110px; right: 25px; width: 330px; height: 480px; background: #0d0d0d; border: 1px solid #bf953f; border-radius: 30px; z-index: 1000; flex-direction: column; overflow: hidden; box-shadow: 0 25px 60px rgba(0,0,0,0.9); }
         .chat-header { background: #bf953f; padding: 18px; color: #000; font-weight: 900; font-size: 11px; text-transform: uppercase; display: flex; justify-content: space-between; }
         #chat-messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
@@ -58,7 +56,7 @@
 
     <header class="text-center py-12">
         <h1 class="text-4xl font-black italic gold-grad tracking-tighter">SIM MARKET</h1>
-        <p class="text-[9px] tracking-[5px] opacity-30 uppercase mt-2 font-extrabold">Exclusive Selection</p>
+        <p class="text-[9px] tracking-[5px] opacity-30 uppercase mt-2 font-extrabold text-[#bf953f]">Exclusive Selection v2.0</p>
     </header>
 
     <div id="banner-box"><div class="marquee" id="banner-txt"></div></div>
@@ -86,19 +84,19 @@
                     <span class="label">Ваш контактный телефон</span>
                     <input type="tel" id="contact" placeholder="+7 (999) 000-00-00">
                 </div>
-                <button onclick="requestPushCode()" class="buy-btn mt-4">Получить код в Push</button>
+                <button onclick="requestVerification()" class="buy-btn mt-4">Получить код в Push</button>
             </div>
 
             <div id="step-2" style="display: none;">
-                <h2 class="text-2xl font-black text-center mb-1 text-white">Код из Push</h2>
-                <p class="text-center text-[9px] opacity-40 uppercase mb-8 text-green-500 font-bold">Подтвердите владение номером</p>
+                <h2 class="text-2xl font-black text-center mb-1 text-white italic">Код из Push</h2>
+                <p class="text-center text-[9px] opacity-60 uppercase mb-8 text-green-500 font-bold">Проверьте уведомления</p>
                 <div class="input-box">
                     <span class="label">Введите 4 цифры</span>
-                    <input type="text" id="verification-code" placeholder="0000" maxlength="4" class="text-center text-2xl tracking-[10px]">
+                    <input type="text" id="ver-code" placeholder="0000" maxlength="4" class="text-center text-2xl tracking-[12px] font-black">
                 </div>
-                <button onclick="verifyAndFinish()" class="buy-btn mt-4">Подтвердить и отправить</button>
-                <p id="timer-box" class="text-center mt-6 text-[10px] opacity-50 uppercase font-bold text-white"></p>
-                <button id="retry-btn" onclick="requestPushCode()" class="hidden w-full text-center mt-4 text-[10px] text-[#bf953f] underline uppercase font-bold">Отправить код повторно</button>
+                <button onclick="confirmAndSend()" class="buy-btn mt-4">Подтвердить заявку</button>
+                <p id="retry-timer" class="text-center mt-6 text-[10px] opacity-50 uppercase font-bold"></p>
+                <button id="retry-btn" onclick="requestVerification()" style="display:none;" class="w-full text-center mt-4 text-[10px] text-[#bf953f] underline uppercase font-bold">Отправить код повторно</button>
             </div>
 
             <p onclick="closeModal()" class="text-center mt-6 text-[10px] opacity-30 uppercase font-bold cursor-pointer hover:opacity-100">Закрыть</p>
@@ -108,10 +106,7 @@
     <button class="chat-trigger" onclick="toggleChat()">💬</button>
     
     <div id="chat-window">
-        <div class="chat-header">
-            <span>VIP Поддержка</span>
-            <button onclick="toggleChat()" style="background:none; border:none; font-weight:bold; cursor:pointer;">✕</button>
-        </div>
+        <div class="chat-header"><span>VIP Поддержка</span><button onclick="toggleChat()" style="background:none; border:none; font-weight:bold; cursor:pointer;">✕</button></div>
         <div id="chat-messages"></div>
         <div class="p-4 border-t border-white/5 flex gap-2">
             <input type="text" id="chat-input" placeholder="Напишите нам..." class="flex-1 bg-white/5 border border-white/10 rounded-2xl px-5 py-4 text-white outline-none text-sm">
@@ -133,12 +128,10 @@
         let selNum = '';
         let currentFilter = 'all';
         let generatedCode = null;
-        let retryTimer = null;
+        let timerInt = null;
 
-        // Запрос разрешений на Push при старте
-        if (Notification.permission !== "granted") {
-            Notification.requestPermission();
-        }
+        // Запрос Push-прав при загрузке
+        if (Notification.permission !== "granted") { Notification.requestPermission(); }
 
         db.ref('inventory').on('value', s => { allNumbers = s.val() || {}; render(); });
         db.ref('settings/banner').on('value', s => {
@@ -146,7 +139,6 @@
             if(s.val()) { box.style.display = 'block'; document.getElementById('banner-txt').innerText = s.val() + " • " + s.val(); }
             else { box.style.display = 'none'; }
         });
-        db.ref('stats/visits').transaction(c => (c || 0) + 1);
 
         function setFilter(op, btn) {
             currentFilter = op;
@@ -179,35 +171,25 @@
             selNum = n;
             document.getElementById('m-num').innerText = '+7 ' + n;
             document.getElementById('modal').style.display = 'flex';
-            resetSteps();
-        }
-
-        function closeModal() { document.getElementById('modal').style.display = 'none'; }
-
-        function resetSteps() {
             document.getElementById('step-1').style.display = 'block';
             document.getElementById('step-2').style.display = 'none';
-            document.getElementById('verification-code').value = '';
-            if(retryTimer) clearInterval(retryTimer);
         }
+        function closeModal() { document.getElementById('modal').style.display = 'none'; if(timerInt) clearInterval(timerInt); }
 
-        // ЛОГИКА ПУШ И РЕГЕНЕРАЦИИ
-        function requestPushCode() {
+        // --- ЛОГИКА ПОДТВЕРЖДЕНИЯ ---
+        function requestVerification() {
             const fio = document.getElementById('fio').value.trim();
             const con = document.getElementById('contact').value.trim();
-            if(!fio || !con) return alert("Пожалуйста, заполните данные!");
+            if(!fio || !con) return alert("Заполните поля!");
 
-            // Регенерация кода
+            // Генерация кода
             generatedCode = Math.floor(1000 + Math.random() * 9000).toString();
             
-            // Отправка Push-уведомления браузера
+            // Push уведомление
             if (Notification.permission === "granted") {
-                new Notification("SIM MARKET", {
-                    body: `Ваш код подтверждения: ${generatedCode}`,
-                    icon: "https://cdn-icons-png.flaticon.com/512/845/845646.png"
-                });
+                new Notification("SIM MARKET", { body: `Ваш код подтверждения: ${generatedCode}` });
             } else {
-                alert("Разрешите уведомления! Ваш тестовый код: " + generatedCode);
+                alert("Ваш код: " + generatedCode);
             }
 
             // Переход на шаг 2
@@ -218,53 +200,37 @@
         }
 
         function startTimer() {
-            let timeLeft = 30;
-            const timerBox = document.getElementById('timer-box');
+            let sec = 30;
+            const timerText = document.getElementById('retry-timer');
             const retryBtn = document.getElementById('retry-btn');
-            
-            retryBtn.classList.add('hidden');
-            timerBox.classList.remove('hidden');
-            
-            if(retryTimer) clearInterval(retryTimer);
-            retryTimer = setInterval(() => {
-                timeLeft--;
-                timerBox.innerText = `Повторный код через ${timeLeft}с`;
-                if(timeLeft <= 0) {
-                    clearInterval(retryTimer);
-                    timerBox.classList.add('hidden');
-                    retryBtn.classList.remove('hidden');
-                }
+            retryBtn.style.display = 'none';
+            timerText.style.display = 'block';
+
+            if(timerInt) clearInterval(timerInt);
+            timerInt = setInterval(() => {
+                sec--;
+                timerText.innerText = `Повторный код через ${sec}с`;
+                if(sec <= 0) { clearInterval(timerInt); timerText.style.display = 'none'; retryBtn.style.display = 'block'; }
             }, 1000);
         }
 
-        function verifyAndFinish() {
-            const inputCode = document.getElementById('verification-code').value.trim();
-            if(inputCode === generatedCode) {
-                sendOrder();
+        function confirmAndSend() {
+            const code = document.getElementById('ver-code').value.trim();
+            if(code === generatedCode) {
+                const fio = document.getElementById('fio').value;
+                const con = document.getElementById('contact').value;
+                db.ref('leads').push({ num: selNum, fio, contact: con, ts: Date.now(), status: 'verified' }).then(() => {
+                    alert("Заявка успешно отправлена!");
+                    closeModal();
+                });
             } else {
-                alert("Неверный код! Проверьте Push-уведомление.");
+                alert("Неверный код!");
             }
         }
 
-        function sendOrder() {
-            const fio = document.getElementById('fio').value.trim();
-            const con = document.getElementById('contact').value.trim();
-            db.ref('leads').push({ 
-                num: selNum, 
-                fio, 
-                contact: con, 
-                verified: true,
-                ts: Date.now() 
-            }).then(() => {
-                alert("Заявка успешно подтверждена! Мы свяжемся с вами.");
-                closeModal();
-            });
-        }
-
-        // ЛОГИКА ЧАТА
+        // ЧАТ
         let userId = localStorage.getItem('user_chat_id') || 'u' + Math.floor(Math.random() * 10000);
         localStorage.setItem('user_chat_id', userId);
-
         function toggleChat() {
             const win = document.getElementById('chat-window');
             const isHidden = win.style.display === 'none' || win.style.display === '';
@@ -280,7 +246,6 @@
                 });
             }
         }
-
         function sendMessage() {
             const input = document.getElementById('chat-input');
             const text = input.value.trim();
