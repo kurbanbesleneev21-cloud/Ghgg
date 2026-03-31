@@ -3,20 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SIM MARKET | LUXURY</title>
+    <title>SIM MARKET | ULTRA FAST</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap');
-        
-        body { 
-            background: #050505; 
-            color: #fff; 
-            font-family: 'Manrope', sans-serif; 
-            margin: 0; 
-            overflow-x: hidden;
-        }
-
-        /* Золотой переливающийся логотип */
+        body { background: #050505; color: #fff; font-family: 'Manrope', sans-serif; margin: 0; }
         .logo-shine {
             font-weight: 800; font-size: 32px; letter-spacing: -1px; text-transform: uppercase;
             background: linear-gradient(90deg, #bf953f, #fcf6ba, #b38728, #fcf6ba, #bf953f);
@@ -24,64 +15,12 @@
             animation: shine 3s linear infinite; font-style: italic;
         }
         @keyframes shine { to { background-position: 200% center; } }
-
-        /* Стеклянные карточки */
-        .glass-card { 
-            background: rgba(255,255,255,0.03); 
-            border: 1px solid rgba(255,255,255,0.08); 
-            border-radius: 24px; 
-            padding: 20px; 
-            transition: 0.3s; 
-        }
-
-        .buy-btn { 
-            background: #fff; 
-            color: #000; 
-            font-weight: 800; 
-            font-size: 11px; 
-            text-transform: uppercase; 
-            padding: 16px; 
-            border-radius: 14px; 
-            width: 100%; 
-            border: none; 
-            cursor: pointer; 
-        }
-
-        .tab-btn { 
-            background: rgba(255,255,255,0.02); 
-            border: 1px solid rgba(255,255,255,0.05); 
-            padding: 10px 18px; 
-            border-radius: 12px; 
-            font-size: 10px; 
-            font-weight: 800; 
-            text-transform: uppercase; 
-            color: #71717a; 
-            white-space: nowrap; 
-        }
+        .glass-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 24px; padding: 20px; }
+        .buy-btn { background: #fff; color: #000; font-weight: 800; font-size: 11px; text-transform: uppercase; padding: 16px; border-radius: 14px; width: 100%; border: none; cursor: pointer; }
+        .tab-btn { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); padding: 10px 18px; border-radius: 12px; font-size: 10px; font-weight: 800; text-transform: uppercase; color: #71717a; white-space: nowrap; }
         .tab-active { background: #fff !important; color: #000 !important; }
-
-        .input-luxury { 
-            background: #0f0f0f; 
-            border: 1px solid #1a1a1a; 
-            border-radius: 18px; 
-            padding: 18px; 
-            width: 100%; 
-            color: #fff; 
-            text-align: center; 
-            outline: none; 
-        }
-
-        #order-modal { 
-            display: none; 
-            position: fixed; 
-            inset: 0; 
-            z-index: 100; 
-            background: rgba(0,0,0,0.98); 
-            backdrop-filter: blur(10px); 
-            align-items: center; 
-            justify-content: center; 
-        }
-
+        .input-luxury { background: #0f0f0f; border: 1px solid #1a1a1a; border-radius: 18px; padding: 18px; width: 100%; color: #fff; text-align: center; outline: none; }
+        #order-modal { display: none; position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,0.98); backdrop-filter: blur(10px); align-items: center; justify-content: center; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
     </style>
 </head>
@@ -104,16 +43,97 @@
             <button onclick="setFilter('tele2', this)" class="tab-btn">Tele2</button>
         </div>
 
-        <div id="list" class="space-y-4">
-            <div class="text-center py-20 opacity-20 uppercase font-bold text-[10px] tracking-widest animate-pulse">Загрузка коллекции...</div>
-        </div>
+        <div id="list" class="space-y-4"></div>
     </main>
 
     <div id="order-modal">
-        <div class="glass-card w-[92%] relative text-center border-white/10">
+        <div class="glass-card w-[92%] relative text-center">
             <button onclick="closeModal()" class="absolute top-5 right-5 text-xl opacity-30">✕</button>
-            <h3 class="text-[10px] font-bold text-amber-500 uppercase tracking-widest mb-4">Бронирование</h3>
-            <p id="selected-num" class="text-3xl font-black mb-8 italic tracking-tighter"></p>
+            <p id="selected-num" class="text-3xl font-black mb-8 italic tracking-tighter pt-8"></p>
             <form id="tg-form" class="space-y-4">
                 <input type="text" id="fio" placeholder="Ваше ФИО" class="input-luxury" required>
-                <input type="tel
+                <input type="tel" id="contact" placeholder="Ваш телефон" class="input-luxury" required>
+                <button type="submit" id="sub-btn" class="w-full bg-white text-black font-black py-5 rounded-2xl uppercase text-[11px]">Заказать у Курбана</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // НОМЕРА ТЕПЕРЬ ВШИТЫ В КОД - ЭТО ДАЕТ МОМЕНТАЛЬНУЮ ЗАГРУЗКУ
+        const database = [
+            {"n": "964-274-80-80", "t": "490", "op": "beeline"},
+            {"n": "964-273-63-63", "t": "430", "op": "beeline"},
+            {"n": "915-442-54-47", "t": "1150", "op": "mts"},
+            {"n": "901-830-77-61", "t": "400", "op": "yota"},
+            {"n": "980-421-22-88", "t": "1150", "op": "mts"},
+            {"n": "916-178-58-77", "t": "500", "op": "mts"},
+            {"n": "995-444-78-58", "t": "555", "op": "megafon"},
+            {"n": "901-55-999-55", "t": "1000", "op": "tele2"},
+            {"n": "964-274-40-40", "t": "490", "op": "beeline"},
+            {"n": "986-111-42-49", "t": "555", "op": "megafon"},
+            {"n": "964-807-40-40", "t": "490", "op": "beeline"},
+            {"n": "901-833-23-42", "t": "399", "op": "yota"},
+            {"n": "901-771-78-78", "t": "600", "op": "tele2"},
+            {"n": "901-551-53-53", "t": "600", "op": "tele2"},
+            {"n": "964-803-60-60", "t": "490", "op": "beeline"},
+            {"n": "901-830-81-55", "t": "400", "op": "yota"},
+            {"n": "901-514-95-95", "t": "700", "op": "tele2"},
+            {"n": "980-421-22-77", "t": "1150", "op": "mts"},
+            {"n": "964-805-90-90", "t": "490", "op": "beeline"},
+            {"n": "901-55555-28", "t": "1000", "op": "tele2"},
+            {"n": "901-512-5555", "t": "1000", "op": "tele2"},
+            {"n": "901-513-8888", "t": "1150", "op": "tele2"}
+        ];
+
+        let currentFilter = 'all';
+
+        function setFilter(val, el) {
+            currentFilter = val.toLowerCase();
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('tab-active'));
+            el.classList.add('tab-active');
+            draw();
+        }
+
+        function draw() {
+            const list = document.getElementById('list');
+            const q = document.getElementById('q').value.toLowerCase();
+            const filtered = database.filter(i => {
+                const matchesSearch = i.n.replace(/-/g, '').includes(q.replace(/-/g, ''));
+                const matchesFilter = currentFilter === 'all' || i.op.toLowerCase() === currentFilter;
+                return matchesSearch && matchesFilter;
+            });
+            
+            list.innerHTML = filtered.map(i => `
+                <div class="glass-card flex flex-col items-center text-center gap-4">
+                    <div class="w-full flex justify-between items-center opacity-40 px-2 text-[9px] font-bold uppercase tracking-widest">
+                        <span>${i.op}</span><span>Premium</span>
+                    </div>
+                    <div>
+                        <div class="text-3xl font-black italic tracking-tighter mb-1">+7 ${i.n}</div>
+                        <div class="text-xl font-bold text-amber-500">${i.t} ₽</div>
+                    </div>
+                    <button onclick="openModal('${i.n}')" class="buy-btn">Заказать</button>
+                </div>
+            `).join('');
+        }
+
+        function openModal(n) { document.getElementById('selected-num').innerText = '+7 ' + n; document.getElementById('order-modal').style.display = 'flex'; }
+        function closeModal() { document.getElementById('order-modal').style.display = 'none'; }
+
+        document.getElementById('tg-form').onsubmit = async (e) => {
+            e.preventDefault();
+            const msg = `👑 ЗАКАЗ: ${document.getElementById('selected-num').innerText}\n👤 ${document.getElementById('fio').value}\n📞 ${document.getElementById('contact').value}`;
+            await fetch(`https://api.telegram.org/bot8666944440:AAFAmQuYaYmnJjhuQ9AmdBQim9V-kxNnxAo/sendMessage`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ chat_id: '8768514374', text: msg })
+            });
+            alert('Заказ отправлен!');
+            closeModal();
+        };
+
+        // Запуск отрисовки сразу
+        draw();
+    </script>
+</body>
+</html>
