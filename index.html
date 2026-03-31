@@ -1,9 +1,9 @@
-                 <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SIM MARKET | EXCLUSIVE EDITION</title>
+    <title>SIM MARKET | SECURE</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
@@ -12,18 +12,6 @@
         body { font-family: 'Manrope', sans-serif; background: #000; color: #fff; min-height: 100vh; }
         .gold-grad { background: linear-gradient(90deg, #bf953f, #fcf6ba, #bf953f); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         
-        /* АУКЦИОННАЯ КАРТОЧКА */
-        .auction-card {
-            background: linear-gradient(135deg, rgba(191,149,63,0.1), rgba(0,0,0,1));
-            border: 1px solid rgba(191,149,63,0.3);
-            border-radius: 35px;
-            padding: 30px;
-            position: relative;
-            overflow: hidden;
-        }
-        .auction-timer { font-variant-numeric: tabular-nums; color: #fcf6ba; font-weight: 800; }
-
-        /* ОБОДОК ДЛЯ ОБЫЧНЫХ НОМЕРОВ */
         .neon-card { position: relative; background: #0a0a0a; border-radius: 28px; overflow: hidden; z-index: 1; }
         .neon-card::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: conic-gradient(transparent, #bf953f, #fcf6ba, transparent 70%); animation: rotate 4s linear infinite; z-index: -2; }
         .neon-card::after { content: ''; position: absolute; inset: 2px; background: #0d0d0d; border-radius: 26px; z-index: -1; }
@@ -40,81 +28,60 @@
 <body class="p-4 pb-20">
 
     <header class="flex justify-between items-center mb-8 pt-2">
-        <div>
-            <h1 class="text-2xl font-black italic gold-grad uppercase leading-tight">SIM MARKET</h1>
-            <p class="text-[8px] tracking-[3px] opacity-30 font-bold uppercase">Hasavyurt Elite</p>
+        <h1 class="text-2xl font-black italic gold-grad uppercase">SIM MARKET</h1>
+        <div id="user-ui" class="hidden flex items-center gap-3 cursor-pointer" onclick="openProfile()">
+            <div class="text-right"><p class="text-[10px] font-black gold-grad uppercase tracking-widest">Личный Кабинет</p></div>
+            <div class="w-10 h-10 bg-[#bf953f] rounded-full flex items-center justify-center text-black font-black">К</div>
         </div>
-        
-        <div id="user-ui" class="hidden flex items-center gap-3" onclick="openProfile()">
-            <div class="text-right">
-                <p id="rank-name" class="text-[10px] font-black gold-grad uppercase tracking-widest">Platinum Member</p>
-                <p class="text-[7px] opacity-40 uppercase font-bold">Личный кабинет</p>
-            </div>
-            <div class="w-10 h-10 bg-[#bf953f] rounded-full flex items-center justify-center text-black font-black shadow-xl shadow-[#bf953f]/20">К</div>
-        </div>
-        
-        <button id="login-btn" onclick="openModal('auth-modal')" class="border border-[#bf953f]/30 px-6 py-2 rounded-full text-[10px] font-black uppercase gold-grad">Вступить в клуб</button>
+        <button id="login-btn" onclick="openModal('auth-modal')" class="border border-[#bf953f]/30 px-6 py-2 rounded-full text-[10px] font-black uppercase gold-grad">Вход / Регистрация</button>
     </header>
 
-    <div class="auction-card mb-10 shadow-2xl">
-        <div class="flex justify-between items-center mb-4">
-            <span class="bg-[#bf953f] text-black text-[9px] font-black px-3 py-1 rounded-full uppercase italic">Hot Offer</span>
-            <span class="auction-timer text-xs" id="timer">04:22:15</span>
+    <div class="space-y-6 mb-8">
+        <input type="text" id="search-input" oninput="renderItems()" placeholder="Поиск по цифрам..." class="input-dark">
+        <div class="flex gap-2 overflow-x-auto no-scrollbar">
+            <div class="tab active" onclick="filterOp('ALL', this)">Все</div>
+            <div class="tab" onclick="filterOp('МТС', this)">МТС</div>
+            <div class="tab" onclick="filterOp('БИЛАЙН', this)">Билайн</div>
+            <div class="tab" onclick="filterOp('МЕГАФОН', this)">Мегафон</div>
+            <div class="tab" onclick="filterOp('FAV', this)">⭐</div>
         </div>
-        <h2 class="text-4xl font-black italic tracking-tighter mb-1 text-white">+7 999 555 55 55</h2>
-        <p class="text-[10px] opacity-50 uppercase font-bold mb-6">Цена падает через 1 час!</p>
-        <div class="flex justify-between items-end">
-            <div>
-                <p class="text-[9px] opacity-30 line-through">45,000 ₽</p>
-                <p class="text-3xl font-black gold-grad">39,000 ₽</p>
-            </div>
-            <button onclick="openOrderForm('999 555 55 55')" class="btn-gold px-8 py-4">Забрать сейчас</button>
-        </div>
-    </div>
-
-    <div class="flex gap-2 overflow-x-auto no-scrollbar mb-8">
-        <div class="tab active" onclick="filterOp('ALL', this)">Все номера</div>
-        <div class="tab" onclick="filterOp('МТС', this)">МТС</div>
-        <div class="tab" onclick="filterOp('МЕГАФОН', this)">Мегафон</div>
-        <div class="tab" onclick="filterOp('FAV', this)">⭐ Избранное</div>
     </div>
 
     <div id="list" class="grid gap-6"></div>
 
-    <div class="mt-12 p-8 border border-white/5 bg-white/5 rounded-[40px] text-center">
-        <h3 class="text-lg font-black gold-grad mb-2 italic">НУЖНЫ ОСОБЫЕ ЦИФРЫ?</h3>
-        <p class="text-[11px] opacity-40 mb-6">Оставьте запрос, и мы найдем номер под ваш бюджет и предпочтения.</p>
-        <button onclick="alert('Открываем конструктор...')" class="border border-white/20 w-full p-4 rounded-2xl text-[10px] font-black uppercase tracking-widest">Заказать свой номер</button>
-    </div>
-
     <div id="auth-modal" class="modal flex items-center">
-        <div class="bg-[#0d0d0d] p-8 rounded-[40px] border border-white/5 w-full max-w-sm mx-auto space-y-4">
-            <h2 class="text-xl font-black text-center gold-grad uppercase italic">Вход в клуб</h2>
-            <input type="tel" id="r-phone" placeholder="Номер телефона" class="input-dark">
-            <input type="password" id="r-pass" placeholder="Пароль" class="input-dark">
-            <button onclick="handleAuth()" class="btn-gold">Войти</button>
-            <p onclick="closeModals()" class="text-center text-[9px] opacity-20 uppercase font-black pt-2 cursor-pointer">Закрыть</p>
+        <div class="bg-[#0d0d0d] p-8 rounded-[40px] border border-white/5 w-full max-w-sm mx-auto space-y-4 shadow-2xl">
+            <div class="flex bg-white/5 p-1 rounded-2xl mb-2">
+                <button id="tab-reg" onclick="toggleAuthTab('reg')" class="flex-1 py-3 rounded-xl text-[10px] font-black uppercase bg-[#bf953f] text-black transition">Регистрация</button>
+                <button id="tab-login" onclick="toggleAuthTab('login')" class="flex-1 py-3 rounded-xl text-[10px] font-black uppercase opacity-40 transition">Вход</button>
+            </div>
+            <div class="space-y-3">
+                <input type="tel" id="auth-phone" placeholder="Номер телефона" class="input-dark">
+                <input type="password" id="auth-pass" placeholder="Пароль" class="input-dark">
+            </div>
+            <button onclick="handleAuth()" id="auth-main-btn" class="btn-gold">Создать аккаунт</button>
+            <p onclick="closeModals()" class="text-center text-[9px] opacity-20 uppercase font-black cursor-pointer">Закрыть</p>
         </div>
     </div>
 
     <div id="profile-modal" class="modal">
         <div class="max-w-md mx-auto w-full pt-10 text-center">
-            <h2 class="text-2xl font-black gold-grad italic uppercase mb-10">Ваш Статус</h2>
-            <div class="bg-gradient-to-br from-[#111] to-[#000] p-10 rounded-[50px] border border-[#bf953f]/30 mb-8">
-                <p class="text-4xl font-black italic gold-grad mb-2">PLATINUM</p>
-                <p class="text-[9px] opacity-40 uppercase font-bold tracking-[3px]">Elite Membership</p>
+            <h2 class="text-2xl font-black gold-grad italic uppercase mb-10">Ваш Профиль</h2>
+            <div class="bg-white/5 p-10 rounded-[50px] border border-white/5 mb-8">
+                <p id="profile-phone-display" class="text-xl font-black mb-2"></p>
+                <p class="text-[9px] opacity-30 uppercase font-bold tracking-[3px]">Статус: VIP Клиент</p>
             </div>
-            <div class="space-y-4 text-left px-4">
-                <div class="flex items-center gap-4 bg-white/5 p-4 rounded-2xl border border-white/5">
-                    <span class="text-xl">📞</span>
-                    <p class="text-[10px] font-bold uppercase">Личный менеджер 24/7</p>
-                </div>
-                <div class="flex items-center gap-4 bg-white/5 p-4 rounded-2xl border border-white/5">
-                    <span class="text-xl">🎁</span>
-                    <p class="text-[10px] font-bold uppercase">Секретные скидки до 30%</p>
-                </div>
-            </div>
-            <button onclick="logout()" class="text-red-500 font-bold text-[10px] uppercase tracking-widest mt-12">Выйти из клуба</button>
+            <button onclick="logout()" class="text-red-500 font-bold text-[10px] uppercase tracking-widest mt-12">Выйти из аккаунта</button>
+        </div>
+    </div>
+
+    <div id="order-modal" class="modal flex items-center">
+        <div class="bg-[#0d0d0d] p-8 rounded-[40px] border border-white/5 w-full max-w-sm mx-auto space-y-5">
+            <h2 class="text-xl font-black gold-grad uppercase italic text-center">Оформить заказ</h2>
+            <div id="order-num-display" class="text-3xl font-black italic text-center tracking-tighter"></div>
+            <input type="text" id="order-name" placeholder="Ваше имя" class="input-dark">
+            <button onclick="confirmOrder()" class="btn-gold">Подтвердить покупку</button>
+            <p onclick="closeModals()" class="text-center text-[10px] opacity-20 uppercase font-black cursor-pointer">Отмена</p>
         </div>
     </div>
 
@@ -123,35 +90,79 @@
         firebase.initializeApp(fbCfg);
         const db = firebase.database();
 
-        let user = JSON.parse(localStorage.getItem('sim_user_pro')) || null;
+        // Память
+        let currentUser = JSON.parse(localStorage.getItem('active_user')) || null;
         let favs = JSON.parse(localStorage.getItem('sim_favs')) || [];
         let inventory = {};
         let currentFilter = 'ALL';
+        let authMode = 'reg';
+        let selectedNum = null;
 
-        if(user) updateUI();
+        if(currentUser) updateUI();
 
         function openModal(id) { document.getElementById(id).style.display = 'flex'; }
         function closeModals() { document.querySelectorAll('.modal').forEach(m => m.style.display = 'none'); }
-        function openProfile() { openModal('profile-modal'); }
+        function openProfile() { if(currentUser) openModal('profile-modal'); }
+
+        function toggleAuthTab(mode) {
+            authMode = mode;
+            const isReg = mode === 'reg';
+            document.getElementById('tab-reg').className = isReg ? 'flex-1 py-3 rounded-xl text-[10px] font-black uppercase bg-[#bf953f] text-black' : 'flex-1 py-3 rounded-xl text-[10px] font-black uppercase opacity-40';
+            document.getElementById('tab-login').className = !isReg ? 'flex-1 py-3 rounded-xl text-[10px] font-black uppercase bg-[#bf953f] text-black' : 'flex-1 py-3 rounded-xl text-[10px] font-black uppercase opacity-40';
+            document.getElementById('auth-main-btn').innerText = isReg ? 'Создать аккаунт' : 'Войти в кабинет';
+        }
 
         function handleAuth() {
-            const ph = document.getElementById('r-phone').value;
-            if(!ph) return;
-            user = { phone: ph, rank: 'Platinum' };
-            localStorage.setItem('sim_user_pro', JSON.stringify(user));
+            const ph = document.getElementById('auth-phone').value;
+            const ps = document.getElementById('auth-pass').value;
+            if(!ph || !ps) return alert("Введите данные!");
+
+            // Получаем список всех зарегистрированных пользователей
+            let users = JSON.parse(localStorage.getItem('registered_users')) || {};
+
+            if(authMode === 'reg') {
+                if(users[ph]) return alert("Этот номер уже зарегистрирован!");
+                users[ph] = { phone: ph, pass: ps };
+                localStorage.setItem('registered_users', JSON.stringify(users));
+                currentUser = users[ph];
+                alert("Успешная регистрация!");
+            } else {
+                // Проверка пароля при входе
+                if(!users[ph] || users[ph].pass !== ps) {
+                    return alert("Неверный номер или пароль!");
+                }
+                currentUser = users[ph];
+                alert("Вы вошли!");
+            }
+
+            localStorage.setItem('active_user', JSON.stringify(currentUser));
             updateUI(); closeModals();
         }
 
-        function logout() { localStorage.removeItem('sim_user_pro'); location.reload(); }
+        function logout() { 
+            localStorage.removeItem('active_user'); 
+            location.reload(); 
+        }
 
         function updateUI() {
-            if(!user) return;
+            if(!currentUser) return;
             document.getElementById('login-btn').style.display = 'none';
             document.getElementById('user-ui').classList.remove('hidden');
+            document.getElementById('profile-phone-display').innerText = "+7 " + currentUser.phone;
         }
 
         function openOrderForm(num) {
-            alert(`Бронь на номер +7 ${num} создана. Курбан свяжется с вами!`);
+            if(!currentUser) return openModal('auth-modal');
+            selectedNum = num;
+            document.getElementById('order-num-display').innerText = "+7 " + num;
+            openModal('order-modal');
+        }
+
+        function confirmOrder() {
+            const name = document.getElementById('order-name').value;
+            if(!name) return alert("Введите имя!");
+            alert(`Спасибо, ${name}! Запрос на номер +7 ${selectedNum} отправлен.`);
+            closeModals();
         }
 
         function filterOp(op, el) {
@@ -173,12 +184,14 @@
 
         function renderItems() {
             const list = document.getElementById('list');
+            const search = document.getElementById('search-input').value.toLowerCase();
             list.innerHTML = "";
             Object.values(inventory).reverse().forEach(i => {
                 const isFav = favs.includes(i.num);
                 const op = (i.op || 'SIM').toUpperCase();
                 if(currentFilter !== 'ALL' && currentFilter !== 'FAV' && op !== currentFilter) return;
                 if(currentFilter === 'FAV' && !isFav) return;
+                if(search && !i.num.includes(search)) return;
 
                 list.innerHTML += `
                     <div class="neon-card">
@@ -199,4 +212,3 @@
     </script>
 </body>
 </html>
-   
