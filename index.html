@@ -11,158 +11,142 @@
         @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap');
         body { font-family: 'Manrope', sans-serif; background: #050505; color: #fff; margin: 0; overflow-x: hidden; }
         
-        /* Золотой текст */
         .gold-grad {
             background: linear-gradient(90deg, #bf953f, #fcf6ba, #bf953f);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
 
-        /* Переливающиеся линии на карточках */
+        /* Анимированные линии по контуру */
         .neon-card {
-            position: relative; background: rgba(191,149,63,0.05);
-            border-radius: 24px; padding: 2px; overflow: hidden;
-            transition: 0.4s;
+            position: relative; background: rgba(191,149,63,0.1);
+            border-radius: 24px; padding: 1.5px; overflow: hidden;
         }
         .neon-card::before {
             content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
             background: conic-gradient(transparent, #bf953f, transparent, #fcf6ba, transparent);
-            animation: rotate 6s linear infinite;
+            animation: rotate 4s linear infinite;
         }
         @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
         .card-inner {
-            position: relative; background: #0d0d0d; border-radius: 22px;
+            position: relative; background: #0d0d0d; border-radius: 23px;
             padding: 25px; z-index: 1; text-align: center;
         }
 
-        /* Вкладки операторов */
         .tab-btn {
-            padding: 8px 20px; border-radius: 12px; font-size: 11px; font-weight: 800;
-            background: #111; color: #555; border: 1px solid #222; transition: 0.3s;
+            padding: 10px 20px; border-radius: 14px; font-size: 10px; font-weight: 800;
+            background: #111; color: #555; border: 1px solid #222; transition: 0.3s; flex-shrink: 0;
         }
-        .tab-active { background: #bf953f; color: #000; border-color: #fcf6ba; }
+        .tab-active { background: #bf953f; color: #000; border-color: #fcf6ba; box-shadow: 0 0 15px rgba(191,149,63,0.3); }
 
-        /* Кнопка Купить */
         .buy-btn {
             background: linear-gradient(135deg, #bf953f, #fcf6ba);
-            color: #000; font-weight: 900; padding: 15px; border-radius: 16px; width: 100%;
-            text-transform: uppercase; font-size: 12px; letter-spacing: 1px;
+            color: #000; font-weight: 900; padding: 16px; border-radius: 18px; width: 100%;
+            text-transform: uppercase; font-size: 11px; letter-spacing: 1px;
         }
 
-        /* Поля ввода */
         .input-dark {
-            width: 100%; background: #111; border: 1px solid #333; padding: 15px;
-            border-radius: 16px; color: #fff; outline: none;
+            width: 100%; background: #111; border: 1px solid #333; padding: 16px;
+            border-radius: 18px; color: #fff; outline: none; font-size: 16px;
         }
 
-        /* Модальные окна */
-        .modal-overlay {
-            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9);
-            z-index: 5000; align-items: center; justify-content: center; padding: 20px;
-        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
     </style>
 </head>
 <body class="p-4 pb-32">
 
-    <header class="flex justify-between items-center mb-8 px-2">
+    <header class="flex justify-between items-center mb-8 pt-2">
         <div>
-            <h1 class="text-2xl font-black italic gold-grad uppercase tracking-tighter">SIM MARKET</h1>
-            <p class="text-[7px] tracking-[4px] opacity-30 uppercase font-bold">Premium stock</p>
+            <h1 class="text-2xl font-black italic gold-grad tracking-tighter uppercase">SIM MARKET</h1>
+            <p class="text-[7px] tracking-[4px] opacity-30 uppercase font-bold">Hasavyurt Premium</p>
         </div>
         
-        <button id="auth-btn" onclick="openAuth()" class="text-[10px] font-bold border border-[#bf953f]/50 px-5 py-2 rounded-full uppercase gold-grad">Вход</button>
-        <div id="user-block" onclick="toggleProfileMenu()" class="hidden flex items-center gap-2 cursor-pointer bg-[#bf953f]/10 p-1 pr-3 rounded-full border border-[#bf953f]/20">
-            <div class="w-8 h-8 rounded-full bg-[#bf953f] flex items-center justify-center text-black font-black text-xs">👤</div>
+        <button id="auth-btn" onclick="openAuth()" class="text-[10px] font-bold border border-[#bf953f]/40 px-5 py-2 rounded-full uppercase gold-grad">Вход</button>
+        
+        <div id="user-block" onclick="toggleProfile()" class="hidden flex items-center gap-2 cursor-pointer bg-[#bf953f]/10 p-1 pr-3 rounded-full border border-[#bf953f]/20">
+            <div class="w-8 h-8 rounded-full bg-[#bf953f] flex items-center justify-center text-black text-xs">👤</div>
             <span id="user-phone-display" class="text-[10px] font-black text-[#bf953f]"></span>
         </div>
     </header>
 
-    <div class="flex gap-2 overflow-x-auto no-scrollbar mb-8 px-2">
+    <div class="flex gap-2 overflow-x-auto no-scrollbar mb-8 pb-2">
         <button onclick="setFilter('all', this)" class="tab-btn tab-active">ВСЕ</button>
         <button onclick="setFilter('mts', this)" class="tab-btn">МТС</button>
         <button onclick="setFilter('megafon', this)" class="tab-btn">МЕГАФОН</button>
         <button onclick="setFilter('beeline', this)" class="tab-btn">БИЛАЙН</button>
-        <button onclick="setFilter('tele2', this)" class="tab-btn">TELE2</button>
     </div>
 
-    <div id="list" class="space-y-5 max-w-md mx-auto">
-        </div>
+    <div id="list" class="space-y-6 max-w-md mx-auto"></div>
 
-    <div id="profile-menu" class="fixed bottom-0 left-0 right-0 bg-[#0d0d0d] border-t border-[#bf953f]/30 rounded-t-[30px] p-8 z-[6000] translate-y-full transition-transform duration-500">
-        <div class="w-12 h-1 bg-white/10 mx-auto rounded-full mb-8"></div>
-        <h3 class="text-xl font-black mb-6 gold-grad">ЛИЧНЫЙ КАБИНЕТ</h3>
-        <div class="space-y-4">
-            <button class="w-full text-left p-4 bg-white/5 rounded-2xl flex justify-between items-center border border-white/5">
-                <span class="text-xs font-bold uppercase opacity-60">Мои заказы</span>
-                <span class="text-[10px] bg-white/10 px-2 py-1 rounded">0</span>
-            </button>
-            <button onclick="toggleChat()" class="w-full text-left p-4 bg-white/5 rounded-2xl flex justify-between items-center border border-white/5">
-                <span class="text-xs font-bold uppercase opacity-60">Техподдержка 24/7</span>
-                <span class="text-emerald-500">●</span>
-            </button>
-            <button onclick="logout()" class="w-full p-4 bg-red-500/10 text-red-500 text-xs font-bold rounded-2xl border border-red-500/20 uppercase">Выйти из аккаунта</button>
+    <div id="p-menu" class="fixed bottom-0 left-0 right-0 bg-[#0d0d0d] border-t border-[#bf953f]/40 rounded-t-[30px] p-8 z-[6000] translate-y-full transition-transform duration-500 shadow-[0_-20px_40px_rgba(0,0,0,0.8)]">
+        <div class="w-10 h-1 bg-white/10 mx-auto rounded-full mb-8"></div>
+        <h3 class="text-xl font-black mb-6 gold-grad">ВАШ ПРОФИЛЬ</h3>
+        <div class="space-y-3">
+            <div class="p-4 bg-white/5 rounded-2xl border border-white/5 flex justify-between">
+                <span class="text-[10px] uppercase font-bold opacity-40">Статус</span>
+                <span class="text-[10px] text-emerald-500 font-bold uppercase tracking-widest">VIP Клиент</span>
+            </div>
+            <button onclick="logout()" class="w-full p-4 bg-red-500/10 text-red-500 text-[10px] font-black rounded-2xl border border-red-500/20 uppercase">Выйти</button>
         </div>
-        <button onclick="toggleProfileMenu()" class="w-full mt-6 text-[10px] opacity-30 font-black uppercase">Закрыть</button>
+        <button onclick="toggleProfile()" class="w-full mt-8 text-[9px] opacity-20 font-black uppercase">Закрыть</button>
     </div>
 
-    <div id="auth-modal" class="modal-overlay">
+    <div id="auth-modal" class="fixed inset-0 bg-black/95 z-[7000] hidden items-center justify-center p-6 backdrop-blur-md">
         <div class="w-full max-w-xs space-y-6">
             <h2 id="atitle" class="text-3xl font-black text-center gold-grad">ВХОД</h2>
             <div id="fields" class="space-y-4">
-                <input type="tel" id="aphone" placeholder="Номер телефона (+7...)" class="input-dark">
+                <input type="tel" id="aphone" placeholder="Номер (+7...)" class="input-dark">
                 <input type="tel" id="apass" placeholder="Пароль (6 цифр)" class="input-dark" maxlength="12">
             </div>
             <div id="code-box" class="hidden text-center space-y-4">
-                <p class="text-[10px] font-bold text-yellow-500 uppercase">Ждите звонка...<br>Введите последние 4 цифры:</p>
+                <p class="text-[10px] font-bold text-yellow-500 uppercase">Ждите звонка...<br>Последние 4 цифры:</p>
                 <input type="number" id="acode" placeholder="0000" class="input-dark text-center tracking-[15px] text-xl">
             </div>
             <button id="main-btn" onclick="handleAuth()" class="buy-btn">Продолжить</button>
-            <p id="toggle" onclick="swapAuth()" class="text-center text-[10px] opacity-40 uppercase font-bold cursor-pointer">Нет аккаунта? Регистрация</p>
-            <p onclick="closeAuth()" class="text-center text-[9px] opacity-20 uppercase font-bold cursor-pointer">Отмена</p>
+            <p id="toggle" onclick="swap()" class="text-center text-[10px] opacity-40 uppercase font-bold cursor-pointer">Создать аккаунт</p>
+            <p onclick="closeAuth()" class="text-center text-[9px] opacity-20 uppercase font-bold cursor-pointer">Закрыть</p>
         </div>
     </div>
 
     <script>
-        // ТВОИ КЛЮЧИ
-        const SMS_KEY = "C1E31980-AF45-CDCF-0DE2-F6B278C69D76";
+        const API_ID = "C1E31980-AF45-CDCF-0DE2-F6B278C69D76";
         const TG_TOKEN = "8569235049:AAEsaW4ME-Ql6036i04tIbj--IPNT6JdroE";
         const TG_ID = "8768514374";
 
-        const config = { 
+        const firebaseConfig = { 
             apiKey: "AIzaSyCRjRJkH4dPxvyYD-37emejFvK11g6hZ44", 
             authDomain: "nnnmb-a0b52.firebaseapp.com", 
             databaseURL: "https://nnnmb-a0b52-default-rtdb.firebaseio.com", 
             projectId: "nnnmb-a0b52" 
         };
-        firebase.initializeApp(config);
+        firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        let currentFilter = 'all';
+        let curFilter = 'all';
         let isReg = false;
         let callCode = null;
         let user = JSON.parse(localStorage.getItem('sim_user'));
 
-        // Запуск при старте
-        if(user) finishLogin(user.phone);
+        if(user) loginUI(user.phone);
 
-        // --- ЛОГИКА НОМЕРОВ ---
+        // ПОЛУЧЕНИЕ ДАННЫХ
         db.ref('inventory').on('value', s => {
             const list = document.getElementById('list');
             list.innerHTML = "";
             const data = s.val() || {};
             Object.keys(data).reverse().forEach(id => {
                 const item = data[id];
-                if(currentFilter !== 'all' && item.op !== currentFilter) return;
+                if(curFilter !== 'all' && item.op !== curFilter) return;
                 list.innerHTML += `
                     <div class="neon-card">
                         <div class="card-inner">
-                            <div class="flex justify-between items-center mb-4">
-                                <span class="text-[8px] font-black uppercase opacity-40 tracking-widest">${item.op}</span>
-                                <span class="gold-grad text-[8px] font-black uppercase">Elite</span>
+                            <div class="flex justify-between items-center mb-4 opacity-40 text-[8px] font-bold uppercase">
+                                <span>${item.op}</span>
+                                <span class="gold-grad italic text-[10px]">Elite Number</span>
                             </div>
                             <div class="text-3xl font-black italic text-white tracking-tighter mb-2">+7 ${item.num}</div>
                             <div class="text-2xl font-black gold-grad mb-6">${parseInt(item.price).toLocaleString()} ₽</div>
-                            <button onclick="buy('${item.num}')" class="buy-btn">Купить номер</button>
+                            <button onclick="buy('${item.num}')" class="buy-btn">Купить сейчас</button>
                         </div>
                     </div>
                 `;
@@ -170,56 +154,59 @@
         });
 
         function setFilter(op, btn) {
-            currentFilter = op;
+            curFilter = op;
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('tab-active'));
             btn.classList.add('tab-active');
         }
 
-        // --- ЛОГИКА АВТОРИЗАЦИИ ---
+        // АВТОРИЗАЦИЯ
         function openAuth() { document.getElementById('auth-modal').style.display = 'flex'; }
         function closeAuth() { document.getElementById('auth-modal').style.display = 'none'; }
         
-        function swapAuth() {
+        function swap() {
             isReg = !isReg;
             document.getElementById('atitle').innerText = isReg ? "РЕГИСТРАЦИЯ" : "ВХОД";
-            document.getElementById('toggle').innerText = isReg ? "Есть аккаунт? Войти" : "Нет аккаунта? Регистрация";
+            document.getElementById('toggle').innerText = isReg ? "Уже есть аккаунт? Войти" : "Создать аккаунт";
             document.getElementById('code-box').classList.add('hidden');
+            document.getElementById('main-btn').innerText = "Продолжить";
+            callCode = null;
         }
 
         async function handleAuth() {
             const ph = document.getElementById('aphone').value.trim();
             const ps = document.getElementById('apass').value.trim();
-            if(!ph || !ps) return alert("Заполните поля!");
+            if(!ph || !ps) return alert("Заполните все поля!");
 
             if(isReg) {
                 if(!callCode) {
-                    const clean = ph.replace(/\D/g, '');
+                    const clean = ph.replace(/\D/g, ''); // Очистка номера
                     try {
-                        const res = await fetch(`https://sms.ru/code/call?phone=${clean}&api_id=${SMS_KEY}`);
+                        const res = await fetch(`https://sms.ru/code/call?phone=${clean}&api_id=${API_ID}`);
                         const d = await res.json();
                         if(d.status === "OK") {
                             callCode = d.code;
                             document.getElementById('code-box').classList.remove('hidden');
-                            document.getElementById('main-btn').innerText = "ПОДТВЕРДИТЬ";
-                        } else { alert("Ошибка SMS.ru: " + d.status_text); }
-                    } catch(e) { alert("Ошибка сети"); }
+                            document.getElementById('main-btn').innerText = "ЗАВЕРШИТЬ";
+                            alert("Вам поступит звонок! Введите 4 последние цифры.");
+                        } else { alert("Ошибка: " + d.status_text); }
+                    } catch(e) { alert("Нет связи с сервером"); }
                 } else {
                     if(document.getElementById('acode').value == callCode) {
                         db.ref('users/' + ph.replace(/\D/g, '')).set({phone: ph, pass: ps, ts: Date.now()}).then(() => {
-                            finishLogin(ph);
+                            loginUI(ph);
                         });
                     } else { alert("Неверный код!"); }
                 }
             } else {
                 db.ref('users/' + ph.replace(/\D/g, '')).once('value', s => {
                     const d = s.val();
-                    if(d && d.pass === ps) finishLogin(ph);
-                    else alert("Неверные данные!");
+                    if(d && d.pass === ps) loginUI(ph);
+                    else alert("Неверный логин или пароль!");
                 });
             }
         }
 
-        function finishLogin(phone) {
+        function loginUI(phone) {
             user = {phone};
             localStorage.setItem('sim_user', JSON.stringify(user));
             document.getElementById('auth-btn').classList.add('hidden');
@@ -228,18 +215,16 @@
             closeAuth();
         }
 
-        function logout() { localStorage.removeItem('sim_user'); location.reload(); }
-
-        // --- МЕНЮ ПРОФИЛЯ ---
-        function toggleProfileMenu() {
-            const menu = document.getElementById('profile-menu');
-            menu.classList.toggle('translate-y-full');
+        function toggleProfile() {
+            document.getElementById('p-menu').classList.toggle('translate-y-full');
         }
+
+        function logout() { localStorage.removeItem('sim_user'); location.reload(); }
 
         function buy(num) {
             if(!user) return openAuth();
             fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage?chat_id=${TG_ID}&text=🚀 ЗАКАЗ: +7 ${num}\n👤 Клиент: ${user.phone}`);
-            alert("Заявка принята! Мы перезвоним.");
+            alert("Заказ оформлен! Менеджер свяжется с вами.");
         }
     </script>
 </body>
