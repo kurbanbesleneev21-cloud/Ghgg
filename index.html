@@ -9,46 +9,66 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap');
-        body { font-family: 'Manrope', sans-serif; background: #050505; color: #fff; margin: 0; }
-        .gold-grad { background: linear-gradient(90deg, #bf953f, #fcf6ba, #bf953f); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        body { font-family: 'Manrope', sans-serif; background: #050505; color: #fff; margin: 0; overflow-x: hidden; }
+        
+        /* Анимированный логотип */
+        .gold-grad { 
+            background: linear-gradient(90deg, #bf953f, #fcf6ba, #b38728, #fcf6ba, #bf953f);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shine 3s linear infinite;
+        }
+        @keyframes shine { to { background-position: 200% center; } }
+
         .buy-btn { background: linear-gradient(135deg, #bf953f, #fcf6ba); color: #000; font-weight: 900; padding: 16px; border-radius: 20px; width: 100%; text-transform: uppercase; font-size: 11px; }
         .input-dark { width: 100%; background: #111; border: 1px solid #333; padding: 16px; border-radius: 20px; color: #fff; outline: none; font-size: 16px; text-align: center; }
+        
         .neon-card { position: relative; background: rgba(191,149,63,0.1); border-radius: 28px; padding: 1.5px; overflow: hidden; margin-bottom: 20px; }
         .neon-card::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: conic-gradient(transparent, #bf953f, transparent, #fcf6ba, transparent); animation: rotate 4s linear infinite; }
         @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         .card-inner { position: relative; background: #0d0d0d; border-radius: 27px; padding: 25px; z-index: 1; text-align: center; }
+        
+        /* Вкладки операторов */
+        .tab { padding: 8px 20px; border-radius: 100px; font-size: 10px; font-weight: 800; text-transform: uppercase; border: 1px solid rgba(191,149,63,0.2); color: rgba(191,149,63,0.5); cursor: pointer; transition: 0.3s; white-space: nowrap; }
+        .tab.active { background: #bf953f; color: #000; border-color: #bf953f; }
+        .tabs-container::-webkit-scrollbar { display: none; }
     </style>
 </head>
-<body class="p-4">
+<body class="p-4 pb-24">
 
     <header class="flex justify-between items-center mb-8 pt-4 px-2">
-        <h1 class="text-2xl font-black italic gold-grad uppercase">SIM MARKET</h1>
-        <button onclick="openAuth()" id="login-btn" class="text-[10px] font-bold border border-[#bf953f]/40 px-6 py-2.5 rounded-full uppercase gold-grad">Вход</button>
+        <h1 class="text-2xl font-black italic gold-grad uppercase tracking-tighter">SIM MARKET</h1>
+        <div id="user-display" class="hidden text-[#bf953f] font-black text-[10px] bg-[#bf953f]/10 px-4 py-2 rounded-full border border-[#bf953f]/20"></div>
+        <button id="login-btn" onclick="openAuth()" class="text-[10px] font-bold border border-[#bf953f]/40 px-6 py-2.5 rounded-full uppercase gold-grad">Вход</button>
     </header>
+
+    <div class="tabs-container flex gap-3 overflow-x-auto mb-8 px-2">
+        <div class="tab active" onclick="filterOp('ALL', this)">Все</div>
+        <div class="tab" onclick="filterOp('МТС', this)">МТС</div>
+        <div class="tab" onclick="filterOp('БИЛАЙН', this)">Билайн</div>
+        <div class="tab" onclick="filterOp('МЕГАФОН', this)">Мегафон</div>
+        <div class="tab" onclick="filterOp('ТЕЛЕ2', this)">Tele2</div>
+        <div class="tab" onclick="filterOp('ЙОТА', this)">Yota</div>
+    </div>
 
     <div id="list" class="max-w-md mx-auto"></div>
 
     <div id="auth-modal" class="fixed inset-0 bg-black/95 z-[9999] hidden items-center justify-center p-8 backdrop-blur-md">
         <div class="w-full max-w-xs space-y-6">
             <h2 id="modal-title" class="text-3xl font-black text-center gold-grad uppercase">Регистрация</h2>
-            
-            <div id="inputs-area" class="space-y-4">
-                <input type="tel" id="u-phone" placeholder="8928..." class="input-dark">
+            <div class="space-y-4">
+                <input type="tel" id="u-phone" placeholder="Номер телефона" class="input-dark">
                 <input type="password" id="u-pass" placeholder="Пароль" class="input-dark">
+                <input type="text" id="u-word" placeholder="Кодовое слово" class="input-dark">
             </div>
-
-            <div id="code-area" class="hidden text-center space-y-4">
-                <p class="text-[10px] font-black text-[#bf953f] uppercase">Введите 4 цифры звонка</p>
-                <input type="number" id="u-code" placeholder="0000" class="input-dark text-2xl tracking-[10px] font-black">
-            </div>
-
-            <button id="main-btn" onclick="startAction()" class="buy-btn">Продолжить</button>
-            <p onclick="closeAuth()" class="text-center text-[9px] opacity-20 uppercase font-black cursor-pointer">Отмена</p>
+            <button id="main-btn" onclick="handleAuth()" class="buy-btn">Создать аккаунт</button>
+            <p id="toggle-text" onclick="toggleMode()" class="text-center text-[10px] opacity-40 uppercase font-black cursor-pointer py-2">Уже есть аккаунт? Войти</p>
+            <p onclick="closeAuth()" class="text-center text-[9px] opacity-20 uppercase font-black cursor-pointer">Закрыть</p>
         </div>
     </div>
 
     <script>
-        const API_ID = "C1E31980-AF45-CDCF-0DE2-F6B278C69D76";
         const fbCfg = { 
             apiKey: "AIzaSyCRjRJkH4dPxvyYD-37emejFvK11g6hZ44", 
             authDomain: "nnnmb-a0b52.firebaseapp.com", 
@@ -58,78 +78,85 @@
         firebase.initializeApp(fbCfg);
         const db = firebase.database();
 
-        let correctCode = null;
+        let isLogin = false;
+        let currentFilter = 'ALL';
+
+        // ПРОВЕРКА ВХОДА (ВЕЧНЫЙ ВХОД)
+        const savedUser = localStorage.getItem('user_sim_v2');
+        if(savedUser) showUser(savedUser);
 
         function openAuth() { document.getElementById('auth-modal').style.display = 'flex'; }
         function closeAuth() { document.getElementById('auth-modal').style.display = 'none'; }
+        
+        function toggleMode() {
+            isLogin = !isLogin;
+            document.getElementById('modal-title').innerText = isLogin ? "ВХОД" : "РЕГИСТРАЦИЯ";
+            document.getElementById('u-word').placeholder = isLogin ? "Кодовое слово (для входа)" : "Придумайте кодовое слово";
+            document.getElementById('main-btn').innerText = isLogin ? "Войти" : "Создать аккаунт";
+            document.getElementById('toggle-text').innerText = isLogin ? "Нет аккаунта? Создать" : "Уже есть аккаунт? Войти";
+        }
 
-        // Эту функцию вызовет SMS.RU
-        window.onSmsReady = function(data) {
-            const btn = document.getElementById('main-btn');
-            btn.disabled = false;
-            if(data.status === "OK") {
-                correctCode = data.code;
-                document.getElementById('code-area').classList.remove('hidden');
-                document.getElementById('inputs-area').classList.add('hidden');
-                btn.innerText = "Подтвердить";
+        function handleAuth() {
+            const ph = document.getElementById('u-phone').value.trim();
+            const ps = document.getElementById('u-pass').value.trim();
+            const wd = document.getElementById('u-word').value.trim();
+            const clean = ph.replace(/\D/g, '');
+
+            if(!ph || !ps || !wd) return alert("Заполните все три поля!");
+
+            if(isLogin) {
+                db.ref('users/' + clean).once('value', s => {
+                    const data = s.val();
+                    if(data && data.pass === ps && data.word === wd) showUser(ph);
+                    else alert("Ошибка! Неверные данные или кодовое слово.");
+                });
             } else {
-                alert("Ошибка: " + data.status_text);
-                btn.innerText = "Продолжить";
-            }
-        };
-
-        function startAction() {
-            const phone = document.getElementById('u-phone').value.trim();
-            const pass = document.getElementById('u-pass').value.trim();
-            const btn = document.getElementById('main-btn');
-            const cleanPhone = phone.replace(/\D/g, '');
-
-            if(!phone || !pass) return alert("Заполните поля!");
-
-            if(!correctCode) {
-                btn.innerText = "ЗВОНИМ...";
-                btn.disabled = true;
-
-                // Создаем скрипт вручную (JSONP)
-                const script = document.createElement('script');
-                script.src = `https://sms.ru/code/call?phone=${cleanPhone}&api_id=${API_ID}&format=json&callback=onSmsReady`;
-                
-                // Если скрипт не загрузится за 5 секунд - принудительно сбросим зависание
-                setTimeout(() => {
-                    if(btn.disabled && !correctCode) {
-                        btn.disabled = false;
-                        btn.innerText = "Продолжить";
-                        alert("Сервер SMS.RU не отвечает. Проверьте баланс или попробуйте позже.");
-                    }
-                }, 7000);
-
-                document.body.appendChild(script);
-            } else {
-                // Если код уже пришел, проверяем его
-                if(document.getElementById('u-code').value == correctCode) {
-                    db.ref('users/' + cleanPhone).set({phone, pass}).then(() => {
-                        alert("Успешно!");
-                        location.reload();
-                    });
-                } else {
-                    alert("Неверный код!");
-                }
+                db.ref('users/' + clean).set({phone: ph, pass: ps, word: wd}).then(() => showUser(ph));
             }
         }
 
-        // Загрузка
+        function showUser(ph) {
+            localStorage.setItem('user_sim_v2', ph);
+            document.getElementById('login-btn').style.display = 'none';
+            const display = document.getElementById('user-display');
+            display.innerText = ph;
+            display.classList.remove('hidden');
+            closeAuth();
+        }
+
+        function filterOp(op, el) {
+            currentFilter = op;
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            el.classList.add('active');
+            renderItems();
+        }
+
+        let allItems = {};
         db.ref('inventory').on('value', s => {
-            const list = document.getElementById('list'); list.innerHTML = "";
-            const items = s.val() || {};
-            Object.keys(items).reverse().forEach(id => {
-                const i = items[id];
-                list.innerHTML += `<div class="neon-card"><div class="card-inner">
-                    <div class="text-3xl font-black italic text-white mb-2">+7 ${i.num}</div>
-                    <div class="text-xl font-bold gold-grad mb-6">${i.price} ₽</div>
-                    <button class="buy-btn" onclick="openAuth()">Купить</button>
-                </div></div>`;
-            });
+            allItems = s.val() || {};
+            renderItems();
         });
+
+        function renderItems() {
+            const list = document.getElementById('list'); 
+            list.innerHTML = "";
+            Object.keys(allItems).reverse().forEach(id => {
+                const i = allItems[id];
+                const opName = (i.op || 'МТС').toUpperCase();
+                
+                if(currentFilter !== 'ALL' && opName !== currentFilter) return;
+
+                list.innerHTML += `
+                    <div class="neon-card">
+                        <div class="card-inner">
+                            <div class="text-[9px] font-black opacity-30 uppercase tracking-widest mb-4">${opName}</div>
+                            <div class="text-4xl font-black italic text-white mb-2 tracking-tighter">+7 ${i.num}</div>
+                            <div class="text-2xl font-black gold-grad mb-8">${i.price} ₽</div>
+                            <button class="buy-btn" onclick="openAuth()">Купить номер</button>
+                        </div>
+                    </div>`;
+            });
+        }
     </script>
 </body>
 </html>
