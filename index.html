@@ -11,156 +11,123 @@
         @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap');
         body { font-family: 'Manrope', sans-serif; background: #050505; color: #fff; margin: 0; }
         .gold-grad { background: linear-gradient(90deg, #bf953f, #fcf6ba, #bf953f); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .buy-btn { background: linear-gradient(135deg, #bf953f, #fcf6ba); color: #000; font-weight: 900; padding: 16px; border-radius: 20px; width: 100%; text-transform: uppercase; font-size: 11px; }
+        .input-dark { width: 100%; background: #111; border: 1px solid #333; padding: 16px; border-radius: 20px; color: #fff; outline: none; font-size: 16px; text-align: center; }
         .neon-card { position: relative; background: rgba(191,149,63,0.1); border-radius: 28px; padding: 1.5px; overflow: hidden; margin-bottom: 20px; }
         .neon-card::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: conic-gradient(transparent, #bf953f, transparent, #fcf6ba, transparent); animation: rotate 4s linear infinite; }
         @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         .card-inner { position: relative; background: #0d0d0d; border-radius: 27px; padding: 25px; z-index: 1; text-align: center; }
-        .buy-btn { background: linear-gradient(135deg, #bf953f, #fcf6ba); color: #000; font-weight: 900; padding: 16px; border-radius: 20px; width: 100%; text-transform: uppercase; font-size: 11px; transition: 0.3s; }
-        .buy-btn:disabled { opacity: 0.5; filter: grayscale(1); }
-        .input-dark { width: 100%; background: #111; border: 1px solid #333; padding: 16px; border-radius: 20px; color: #fff; outline: none; font-size: 16px; text-align: center; }
     </style>
 </head>
-<body class="p-4 pb-32">
+<body class="p-4">
 
     <header class="flex justify-between items-center mb-8 pt-4 px-2">
-        <h1 class="text-2xl font-black italic gold-grad uppercase tracking-tighter">SIM MARKET</h1>
-        <div id="user-info" class="hidden flex items-center gap-2 bg-[#bf953f]/10 p-1 pr-4 rounded-full border border-[#bf953f]/20">
-            <div class="w-8 h-8 rounded-full bg-[#bf953f] flex items-center justify-center text-black text-xs font-black">👤</div>
-            <span id="user-phone" class="text-[10px] font-black text-[#bf953f]"></span>
-        </div>
-        <button id="login-btn" onclick="openAuth()" class="text-[10px] font-bold border border-[#bf953f]/40 px-6 py-2.5 rounded-full uppercase gold-grad">Вход</button>
+        <h1 class="text-2xl font-black italic gold-grad uppercase">SIM MARKET</h1>
+        <button onclick="openAuth()" id="login-btn" class="text-[10px] font-bold border border-[#bf953f]/40 px-6 py-2.5 rounded-full uppercase gold-grad">Вход</button>
     </header>
 
     <div id="list" class="max-w-md mx-auto"></div>
 
-    <div id="auth-modal" class="fixed inset-0 bg-black/98 z-[7000] hidden items-center justify-center p-8 backdrop-blur-xl">
+    <div id="auth-modal" class="fixed inset-0 bg-black/95 z-[9999] hidden items-center justify-center p-8 backdrop-blur-md">
         <div class="w-full max-w-xs space-y-6">
-            <h2 id="modal-title" class="text-3xl font-black text-center gold-grad">РЕГИСТРАЦИЯ</h2>
+            <h2 id="modal-title" class="text-3xl font-black text-center gold-grad uppercase">Регистрация</h2>
             
-            <div id="reg-inputs" class="space-y-4">
-                <input type="tel" id="u-phone" placeholder="89000000000" class="input-dark">
-                <input type="password" id="u-pass" placeholder="Придумайте пароль" class="input-dark">
+            <div id="inputs-area" class="space-y-4">
+                <input type="tel" id="u-phone" placeholder="8928..." class="input-dark">
+                <input type="password" id="u-pass" placeholder="Пароль" class="input-dark">
             </div>
 
-            <div id="code-section" class="hidden text-center space-y-4 animate-pulse">
-                <p class="text-[11px] font-black text-[#bf953f] uppercase">Вам звонят...<br>Введите последние 4 цифры</p>
-                <input type="number" id="u-code" placeholder="0000" class="input-dark text-2xl tracking-[15px] font-black">
+            <div id="code-area" class="hidden text-center space-y-4">
+                <p class="text-[10px] font-black text-[#bf953f] uppercase">Введите 4 цифры звонка</p>
+                <input type="number" id="u-code" placeholder="0000" class="input-dark text-2xl tracking-[10px] font-black">
             </div>
 
-            <button id="main-action-btn" onclick="handleFlow()" class="buy-btn">Продолжить</button>
-            
-            <p id="switch-mode" onclick="toggleMode()" class="text-center text-[10px] opacity-40 uppercase font-black cursor-pointer py-2">Уже есть аккаунт? Войти</p>
-            <p onclick="closeAuth()" class="text-center text-[9px] opacity-20 uppercase font-black cursor-pointer">Закрыть</p>
+            <button id="main-btn" onclick="startAction()" class="buy-btn">Продолжить</button>
+            <p onclick="closeAuth()" class="text-center text-[9px] opacity-20 uppercase font-black cursor-pointer">Отмена</p>
         </div>
     </div>
 
     <script>
-        // ДАННЫЕ ИЗ ТВОИХ СКРИНШОТОВ
         const API_ID = "C1E31980-AF45-CDCF-0DE2-F6B278C69D76";
-        const fbConfig = { 
+        const fbCfg = { 
             apiKey: "AIzaSyCRjRJkH4dPxvyYD-37emejFvK11g6hZ44", 
             authDomain: "nnnmb-a0b52.firebaseapp.com", 
             databaseURL: "https://nnnmb-a0b52-default-rtdb.firebaseio.com", 
             projectId: "nnnmb-a0b52" 
         };
-        
-        firebase.initializeApp(fbConfig);
+        firebase.initializeApp(fbCfg);
         const db = firebase.database();
 
-        let isLoginMode = false;
-        let serverCode = null;
-        let savedUser = JSON.parse(localStorage.getItem('sim_user'));
-
-        if(savedUser) applyUserUI(savedUser.phone);
+        let correctCode = null;
 
         function openAuth() { document.getElementById('auth-modal').style.display = 'flex'; }
         function closeAuth() { document.getElementById('auth-modal').style.display = 'none'; }
 
-        function toggleMode() {
-            isLoginMode = !isLoginMode;
-            document.getElementById('modal-title').innerText = isLoginMode ? "ВХОД" : "РЕГИСТРАЦИЯ";
-            document.getElementById('switch-mode').innerText = isLoginMode ? "Нет аккаунта? Создать" : "Уже есть аккаунт? Войти";
-            document.getElementById('code-section').classList.add('hidden');
-            serverCode = null;
-        }
-
-        // ЭТА ФУНКЦИЯ ПРИНИМАЕТ ОТВЕТ ОТ SMS.RU (JSONP)
-        window.onSmsResult = function(data) {
-            const btn = document.getElementById('main-action-btn');
+        // Эту функцию вызовет SMS.RU
+        window.onSmsReady = function(data) {
+            const btn = document.getElementById('main-btn');
             btn.disabled = false;
-            
             if(data.status === "OK") {
-                serverCode = data.code;
-                document.getElementById('code-section').classList.remove('hidden');
-                document.getElementById('reg-inputs').classList.add('opacity-30');
-                btn.innerText = "ПОДТВЕРДИТЬ";
+                correctCode = data.code;
+                document.getElementById('code-area').classList.remove('hidden');
+                document.getElementById('inputs-area').classList.add('hidden');
+                btn.innerText = "Подтвердить";
             } else {
-                alert("Ошибка SMS.RU: " + data.status_text);
+                alert("Ошибка: " + data.status_text);
                 btn.innerText = "Продолжить";
             }
         };
 
-        async function handleFlow() {
+        function startAction() {
             const phone = document.getElementById('u-phone').value.trim();
             const pass = document.getElementById('u-pass').value.trim();
-            const btn = document.getElementById('main-action-btn');
+            const btn = document.getElementById('main-btn');
             const cleanPhone = phone.replace(/\D/g, '');
 
             if(!phone || !pass) return alert("Заполните поля!");
 
-            if(isLoginMode) {
-                // ЛОГИКА ВХОДА
-                btn.innerText = "ПРОВЕРКА...";
-                db.ref('users/' + cleanPhone).once('value', s => {
-                    const user = s.val();
-                    if(user && user.pass === pass) applyUserUI(phone);
-                    else { alert("Неверный пароль или номер!"); btn.innerText = "Продолжить"; }
-                });
-            } else {
-                // ЛОГИКА РЕГИСТРАЦИИ
-                if(!serverCode) {
-                    btn.innerText = "СВЯЗЬ С СЕРВЕРОМ...";
-                    btn.disabled = true;
+            if(!correctCode) {
+                btn.innerText = "ЗВОНИМ...";
+                btn.disabled = true;
 
-                    // Обход CORS через JSONP
-                    const script = document.createElement('script');
-                    script.src = `https://sms.ru/code/call?phone=${cleanPhone}&api_id=${API_ID}&format=json&callback=onSmsResult`;
-                    document.body.appendChild(script);
-                } else {
-                    const userCode = document.getElementById('u-code').value;
-                    if(userCode == serverCode) {
-                        db.ref('users/' + cleanPhone).set({phone, pass}).then(() => applyUserUI(phone));
-                    } else {
-                        alert("Код неверный!");
+                // Создаем скрипт вручную (JSONP)
+                const script = document.createElement('script');
+                script.src = `https://sms.ru/code/call?phone=${cleanPhone}&api_id=${API_ID}&format=json&callback=onSmsReady`;
+                
+                // Если скрипт не загрузится за 5 секунд - принудительно сбросим зависание
+                setTimeout(() => {
+                    if(btn.disabled && !correctCode) {
+                        btn.disabled = false;
+                        btn.innerText = "Продолжить";
+                        alert("Сервер SMS.RU не отвечает. Проверьте баланс или попробуйте позже.");
                     }
+                }, 7000);
+
+                document.body.appendChild(script);
+            } else {
+                // Если код уже пришел, проверяем его
+                if(document.getElementById('u-code').value == correctCode) {
+                    db.ref('users/' + cleanPhone).set({phone, pass}).then(() => {
+                        alert("Успешно!");
+                        location.reload();
+                    });
+                } else {
+                    alert("Неверный код!");
                 }
             }
         }
 
-        function applyUserUI(p) {
-            localStorage.setItem('sim_user', JSON.stringify({phone: p}));
-            document.getElementById('login-btn').classList.add('hidden');
-            document.getElementById('user-info').classList.remove('hidden');
-            document.getElementById('user-phone').innerText = p;
-            closeAuth();
-        }
-
-        // Загрузка товаров
+        // Загрузка
         db.ref('inventory').on('value', s => {
-            const list = document.getElementById('list');
-            list.innerHTML = "";
+            const list = document.getElementById('list'); list.innerHTML = "";
             const items = s.val() || {};
             Object.keys(items).reverse().forEach(id => {
                 const i = items[id];
-                list.innerHTML += `
-                    <div class="neon-card">
-                        <div class="card-inner">
-                            <div class="text-[9px] font-black opacity-30 uppercase tracking-widest mb-4">${i.op || 'PREMIUM'}</div>
-                            <div class="text-4xl font-black italic text-white mb-2 tracking-tighter">+7 ${i.num}</div>
-                            <div class="text-2xl font-black gold-grad mb-8">${parseInt(i.price).toLocaleString()} ₽</div>
-                            <button onclick="openAuth()" class="buy-btn">Оформить заказ</button>
-                        </div>
-                    </div>`;
+                list.innerHTML += `<div class="neon-card"><div class="card-inner">
+                    <div class="text-3xl font-black italic text-white mb-2">+7 ${i.num}</div>
+                    <div class="text-xl font-bold gold-grad mb-6">${i.price} ₽</div>
+                    <button class="buy-btn" onclick="openAuth()">Купить</button>
+                </div></div>`;
             });
         });
     </script>
