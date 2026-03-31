@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SIM MARKET | ELITE LIVE</title>
+    <title>SIM MARKET | TOTAL STYLE</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap');
         
-        /* КРУТОЙ ПЕРЕЛИВАЮЩИЙСЯ ФОН */
         body { 
             font-family: 'Manrope', sans-serif; 
             margin: 0;
@@ -26,7 +25,6 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* ЛОГОТИП С ЗОЛОТЫМ БЛЕСКОМ */
         .logo-shine {
             font-weight: 800; font-size: 32px; text-transform: uppercase;
             background: linear-gradient(90deg, #bf953f, #fcf6ba, #bf953f);
@@ -35,7 +33,6 @@
         }
         @keyframes shine { to { background-position: 200% center; } }
 
-        /* ВКЛАДКИ ОПЕРАТОРОВ */
         .tab-btn {
             background: rgba(255,255,255,0.05);
             border: 1px solid rgba(255,255,255,0.1);
@@ -43,66 +40,60 @@
             font-size: 11px; font-weight: 800; text-transform: uppercase;
             color: #888; transition: 0.3s;
         }
-        .tab-active {
-            background: #bf953f; color: #000; border-color: #bf953f;
-            box-shadow: 0 4px 15px rgba(191, 149, 63, 0.4);
-        }
+        .tab-active { background: #bf953f; color: #000; border-color: #bf953f; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
 
-        /* ВРАЩАЮЩАЯСЯ ЗОЛОТАЯ РАМКА */
+        /* ВРАЩАЮЩАЯСЯ РАМКА */
         .neon-card {
-            position: relative;
-            background: rgba(191, 149, 63, 0.1);
-            border-radius: 24px;
-            padding: 2px;
-            overflow: hidden;
-            margin-bottom: 25px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            position: relative; background: rgba(191, 149, 63, 0.1);
+            border-radius: 24px; padding: 2px; overflow: hidden; margin-bottom: 25px;
         }
-
         .neon-card::before {
-            content: '';
-            position: absolute;
-            top: -50%; left: -50%; width: 200%; height: 200%;
+            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
             background: conic-gradient(transparent, #bf953f, #fcf6ba, #bf953f, transparent);
             animation: rotate 3s linear infinite;
         }
-
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
         .card-content {
-            position: relative;
-            background: #0d0d0d;
-            border-radius: 22px;
-            padding: 30px 20px;
-            z-index: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            position: relative; background: #0d0d0d; border-radius: 22px;
+            padding: 30px 20px; z-index: 1; display: flex; flex-direction: column; align-items: center;
         }
 
-        .price-text {
-            font-size: 28px; font-weight: 800; color: #bf953f;
-            margin: 10px 0 20px 0; letter-spacing: -1px;
-        }
+        .price-text { font-size: 28px; font-weight: 800; color: #bf953f; margin: 10px 0 20px 0; }
 
         .buy-btn {
             background: #bf953f; color: #000; font-weight: 800;
             font-size: 12px; text-transform: uppercase; padding: 18px;
-            border-radius: 16px; width: 100%; border: none; cursor: pointer;
+            border-radius: 16px; width: 100%; border: none;
         }
-        
-        .buy-btn:active { transform: scale(0.96); }
+
+        /* --- СТИЛЬНОЕ ОКНО ЗАКАЗА --- */
+        #order-modal {
+            display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9);
+            z-index: 100; align-items: center; justify-content: center; padding: 20px;
+            backdrop-filter: blur(10px);
+        }
+        .modal-box {
+            background: #0d0d0d; width: 100%; max-width: 350px;
+            border-radius: 30px; border: 1px solid #bf953f;
+            padding: 30px; text-align: center;
+            box-shadow: 0 0 40px rgba(191, 149, 63, 0.2);
+        }
+        .modal-input {
+            background: #151515; border: 1px solid rgba(191, 149, 63, 0.3);
+            border-radius: 15px; padding: 15px; width: 100%; color: #fff;
+            margin-bottom: 15px; outline: none; text-align: center;
+        }
+        .modal-input:focus { border-color: #bf953f; }
+        .close-btn { color: #888; font-size: 10px; text-transform: uppercase; margin-top: 15px; cursor: pointer; }
     </style>
 </head>
 <body class="p-6">
 
     <header class="flex flex-col items-center py-10">
-        <h1 class="logo-shine">SIM MARKET</h1>
-        <p class="text-[10px] font-bold opacity-30 tracking-[5px] mt-2 uppercase">Premium Store</p>
+        <h1 class="logo-shine italic">SIM MARKET</h1>
+        <p class="text-[10px] font-bold opacity-30 tracking-[5px] mt-2 uppercase">Elite Stock</p>
     </header>
 
     <div class="max-w-md mx-auto mb-8">
@@ -116,8 +107,19 @@
         </div>
     </div>
 
-    <div id="list" class="max-w-md mx-auto pb-20">
-        <p class="text-center opacity-20 py-10 text-sm">Загрузка витрины...</p>
+    <div id="list" class="max-w-md mx-auto pb-20"></div>
+
+    <div id="order-modal">
+        <div class="modal-box">
+            <h2 class="text-xl font-black mb-1 gold-text" id="m-num">Номер</h2>
+            <p class="text-[10px] opacity-40 uppercase tracking-widest mb-6 italic">Оформление заказа</p>
+            
+            <input type="text" id="fio" placeholder="Ваше Имя" class="modal-input">
+            <input type="tel" id="contact" placeholder="Ваш телефон" class="modal-input">
+            
+            <button onclick="confirmOrder()" class="buy-btn">Подтвердить заказ</button>
+            <div onclick="closeModal()" class="close-btn">Отмена</div>
+        </div>
     </div>
 
     <script>
@@ -132,6 +134,31 @@
 
         let currentFilter = 'all';
         let allNumbers = {};
+        let selectedNum = '';
+
+        function openModal(num) {
+            selectedNum = num;
+            document.getElementById('m-num').innerText = '+7 ' + num;
+            document.getElementById('order-modal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('order-modal').style.display = 'none';
+        }
+
+        function confirmOrder() {
+            const f = document.getElementById('fio').value;
+            const c = document.getElementById('contact').value;
+            if(!f || !c) return alert("Заполни данные");
+
+            db.ref('leads').push({ num: selectedNum, fio: f, contact: c, ts: Date.now() })
+            .then(() => {
+                alert("Заявка принята!");
+                closeModal();
+                document.getElementById('fio').value = '';
+                document.getElementById('contact').value = '';
+            });
+        }
 
         function setFilter(op, el) {
             currentFilter = op;
@@ -142,46 +169,26 @@
 
         function render() {
             const list = document.getElementById('list');
-            if (!allNumbers || Object.keys(allNumbers).length === 0) {
-                list.innerHTML = '<p class="text-center opacity-20 py-10">Номеров нет</p>';
-                return;
-            }
-
             list.innerHTML = "";
             const keys = Object.keys(allNumbers).reverse();
-            
             keys.forEach(k => {
                 const item = allNumbers[k];
                 if (currentFilter !== 'all' && item.op !== currentFilter) return;
-
                 list.innerHTML += `
                     <div class="neon-card">
                         <div class="card-content">
-                            <div class="w-full flex justify-between items-center opacity-40 px-1 text-[9px] font-bold uppercase tracking-widest mb-4">
-                                <span>${item.op.toUpperCase()}</span>
-                                <span style="color:#bf953f" class="italic">Elite</span>
+                            <div class="w-full flex justify-between items-center opacity-40 px-1 text-[9px] font-bold uppercase mb-4">
+                                <span>${item.op.toUpperCase()}</span><span style="color:#bf953f" class="italic">Elite</span>
                             </div>
-                            <div class="text-3xl font-black italic tracking-tighter mb-1 text-white">+7 ${item.num}</div>
+                            <div class="text-3xl font-black italic tracking-tighter mb-1">+7 ${item.num}</div>
                             <div class="price-text">${parseInt(item.price).toLocaleString('ru-RU')} ₽</div>
-                            <button onclick="sendOrder('${item.num}')" class="buy-btn">Заказать номер</button>
+                            <button onclick="openModal('${item.num}')" class="buy-btn">Заказать номер</button>
                         </div>
                     </div>`;
             });
         }
 
-        db.ref('inventory').on('value', s => {
-            allNumbers = s.val() || {};
-            render();
-        });
-
-        function sendOrder(n) {
-            const name = prompt("Ваше имя:");
-            const tel = prompt("Ваш телефон:");
-            if(name && tel) {
-                db.ref('leads').push({ num: n, fio: name, contact: tel, ts: Date.now() })
-                .then(() => alert("Заявка принята!"));
-            }
-        }
+        db.ref('inventory').on('value', s => { allNumbers = s.val() || {}; render(); });
     </script>
 </body>
 </html>
