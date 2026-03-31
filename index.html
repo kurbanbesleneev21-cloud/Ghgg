@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SIM MARKET | GOLD EDITION</title>
+    <title>SIM MARKET | GOLD 1000</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap');
@@ -14,7 +14,6 @@
             overflow-x: hidden;
             -webkit-tap-highlight-color: transparent;
             color: #fff;
-            /* ФОН: ПЕРЕЛИВАЕТСЯ ОДНИМ ЦВЕТОМ (ТЕМНО-ЗОЛОТЫМ) */
             background: linear-gradient(135deg, #050505, #1a150a, #050505);
             background-size: 400% 400%;
             animation: gradient-alive 8s ease infinite;
@@ -34,7 +33,6 @@
         }
         @keyframes shine { to { background-position: 200% center; } }
 
-        /* РАМКА: ПЕРЕЛИВАЕТСЯ ТОЛЬКО ЗОЛОТОМ */
         .neon-card {
             position: relative;
             background: rgba(191, 149, 63, 0.1);
@@ -50,7 +48,6 @@
             left: -50%;
             width: 200%;
             height: 200%;
-            /* ТОЛЬКО ЗОЛОТЫЕ ОТТЕНКИ */
             background: conic-gradient(transparent, #bf953f, #fcf6ba, #bf953f, transparent);
             animation: rotate 3s linear infinite;
         }
@@ -59,7 +56,7 @@
             position: relative;
             background: #0a0a0a;
             border-radius: 22.5px;
-            padding: 20px;
+            padding: 24px 20px;
             z-index: 1;
             display: flex;
             flex-direction: column;
@@ -71,9 +68,12 @@
             to { transform: rotate(360deg); }
         }
 
-        .buy-btn { background: #fff; color: #000; font-weight: 800; font-size: 11px; text-transform: uppercase; padding: 16px; border-radius: 14px; width: 100%; border: none; cursor: pointer; margin-top: 12px; }
+        .buy-btn { background: #bf953f; color: #fff; font-weight: 800; font-size: 11px; text-transform: uppercase; padding: 16px; border-radius: 14px; width: 100%; border: none; cursor: pointer; margin-top: 16px; transition: 0.3s; }
+        .buy-btn:active { transform: scale(0.98); opacity: 0.9; }
+        
         .tab-btn { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); padding: 10px 18px; border-radius: 12px; font-size: 10px; font-weight: 800; text-transform: uppercase; color: #71717a; white-space: nowrap; transition: 0.2s; }
         .tab-active { background: #bf953f !important; color: #fff !important; }
+        
         .input-luxury { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 18px; padding: 18px; width: 100%; color: #fff; text-align: center; outline: none; }
         
         #order-modal { display: none; position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,0.98); backdrop-filter: blur(15px); align-items: center; justify-content: center; }
@@ -84,11 +84,11 @@
 
     <header class="flex flex-col items-center py-12 border-b border-white/5">
         <h1 class="logo-shine">SIM MARKET</h1>
-        <p class="text-[10px] font-bold opacity-30 tracking-[5px] mt-2 uppercase">Gold Limited Edition</p>
+        <p class="text-[10px] font-bold opacity-30 tracking-[5px] mt-2 uppercase">Premium Fixed Price</p>
     </header>
 
     <main class="max-w-md mx-auto p-6">
-        <input type="text" id="q" oninput="draw()" placeholder="Поиск номера..." class="input-luxury mb-8">
+        <input type="text" id="q" oninput="draw()" placeholder="Поиск по цифрам..." class="input-luxury mb-8">
         
         <div class="flex gap-2 overflow-x-auto no-scrollbar mb-10 pb-2">
             <button onclick="setFilter('all', this)" class="tab-btn tab-active">Все</button>
@@ -110,7 +110,7 @@
                 <form id="tg-form" class="space-y-4 w-full">
                     <input type="text" id="fio" placeholder="Ваше ФИО" class="input-luxury" required>
                     <input type="tel" id="contact" placeholder="Ваш телефон" class="input-luxury" required>
-                    <button type="submit" id="sub-btn" class="buy-btn" style="background: #bf953f; color: #fff;">Отправить заказ</button>
+                    <button type="submit" id="sub-btn" class="buy-btn">Отправить заказ</button>
                 </form>
             </div>
         </div>
@@ -120,93 +120,36 @@
         const BOT_TOKEN = '8666944440:AAFAmQuYaYmnJjhuQ9AmdBQim9V-kxNnxAo';
         const CHAT_ID = '8768514374';
         
+        // Список номеров (база сохранена, цена фиксирована 1000)
         const database = [
-            {"n": "964-274-80-80", "t": "490", "op": "beeline", "d": "50ГБ + 1000 мин"},
-            {"n": "964-273-63-63", "t": "430", "op": "beeline", "d": "30ГБ + 500 мин"},
-            {"n": "915-442-54-47", "t": "1150", "op": "mts", "d": "Безлимит ГБ"},
-            {"n": "901-830-77-61", "t": "400", "op": "yota", "d": "40ГБ + 400 мин"},
-            {"n": "980-421-22-88", "t": "1150", "op": "mts", "d": "VIP Безлимит"},
-            {"n": "916-178-58-77", "t": "500", "op": "mts", "d": "Стандарт"},
-            {"n": "995-444-78-58", "t": "555", "op": "megafon", "d": "Максимум 60ГБ"},
-            {"n": "901-55-999-55", "t": "1000", "op": "tele2", "d": "Игровой"},
-            {"n": "964-274-40-40", "t": "490", "op": "beeline", "d": "50ГБ"},
-            {"n": "986-111-42-49", "t": "555", "op": "megafon", "d": "60ГБ"},
-            {"n": "964-807-40-40", "t": "490", "op": "beeline", "d": "50ГБ"},
-            {"n": "901-833-23-42", "t": "399", "op": "yota", "d": "Выгодный"},
-            {"n": "901-771-78-78", "t": "600", "op": "tele2", "d": "Мой онлайн"},
-            {"n": "901-551-53-53", "t": "600", "op": "tele2", "d": "Мой онлайн"},
-            {"n": "964-803-60-60", "t": "490", "op": "beeline", "d": "50ГБ"},
-            {"n": "901-830-81-55", "t": "400", "op": "yota", "d": "40ГБ"},
-            {"n": "901-514-95-95", "t": "700", "op": "tele2", "d": "Премиум"},
-            {"n": "980-421-22-77", "t": "1150", "op": "mts", "d": "VIP"},
-            {"n": "964-805-90-90", "t": "490", "op": "beeline", "d": "50ГБ"},
-            {"n": "964-274-60-60", "t": "490", "op": "beeline", "d": "50ГБ"},
-            {"n": "964-804-30-30", "t": "490", "op": "beeline", "d": "50ГБ"},
-            {"n": "985-073-22-00", "t": "1150", "op": "mts", "d": "VIP"},
-            {"n": "986-111-57-75", "t": "705", "op": "megafon", "d": "Максимум"},
-            {"n": "964-802-72-72", "t": "430", "op": "beeline", "d": "30ГБ"},
-            {"n": "985-428-77-99", "t": "1150", "op": "mts", "d": "VIP"},
-            {"n": "901-562-08-08", "t": "600", "op": "tele2", "d": "Мой онлайн"},
-            {"n": "964-274-94-94", "t": "430", "op": "beeline", "d": "30ГБ"},
-            {"n": "986-333-02-42", "t": "555", "op": "megafon", "d": "60ГБ"},
-            {"n": "964-275-40-40", "t": "490", "op": "beeline", "d": "50ГБ"},
-            {"n": "964-803-40-40", "t": "490", "op": "beeline", "d": "50ГБ"},
-            {"n": "964-275-20-20", "t": "490", "op": "beeline", "d": "50ГБ"},
-            {"n": "901-833-09-19", "t": "399", "op": "yota", "d": "Выгодный"},
-            {"n": "910-485-11-66", "t": "1150", "op": "mts", "d": "VIP"},
-            {"n": "980-444-52-12", "t": "555", "op": "megafon", "d": "60ГБ"},
-            {"n": "964-275-90-90", "t": "490", "op": "beeline", "d": "50ГБ"},
-            {"n": "901-552-59-59", "t": "600", "op": "tele2", "d": "Мой онлайн"},
-            {"n": "915-445-14-49", "t": "1150", "op": "mts", "d": "VIP"},
-            {"n": "916-349-11-00", "t": "1150", "op": "mts", "d": "VIP"},
-            {"n": "916-494-85-90", "t": "500", "op": "mts", "d": "Стандарт"},
-            {"n": "964-806-90-90", "t": "490", "op": "beeline", "d": "50ГБ"},
-            {"n": "915-234-99-44", "t": "1150", "op": "mts", "d": "VIP"},
-            {"n": "964-803-63-63", "t": "430", "op": "beeline", "d": "30ГБ"},
-            {"n": "901-830-86-50", "t": "400", "op": "yota", "d": "40ГБ"},
-            {"n": "980-419-55-99", "t": "1150", "op": "mts", "d": "VIP"},
-            {"n": "986-333-79-97", "t": "705", "op": "megafon", "d": "Максимум"},
-            {"n": "980-444-50-57", "t": "555", "op": "megafon", "d": "60ГБ"},
-            {"n": "901-831-75-95", "t": "399", "op": "yota", "d": "Выгодный"},
-            {"n": "986-333-80-40", "t": "555", "op": "megafon", "d": "60ГБ"},
-            {"n": "901-55555-28", "t": "1000", "op": "tele2", "d": "Премиум"},
-            {"n": "901-833-08-92", "t": "399", "op": "yota", "d": "Выгодный"},
-            {"n": "915-425-66-22", "t": "1150", "op": "mts", "d": "VIP"},
-            {"n": "901-55-333-55", "t": "1000", "op": "tele2", "d": "Премиум"},
-            {"n": "901-557-56-56", "t": "600", "op": "tele2", "d": "Мой онлайн"},
-            {"n": "964-275-80-80", "t": "490", "op": "beeline", "d": "50ГБ"},
-            {"n": "985-042-99-77", "t": "1150", "op": "mts", "d": "VIP"},
-            {"n": "901-554-95-95", "t": "700", "op": "tele2", "d": "Мой онлайн"},
-            {"n": "985-167-44-11", "t": "1150", "op": "mts", "d": "VIP"},
-            {"n": "901-512-5555", "t": "1000", "op": "tele2", "d": "Премиум"},
-            {"n": "980-444-65-05", "t": "555", "op": "megafon", "d": "60ГБ"},
-            {"n": "986-333-84-48", "t": "705", "op": "megafon", "d": "Максимум"},
-            {"n": "901-833-42-82", "t": "399", "op": "yota", "d": "Выгодный"},
-            {"n": "915-113-41-12", "t": "1150", "op": "mts", "d": "VIP"},
-            {"n": "901-830-81-15", "t": "400", "op": "yota", "d": "40ГБ"},
-            {"n": "964-802-92-92", "t": "430", "op": "beeline", "d": "30ГБ"},
-            {"n": "916-105-22-66", "t": "1150", "op": "mts", "d": "VIP"},
-            {"n": "901-554-51-51", "t": "600", "op": "tele2", "d": "Мой онлайн"},
-            {"n": "964-274-70-70", "t": "490", "op": "beeline", "d": "50ГБ"},
-            {"n": "964-802-10-10", "t": "490", "op": "beeline", "d": "50ГБ"},
-            {"n": "985-246-77-99", "t": "1150", "op": "mts", "d": "VIP"},
-            {"n": "964-801-30-30", "t": "490", "op": "beeline", "d": "50ГБ"},
-            {"n": "995-444-70-10", "t": "555", "op": "megafon", "d": "60ГБ"},
-            {"n": "980-421-22-55", "t": "1150", "op": "mts", "d": "VIP"},
-            {"n": "901-554-1111", "t": "1000", "op": "tele2", "d": "Премиум"},
-            {"n": "901-558-35-35", "t": "600", "op": "tele2", "d": "Мой онлайн"},
-            {"n": "916-042-99-22", "t": "1150", "op": "mts", "d": "VIP"},
-            {"n": "901-569-3333", "t": "1000", "op": "tele2", "d": "Премиум"},
-            {"n": "964-274-90-90", "t": "490", "op": "beeline", "d": "50ГБ"},
-            {"n": "901-513-8888", "t": "1150", "op": "tele2", "d": "Премиум"},
-            {"n": "999-999-82-64", "t": "799", "op": "yota", "d": "Безлимит"},
-            {"n": "977-826-1111", "t": "1000", "op": "tele2", "d": "Премиум"},
-            {"n": "901-503-04-04", "t": "600", "op": "tele2", "d": "Мой онлайн"},
-            {"n": "901-55555-48", "t": "800", "op": "tele2", "d": "Премиум"},
-            {"n": "964-806-40-40", "t": "490", "op": "beeline", "d": "50ГБ"},
-            {"n": "901-519-3333", "t": "1000", "op": "tele2", "d": "Премиум"},
-            {"n": "901-547-6666", "t": "1000", "op": "tele2", "d": "Премиум"}
+            "964-274-80-80", "964-273-63-63", "915-442-54-47", "901-830-77-61", "980-421-22-88", 
+            "916-178-58-77", "995-444-78-58", "901-55-999-55", "964-274-40-40", "986-111-42-49", 
+            "964-807-40-40", "901-833-23-42", "901-771-78-78", "901-551-53-53", "964-803-60-60", 
+            "901-830-81-55", "901-514-95-95", "980-421-22-77", "964-805-90-90", "964-274-60-60", 
+            "964-804-30-30", "985-073-22-00", "986-111-57-75", "964-802-72-72", "985-428-77-99", 
+            "901-562-08-08", "964-274-94-94", "986-333-02-42", "964-275-40-40", "964-803-40-40", 
+            "964-275-20-20", "901-833-09-19", "910-485-11-66", "980-444-52-12", "964-275-90-90", 
+            "901-552-59-59", "915-445-14-49", "916-349-11-00", "916-494-85-90", "964-806-90-90", 
+            "915-234-99-44", "964-803-63-63", "901-830-86-50", "980-419-55-99", "986-333-79-97", 
+            "980-444-50-57", "901-831-75-95", "986-333-80-40", "901-55555-28", "901-833-08-92", 
+            "915-425-66-22", "901-55-333-55", "901-557-56-56", "964-275-80-80", "985-042-99-77", 
+            "901-554-95-95", "985-167-44-11", "901-512-5555", "980-444-65-05", "986-333-84-48", 
+            "901-833-42-82", "915-113-41-12", "901-830-81-15", "964-802-92-92", "916-105-22-66", 
+            "901-554-51-51", "964-274-70-70", "964-802-10-10", "985-246-77-99", "964-801-30-30", 
+            "995-444-70-10", "980-421-22-55", "901-554-1111", "901-558-35-35", "916-042-99-22", 
+            "901-569-3333", "964-274-90-90", "901-513-8888", "999-999-82-64", "977-826-1111", 
+            "901-503-04-04", "901-55555-48", "964-806-40-40", "901-519-3333", "901-547-6666"
         ];
+
+        // Функция определения оператора по префиксу
+        function getOp(num) {
+            if (num.startsWith('91') || num.startsWith('985') || num.startsWith('980') || num.startsWith('910')) return 'mts';
+            if (num.startsWith('964')) return 'beeline';
+            if (num.startsWith('986') || num.startsWith('995')) return 'megafon';
+            if (num.startsWith('901') || num.startsWith('977')) return 'tele2';
+            if (num.startsWith('999')) return 'yota';
+            return 'all';
+        }
 
         let currentFilter = 'all';
 
@@ -220,21 +163,21 @@
         function draw() {
             const list = document.getElementById('list');
             const q = document.getElementById('q').value.toLowerCase();
-            const filtered = database.filter(i => {
-                const cleanNum = i.n.replace(/-/g, '');
-                return cleanNum.includes(q) && (currentFilter === 'all' || i.op.toLowerCase() === currentFilter);
+            const filtered = database.filter(n => {
+                const cleanNum = n.replace(/-/g, '');
+                const op = getOp(n);
+                return cleanNum.includes(q) && (currentFilter === 'all' || op === currentFilter);
             });
             
-            list.innerHTML = filtered.map(i => `
+            list.innerHTML = filtered.map(n => `
                 <div class="neon-card">
                     <div class="card-content">
-                        <div class="w-full flex justify-between items-center opacity-40 px-1 text-[9px] font-bold uppercase tracking-widest mb-2">
-                            <span>${i.op}</span><span style="color:#bf953f">Luxury</span>
+                        <div class="w-full flex justify-between items-center opacity-40 px-1 text-[9px] font-bold uppercase tracking-widest mb-3">
+                            <span>${getOp(n)}</span><span style="color:#bf953f">Elite</span>
                         </div>
-                        <div class="text-3xl font-black italic tracking-tighter mb-1">+7 ${i.n}</div>
-                        <div class="text-xl font-bold" style="color: #bf953f">${i.t} ₽</div>
-                        <div class="text-[10px] font-bold text-gray-500 uppercase mt-1">Тариф: ${i.d}</div>
-                        <button onclick="openModal('${i.n}')" class="buy-btn">Выбрать номер</button>
+                        <div class="text-3xl font-black italic tracking-tighter mb-1">+7 ${n}</div>
+                        <div class="text-2xl font-bold" style="color: #bf953f">1 000 ₽</div>
+                        <button onclick="openModal('${n}')" class="buy-btn">Заказать номер</button>
                     </div>
                 </div>
             `).reverse().join('');
@@ -248,15 +191,15 @@
             const btn = document.getElementById('sub-btn');
             btn.innerText = "ОТПРАВКА..."; btn.disabled = true;
             try {
-                const msg = `👑 <b>GOLD ЗАКАЗ</b>\n\n🔟 <b>НОМЕР:</b> <code>${document.getElementById('selected-num').innerText}</code>\n👤 <b>ФИО:</b> ${document.getElementById('fio').value}\n📞 <b>СВЯЗЬ:</b> ${document.getElementById('contact').value}`;
+                const msg = `👑 <b>ЗАКАЗ SIM MARKET</b>\n\n🔟 <b>НОМЕР:</b> <code>${document.getElementById('selected-num').innerText}</code>\n👤 <b>ФИО:</b> ${document.getElementById('fio').value}\n📞 <b>СВЯЗЬ:</b> ${document.getElementById('contact').value}\n💰 <b>ЦЕНА:</b> 1000 руб.`;
                 await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({ chat_id: CHAT_ID, text: msg, parse_mode: 'HTML' })
                 });
-                alert('Заказ отправлен!');
+                alert('Заказ отправлен Курбану!');
                 closeModal();
-            } catch(e) { alert('Ошибка'); } finally { btn.innerText = "Отправить заказ"; btn.disabled = false; }
+            } catch(e) { alert('Ошибка отправки'); } finally { btn.innerText = "Отправить заказ"; btn.disabled = false; }
         };
 
         draw();
