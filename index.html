@@ -47,30 +47,61 @@
         .tab.active { background: #bf953f; color: #000; border-color: #bf953f; box-shadow: 0 0 15px rgba(191,149,63,0.5); }
         .no-scrollbar::-webkit-scrollbar { display: none; }
 
-        /* КАРТОЧКА НОМЕРА (NEON + GLASS) */
+        /* КАРТОЧКА НОМЕРА С ВРАЩАЮЩИМСЯ ЗОЛОТЫМ ОБОДКОМ */
         .neon-card { 
             position: relative; 
             background: rgba(255,255,255,0.03); 
             border-radius: 28px; 
-            padding: 1px; /* Место для обводки */
             overflow: hidden; 
             margin-bottom: 15px; 
             cursor: pointer; 
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(191,149,63,0.1);
             transition: 0.3s;
+            z-index: 1;
         }
-        .neon-card:hover { border-color: rgba(191,149,63,0.5); transform: translateY(-2px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .neon-card:hover { transform: translateY(-2px); box-shadow: 0 10px 40px rgba(191,149,63,0.3); }
         
-        /* Анимированная обводка (вращение) */
-        .neon-card::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: conic-gradient(transparent, rgba(191,149,63,0.1), transparent, rgba(252,246,186,0.1), transparent); animation: rotate 6s linear infinite; }
+        /* Сам вращающийся ободок (ЯРКИЙ) */
+        .neon-card::before { 
+            content: ''; 
+            position: absolute; 
+            top: -50%; 
+            left: -50%; 
+            width: 200%; 
+            height: 200%; 
+            /* Яркий золотой градиент */
+            background: conic-gradient(
+                transparent 10%, 
+                #bf953f 20%, 
+                #fcf6ba 30%, 
+                #b38728 40%, 
+                transparent 50%, 
+                #bf953f 60%, 
+                #fcf6ba 70%, 
+                #b38728 80%, 
+                transparent 90%
+            ); 
+            animation: rotate 6s linear infinite; 
+            z-index: -2;
+        }
+        
+        /* Задний фон карточки, чтобы скрыть лишний градиент */
+        .neon-card::after {
+            content: '';
+            position: absolute;
+            inset: 2px; /* Толщина ободка */
+            background: rgba(10,10,15,0.98); 
+            border-radius: 26px;
+            z-index: -1;
+        }
+
         @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         
-        .card-inner { position: relative; background: rgba(10,10,15,0.9); border-radius: 27px; padding: 20px; z-index: 1; text-align: center; }
+        .card-inner { position: relative; padding: 20px; z-index: 1; text-align: center; }
         
         /* Модальные окна (Glassmorphism) */
         .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 10000; display: none; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(20px); }
-        .modal-content { background: rgba(20,20,25,0.8); border: 1px solid rgba(191,149,63,0.2); p-6 rounded-[30px]; width: 100%; max-w-xs; box-shadow: 0 20px 50px rgba(0,0,0,0.7); }
+        .modal-content { background: rgba(20,20,25,0.8); border: 1px solid rgba(191,149,63,0.2); rounded-[30px]; width: 100%; max-w-xs; box-shadow: 0 20px 50px rgba(0,0,0,0.7); }
     </style>
 </head>
 <body class="p-4 pb-32">
@@ -277,7 +308,7 @@
                 if(!data) hList.innerHTML = '<p class="opacity-30 text-[10px] text-center py-4 uppercase tracking-widest">История пуста</p>';
                 else {
                     Object.values(data).reverse().forEach(h => {
-                        hList.innerHTML += `<div class="bg-white/5 p-4 rounded-2xl border border-white/5 flex justify-between items-centerbackdrop-blur-sm">
+                        hList.innerHTML += `<div class="bg-white/5 p-4 rounded-2xl border border-white/5 flex justify-between items-center backdrop-blur-sm">
                             <div><div class="text-xs font-bold text-white">+7 ${h.number}</div><div class="text-[8px] opacity-40 mt-1">${h.date}</div></div>
                             <div class="text-[9px] gold-grad font-black uppercase tracking-tighter">${h.status}</div>
                         </div>`;
