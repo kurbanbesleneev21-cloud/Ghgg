@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SIM MARKET | SECURE v2.7</title>
+    <title>SIM MARKET | REAL VERIFY v2.8</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
@@ -23,184 +23,170 @@
         .nav-bar { position: fixed; bottom: 0; left: 0; width: 100%; background: #0d0d0d; border-top: 1px solid #bf953f; display: flex; justify-content: space-around; padding: 15px 0; z-index: 1000; }
         .nav-item { font-size: 10px; font-weight: 800; text-transform: uppercase; color: #555; text-align: center; cursor: pointer; }
         .nav-item.active { color: #bf953f; }
-        .nav-icon { font-size: 20px; display: block; margin-bottom: 4px; }
 
-        .page { display: none; padding: 20px; padding-bottom: 100px; }
+        .page { display: none; padding: 20px; padding-bottom: 100px; animation: fadeIn 0.4s ease; }
         .page.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .neon-card { position: relative; background: rgba(191, 149, 63, 0.1); border-radius: 28px; padding: 2px; overflow: hidden; margin-bottom: 25px; }
-        .card-content { position: relative; background: #0d0d0d; border-radius: 26px; padding: 25px; z-index: 1; }
+        .auth-overlay { display: none; position: fixed; inset: 0; background: #0a0a0a; z-index: 3000; align-items: center; justify-content: center; padding: 20px; }
+        .auth-box { width: 100%; max-width: 350px; background: #0d0d0d; border-radius: 35px; padding: 40px 30px; border: 1px solid #bf953f; }
+        .input-field { width: 100%; background: rgba(255,255,255,0.03); border: 1px solid rgba(191,149,63,0.2); padding: 18px; border-radius: 20px; color: #fff; outline: none; margin-bottom: 15px; text-align: center; }
         
         .buy-btn { background: linear-gradient(135deg, #bf953f, #fcf6ba); color: #000; font-weight: 900; font-size: 11px; text-transform: uppercase; padding: 18px; border-radius: 18px; width: 100%; cursor: pointer; transition: 0.3s; }
-        .buy-btn:disabled { background: #333; color: #666; cursor: not-allowed; }
-
-        #auth-overlay { display: none; position: fixed; inset: 0; background: #0a0a0a; z-index: 3000; align-items: center; justify-content: center; padding: 20px; }
-        .auth-box { width: 100%; max-width: 350px; background: #0d0d0d; border-radius: 35px; padding: 40px 30px; border: 1px solid #bf953f; }
-        .input-field { width: 100%; background: rgba(255,255,255,0.03); border: 1px solid rgba(191,149,63,0.2); padding: 18px; border-radius: 20px; color: #fff; outline: none; margin-bottom: 15px; }
+        .buy-btn:disabled { opacity: 0.5; cursor: not-allowed; filter: grayscale(1); }
     </style>
 </head>
 <body>
 
-    <div id="auth-overlay">
+    <div id="auth-overlay" class="auth-overlay">
         <div class="auth-box">
             <div id="auth-step-1">
-                <h2 class="text-3xl font-black text-center mb-2 gold-grad italic">ACCESS</h2>
-                <p class="text-center text-[9px] opacity-40 uppercase tracking-widest mb-10 font-bold">Верификация устройства</p>
+                <h2 class="text-3xl font-black text-center mb-2 gold-grad italic">SIM MARKET</h2>
+                <p class="text-center text-[9px] opacity-40 uppercase tracking-widest mb-10 font-bold">Подтверждение номера</p>
                 
-                <div id="reg-fields">
+                <div id="reg-name-box">
                     <input type="text" id="user-name" placeholder="Ваше Имя" class="input-field">
                 </div>
-                <input type="tel" id="user-phone" placeholder="+7 (___) ___-__-__" class="input-field">
+                <input type="tel" id="user-phone" placeholder="79991234567" class="input-field">
                 
-                <button id="send-code-btn" onclick="sendAuthCode()" class="buy-btn mt-4">Получить доступ</button>
+                <button id="sms-send-btn" onclick="sendRealSMS()" class="buy-btn mt-4">Отправить SMS-код</button>
+                <p id="timer-label" class="text-center mt-4 text-[10px] opacity-40 font-bold hidden"></p>
                 
-                <p id="toggle-auth-text" class="text-center mt-6 text-[10px] opacity-40 uppercase font-bold cursor-pointer" onclick="toggleAuthMode()">
-                    Уже в клубе? <span class="text-[#bf953f] underline">Войти</span>
+                <p id="toggle-mode" class="text-center mt-6 text-[10px] opacity-40 uppercase font-bold cursor-pointer" onclick="toggleAuthMode()">
+                    Уже зарегистрированы? <span class="text-[#bf953f] underline">Войти</span>
                 </p>
             </div>
 
             <div id="auth-step-2" style="display: none;">
-                <h2 class="text-2xl font-black text-center mb-1 gold-grad">КОД В PUSH</h2>
-                <input type="text" id="auth-code" placeholder="0000" maxlength="4" class="w-full bg-transparent border-b-2 border-[#bf953f] text-center text-4xl tracking-[15px] font-black outline-none my-10 text-white">
-                <button onclick="verifyAndLogin()" class="buy-btn">Подтвердить</button>
-                <p id="auth-timer" class="text-center mt-6 text-[10px] opacity-40 font-bold"></p>
+                <h2 class="text-2xl font-black text-center mb-1 gold-grad italic">ВВЕДИТЕ КОД</h2>
+                <p class="text-center text-[9px] opacity-60 uppercase mb-8 text-[#bf953f] font-bold">Код отправлен на ваш телефон</p>
+                <input type="text" id="sms-code-input" placeholder="0000" maxlength="4" class="w-full bg-transparent border-b-2 border-[#bf953f] text-center text-5xl tracking-[10px] font-black outline-none my-10 text-white">
+                <button onclick="verifySMSCode()" class="buy-btn">Войти в маркет</button>
             </div>
         </div>
     </div>
 
     <div class="nav-bar">
-        <div class="nav-item active" onclick="showPage('market', this)"><span class="nav-icon">💎</span>Маркет</div>
-        <div class="nav-item" onclick="showPage('cabinet', this)"><span class="nav-icon">👤</span>Кабинет</div>
+        <div class="nav-item active" onclick="showPage('market', this)">Маркет</div>
+        <div class="nav-item" onclick="showPage('cabinet', this)">Кабинет</div>
     </div>
 
     <div id="market" class="page active">
-        <header class="text-center py-10"><h1 class="text-4xl font-black gold-grad italic">SIM MARKET</h1></header>
-        <div id="list" class="max-w-md mx-auto"></div>
+        <header class="text-center py-10"><h1 class="text-4xl font-black gold-grad italic">EXCLUSIVE</h1></header>
+        <div id="list" class="max-w-md mx-auto space-y-6"></div>
     </div>
 
     <div id="cabinet" class="page">
-        <header class="py-10 text-center"><h1 class="text-3xl font-black gold-grad">MY PROFILE</h1></header>
-        <div class="max-w-md mx-auto">
-            <div class="neon-card">
-                <div class="card-content flex items-center gap-5">
-                    <div class="w-16 h-16 rounded-full bg-[#bf953f]/20 border border-[#bf953f] flex items-center justify-center text-2xl">👑</div>
-                    <div>
-                        <h3 id="display-name" class="font-black text-xl uppercase italic">...</h3>
-                        <p id="display-phone" class="text-xs opacity-50 font-bold"></p>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="mt-8">
-                <h4 class="text-[10px] font-black uppercase opacity-30 mb-4 tracking-[3px]">Ваши заказы</h4>
-                <div id="order-list" class="space-y-4"></div>
-            </div>
-
-            <button onclick="logout()" class="w-full mt-20 py-4 border border-red-900/30 rounded-2xl text-[10px] text-red-500 font-black uppercase tracking-widest hover:bg-red-500/10 transition">
-                Выйти из аккаунта
-            </button>
+        <header class="py-10 text-center"><h1 class="text-3xl font-black gold-grad uppercase">Профиль</h1></header>
+        <div id="user-info-box" class="max-w-md mx-auto bg-white/5 border border-[#bf953f]/20 rounded-[30px] p-6 text-center">
+            <h3 id="display-name" class="text-2xl font-black italic mb-1">...</h3>
+            <p id="display-phone" class="text-sm opacity-40 mb-10 font-bold"></p>
+            <button onclick="logout()" class="text-[10px] text-red-500 font-bold uppercase tracking-widest border border-red-500/20 px-6 py-3 rounded-xl">Выйти</button>
         </div>
     </div>
 
     <script>
+        // --- НАСТРОЙКИ ---
+        const SMS_API_ID = "ТВОЙ-API-ID-ИЗ-SMS.RU"; // Получи его на sms.ru
         const firebaseConfig = { 
             apiKey: "AIzaSyCRjRJkH4dPxvyYD-37emejFvK11g6hZ44", 
             authDomain: "nnnmb-a0b52.firebaseapp.com", 
             databaseURL: "https://nnnmb-a0b52-default-rtdb.firebaseio.com", 
             projectId: "nnnmb-a0b52" 
         };
+        // -----------------
+
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
-
-        let isLoginMode = false;
-        let generatedCode = null;
-        let timer = null;
+        let isLogin = false;
+        let correctCode = null;
+        let canResend = true;
 
         window.onload = () => {
-            const savedUser = localStorage.getItem('luxury_user');
-            if (!savedUser) {
+            const saved = localStorage.getItem('sim_user_v3');
+            if (!saved) {
                 document.getElementById('auth-overlay').style.display = 'flex';
             } else {
-                updateUI();
+                renderUI();
                 loadMarket();
             }
-            if (Notification.permission !== "granted") { Notification.requestPermission(); }
         };
 
         function toggleAuthMode() {
-            isLoginMode = !isLoginMode;
-            document.getElementById('reg-fields').style.display = isLoginMode ? 'none' : 'block';
-            document.getElementById('toggle-auth-text').innerHTML = isLoginMode ? 
+            isLogin = !isLogin;
+            document.getElementById('reg-name-box').style.display = isLogin ? 'none' : 'block';
+            document.getElementById('toggle-mode').innerHTML = isLogin ? 
                 'Нет аккаунта? <span class="text-[#bf953f] underline">Регистрация</span>' : 
-                'Уже есть аккаунт? <span class="text-[#bf953f] underline">Войти</span>';
+                'Уже зарегистрированы? <span class="text-[#bf953f] underline">Войти</span>';
         }
 
-        // ЗАЩИТА ОТ ПОВТОРНОЙ ГЕНЕРАЦИИ
-        function sendAuthCode() {
-            const phone = document.getElementById('user-phone').value.trim();
-            if(!phone) return alert("Введите номер!");
+        async function sendRealSMS() {
+            const phone = document.getElementById('user-phone').value.trim().replace(/\D/g, '');
+            if(phone.length < 11) return alert("Введите полный номер (7XXXXXXXXXX)");
+            if(!canResend) return;
 
-            // Проверка: делал ли этот номер запрос недавно (защита от дублей)
-            const lastRequest = localStorage.getItem('last_code_ts');
-            if(lastRequest && Date.now() - lastRequest < 60000) {
-                alert("Подождите 1 минуту перед повторным запросом кодом.");
-                return;
+            // 1. Генерируем код
+            correctCode = Math.floor(1000 + Math.random() * 9000).toString();
+            
+            // 2. Отправляем через SMS.RU (или выводим alert, если API не настроен)
+            if(SMS_API_ID === "ТВОЙ-API-ID-ИЗ-SMS.RU") {
+                alert("Внимание: Настрой SMS_API_ID в коде! Сейчас используем имитацию. Ваш код: " + correctCode);
+            } else {
+                try {
+                    const url = `https://sms.ru/sms/send?api_id=${SMS_API_ID}&to=${phone}&msg=Код+входа+в+SIM+MARKET:+${correctCode}&json=1`;
+                    await fetch(url);
+                } catch(e) { console.error("SMS Error", e); }
             }
 
-            generatedCode = Math.floor(1000 + Math.random() * 9000).toString();
-            localStorage.setItem('last_code_ts', Date.now()); // Запоминаем время запроса
-
-            if (Notification.permission === "granted") {
-                new Notification("SECURITY", { body: `Ваш код подтверждения: ${generatedCode}` });
-            } else { alert("Ваш код: " + generatedCode); }
-
+            // 3. Блокировка повтора
+            startCooldown();
             document.getElementById('auth-step-1').style.display = 'none';
             document.getElementById('auth-step-2').style.display = 'block';
-            startTimer();
         }
 
-        function startTimer() {
-            let s = 30;
-            timer = setInterval(() => {
-                s--;
-                document.getElementById('auth-timer').innerText = `Запрос кода доступен через ${s}с`;
-                if(s<=0) { 
-                    clearInterval(timer); 
-                    document.getElementById('auth-timer').innerText = ""; 
+        function startCooldown() {
+            canResend = false;
+            const btn = document.getElementById('sms-send-btn');
+            const label = document.getElementById('timer-label');
+            btn.disabled = true;
+            label.classList.remove('hidden');
+            let sec = 60;
+            const int = setInterval(() => {
+                sec--;
+                label.innerText = `Повторная отправка через ${sec}с`;
+                if(sec <= 0) {
+                    clearInterval(int);
+                    canResend = true;
+                    btn.disabled = false;
+                    label.classList.add('hidden');
                 }
             }, 1000);
         }
 
-        function verifyAndLogin() {
-            const code = document.getElementById('auth-code').value.trim();
-            if(code === generatedCode) {
+        function verifySMSCode() {
+            const input = document.getElementById('sms-code-input').value.trim();
+            if(input === correctCode) {
                 const phone = document.getElementById('user-phone').value;
-                const name = isLoginMode ? "Клиент" : document.getElementById('user-name').value;
-                
+                const name = isLogin ? "Клиент" : document.getElementById('user-name').value;
                 const userData = { name, phone, id: 'u' + phone.replace(/\D/g, '') };
-                localStorage.setItem('luxury_user', JSON.stringify(userData));
+                
+                localStorage.setItem('sim_user_v3', JSON.stringify(userData));
                 db.ref('users/' + userData.id).update(userData);
                 
                 document.getElementById('auth-overlay').style.display = 'none';
-                updateUI();
+                renderUI();
                 loadMarket();
-            } else { alert("Неверный код!"); }
-        }
-
-        function updateUI() {
-            const user = JSON.parse(localStorage.getItem('luxury_user'));
-            if(user) {
-                document.getElementById('display-name').innerText = user.name || "Гость";
-                document.getElementById('display-phone').innerText = user.phone;
+            } else {
+                alert("Неверный код! Попробуйте снова.");
             }
         }
 
-        function showPage(id, btn) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            btn.classList.add('active');
-            if(id === 'cabinet') loadOrders();
+        function renderUI() {
+            const user = JSON.parse(localStorage.getItem('sim_user_v3'));
+            if(user) {
+                document.getElementById('display-name').innerText = user.name;
+                document.getElementById('display-phone').innerText = user.phone;
+            }
         }
 
         function loadMarket() {
@@ -209,45 +195,32 @@
                 list.innerHTML = "";
                 Object.entries(s.val() || {}).forEach(([id, item]) => {
                     list.innerHTML += `
-                        <div class="neon-card">
-                            <div class="card-content">
-                                <p class="text-[10px] opacity-30 font-bold uppercase mb-2">${item.op}</p>
-                                <h2 class="text-3xl font-black text-white italic tracking-tighter">+7 ${item.num}</h2>
-                                <p class="text-xl font-bold text-[#bf953f] mt-3 mb-5">${item.price} ₽</p>
-                                <button onclick="bookNumber('${item.num}')" class="buy-btn">Забронировать</button>
-                            </div>
+                        <div class="bg-white/5 border border-white/10 rounded-[35px] p-8 text-center relative overflow-hidden">
+                            <div class="absolute top-0 right-0 p-4 opacity-10 font-black text-4xl">${item.op}</div>
+                            <h2 class="text-4xl font-black text-white italic tracking-tighter">+7 ${item.num}</h2>
+                            <p class="text-xl font-bold text-[#bf953f] mt-4 mb-6">${item.price} ₽</p>
+                            <button onclick="book('${item.num}')" class="buy-btn">Забронировать номер</button>
                         </div>`;
                 });
             });
         }
 
-        function bookNumber(num) {
-            const user = JSON.parse(localStorage.getItem('luxury_user'));
-            db.ref('leads').push({ num, userId: user.id, name: user.name, phone: user.phone, ts: Date.now() });
-            alert("Заявка отправлена!");
+        function book(n) {
+            const user = JSON.parse(localStorage.getItem('sim_user_v3'));
+            db.ref('leads').push({ num: n, user: user.name, phone: user.phone, ts: Date.now() });
+            alert("Заявка принята! Мы свяжемся с вами.");
         }
 
-        function loadOrders() {
-            const user = JSON.parse(localStorage.getItem('luxury_user'));
-            db.ref('leads').orderByChild('userId').equalTo(user.id).once('value', s => {
-                const out = document.getElementById('order-list');
-                out.innerHTML = "";
-                const val = s.val();
-                if(!val) { out.innerHTML = '<p class="text-center opacity-20 py-10">История пуста</p>'; return; }
-                Object.values(val).reverse().forEach(o => {
-                    out.innerHTML += `<div class="bg-white/5 p-4 rounded-2xl border border-white/5 flex justify-between items-center">
-                        <div><p class="font-bold">+7 ${o.num}</p><p class="text-[8px] opacity-30">${new Date(o.ts).toLocaleDateString()}</p></div>
-                        <span class="text-[9px] text-[#bf953f] font-bold uppercase">В работе</span>
-                    </div>`;
-                });
-            });
+        function showPage(id, btn) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            btn.classList.add('active');
         }
 
-        // ВЫХОД ИЗ АККАУНТА
         function logout() {
-            if(confirm("Вы уверены, что хотите выйти из аккаунта?")) {
-                localStorage.removeItem('luxury_user');
-                localStorage.removeItem('last_code_ts'); // Чистим историю запросов тоже
+            if(confirm("Выйти из аккаунта?")) {
+                localStorage.removeItem('sim_user_v3');
                 location.reload();
             }
         }
