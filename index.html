@@ -3,94 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SIM MARKET | OMNI GOLD</title>
+    <title>SIM MARKET | BUSINESS PRO</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800&display=swap');
-        body { font-family: 'Manrope', sans-serif; background: #000; color: #fff; min-height: 100vh; overflow-x: hidden; }
-        
+        @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap');
+        body { font-family: 'Manrope', sans-serif; background: #000; color: #fff; min-height: 100vh; }
         .gold-grad { background: linear-gradient(90deg, #bf953f, #fcf6ba, #bf953f); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        /* КРАСИВЫЙ ОБОДОК */
+        .neon-card { position: relative; background: #0a0a0a; border-radius: 28px; overflow: hidden; z-index: 1; transition: 0.3s; }
+        .neon-card::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: conic-gradient(transparent, #bf953f, #fcf6ba, transparent 70%); animation: rotate 4s linear infinite; z-index: -2; }
+        .neon-card::after { content: ''; position: absolute; inset: 2px; background: #0d0d0d; border-radius: 26px; z-index: -1; }
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-        /* ВКЛАДКИ */
-        .modern-tab { padding: 10px 20px; background: rgba(255,255,255,0.03); border: 1px solid rgba(191,149,63,0.1); border-radius: 20px; font-size: 10px; font-weight: 800; text-transform: uppercase; transition: 0.3s; color: rgba(255,255,255,0.4); white-space: nowrap; }
-        .modern-tab.active { background: #bf953f; color: #000; box-shadow: 0 0 15px rgba(191,149,63,0.3); }
+        .tab { padding: 10px 20px; border-radius: 18px; font-size: 10px; font-weight: 800; text-transform: uppercase; border: 1px solid rgba(255,255,255,0.05); color: rgba(255,255,255,0.4); white-space: nowrap; cursor: pointer; }
+        .tab.active { background: #bf953f; color: #000; border-color: #bf953f; box-shadow: 0 5px 15px rgba(191,149,63,0.3); }
 
-        /* ОБОДОК */
-        .neon-card { position: relative; background: rgba(255,255,255,0.02); border-radius: 30px; overflow: hidden; z-index: 1; }
-        .neon-card::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: conic-gradient(transparent, #bf953f, #fcf6ba, transparent 70%); animation: rotateBorder 4s linear infinite; z-index: -2; }
-        .neon-card::after { content: ''; position: absolute; inset: 2px; background: #0a0a0a; border-radius: 28px; z-index: -1; }
-        @keyframes rotateBorder { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-
-        /* ЧАТ-БОТ */
-        #chat-window { display: none; position: fixed; bottom: 90px; right: 20px; width: 300px; height: 400px; background: #0d0d0d; border: 1px solid #bf953f; border-radius: 25px; z-index: 10000; flex-direction: column; overflow: hidden; box-shadow: 0 10px 50px rgba(0,0,0,0.8); }
-        .msg { padding: 10px; border-radius: 15px; margin-bottom: 8px; font-size: 12px; max-width: 85%; }
-        .msg-bot { background: rgba(191,149,63,0.1); align-self: flex-start; color: #fcf6ba; }
-        .msg-user { background: #bf953f; align-self: flex-end; color: #000; font-weight: bold; }
-
-        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 5000; display: none; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(15px); }
-        .input-dark { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 15px; border-radius: 18px; color: #fff; outline: none; }
+        .input-dark { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 16px; border-radius: 20px; color: #fff; outline: none; }
+        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 5000; display: none; overflow-y: auto; padding: 20px; backdrop-filter: blur(20px); }
+        .btn-gold { background: linear-gradient(135deg, #bf953f, #fcf6ba); color: #000; font-weight: 900; text-transform: uppercase; padding: 16px; border-radius: 20px; width: 100%; font-size: 12px; }
     </style>
 </head>
-<body class="p-4 pb-24">
+<body class="p-4 pb-20">
 
-    <header class="flex justify-between items-center mb-8 pt-2">
-        <h1 class="text-2xl font-black italic gold-grad uppercase">SIM MARKET</h1>
-        <div id="user-ui" class="hidden flex items-center gap-3 bg-white/5 p-1 pr-4 rounded-full border border-white/10" onclick="openProfile()">
-            <div class="w-9 h-9 bg-[#bf953f] rounded-full flex items-center justify-center text-black font-black">К</div>
-            <span id="points-display" class="text-xs font-black">0 XP</span>
+    <header class="flex justify-between items-center mb-10 pt-2">
+        <div>
+            <h1 class="text-2xl font-black italic gold-grad uppercase leading-tight">SIM MARKET</h1>
+            <p class="text-[8px] tracking-[3px] opacity-30 font-bold">PREMIUM CLUB</p>
         </div>
-        <button id="login-btn" onclick="openModal('auth-modal')" class="border border-[#bf953f]/30 px-6 py-2 rounded-full text-[10px] font-black uppercase gold-grad">Вход</button>
+        <div id="user-ui" class="hidden flex items-center gap-3 bg-white/5 p-1 pr-5 rounded-full border border-white/10" onclick="openProfile()">
+            <div class="w-10 h-10 bg-gradient-to-tr from-[#bf953f] to-[#fcf6ba] rounded-full flex items-center justify-center text-black font-black">К</div>
+            <div class="flex flex-col">
+                <span id="points-display" class="text-xs font-black gold-grad">0 XP</span>
+                <span id="rank-display" class="text-[7px] font-black opacity-40 uppercase">Bronze</span>
+            </div>
+        </div>
+        <button id="login-btn" onclick="openModal('auth-modal')" class="border border-[#bf953f]/30 px-6 py-2 rounded-full text-[10px] font-black uppercase gold-grad">Войти</button>
     </header>
 
-    <div class="space-y-4 mb-8">
-        <input type="text" id="search-input" oninput="renderItems()" placeholder="Умный поиск (777, 05, VIP)..." class="input-dark">
+    <div class="space-y-6 mb-10">
+        <input type="text" id="search-input" oninput="renderItems()" placeholder="Поиск по цифрам..." class="input-dark shadow-2xl">
         <div class="flex gap-2 overflow-x-auto no-scrollbar">
-            <div class="modern-tab active" onclick="filterOp('ALL', this)">Все</div>
-            <div class="modern-tab" onclick="filterOp('МТС', this)">МТС</div>
-            <div class="modern-tab" onclick="filterOp('МЕГАФОН', this)">Мегафон</div>
-            <div class="modern-tab" onclick="filterOp('FAV', this)">❤️ Избранное</div>
+            <div class="tab active" onclick="filterOp('ALL', this)">Все</div>
+            <div class="tab" onclick="filterOp('МТС', this)">МТС</div>
+            <div class="tab" onclick="filterOp('БИЛАЙН', this)">Билайн</div>
+            <div class="tab" onclick="filterOp('МЕГАФОН', this)">Мегафон</div>
+            <div class="tab" onclick="filterOp('FAV', this)">❤️ Избранное</div>
         </div>
     </div>
 
     <div id="list" class="grid gap-6"></div>
 
-    <div id="chat-window">
-        <div class="bg-[#bf953f] p-4 text-black font-black text-xs uppercase flex justify-between">
-            <span>AI Помощник</span>
-            <span onclick="toggleChat()" class="cursor-pointer">✕</span>
-        </div>
-        <div id="chat-msgs" class="flex-1 p-4 overflow-y-auto flex flex-col">
-            <div class="msg msg-bot">Салам! Я твой AI помощник. Какой номер ищем? Напиши "цены" или "МТС".</div>
-        </div>
-        <div class="p-3 bg-white/5 flex gap-2">
-            <input type="text" id="chat-inp" placeholder="Спроси меня..." class="flex-1 bg-transparent text-xs outline-none">
-            <button onclick="sendMsg()" class="text-[#bf953f] font-bold text-xs uppercase">Ok</button>
+    <div id="profile-modal" class="modal">
+        <div class="max-w-md mx-auto w-full pt-10 pb-20 space-y-8">
+            <div class="flex justify-between items-center">
+                <h2 class="text-3xl font-black italic gold-grad">МОЙ КЛУБ</h2>
+                <span onclick="closeModals()" class="text-3xl opacity-20 cursor-pointer">✕</span>
+            </div>
+
+            <div class="bg-white/5 p-8 rounded-[40px] border border-white/5 text-center shadow-2xl">
+                <p class="text-[10px] opacity-30 uppercase font-black tracking-widest mb-2">Ваш капитал бонусов</p>
+                <p id="profile-xp" class="text-5xl font-black gold-grad mb-4">0 XP</p>
+                <div class="flex justify-center gap-2">
+                    <span class="text-[10px] bg-[#bf953f] text-black px-3 py-1 rounded-full font-black uppercase">Silver Статус</span>
+                </div>
+            </div>
+
+            <div class="bg-gradient-to-br from-[#111] to-[#000] p-6 rounded-[35px] border border-[#bf953f]/20">
+                <h3 class="text-sm font-black gold-grad mb-2 uppercase italic">Пригласи друга — получи скидку</h3>
+                <p class="text-[11px] opacity-50 mb-4">Ваш реферальный код для друга (назовите его при покупке):</p>
+                <div class="bg-black/50 p-4 rounded-2xl border border-dashed border-[#bf953f]/40 text-center">
+                    <span id="ref-code" class="text-xl font-black tracking-widest gold-grad">7900000000</span>
+                </div>
+                <p class="text-[9px] mt-4 opacity-30 uppercase font-bold text-center">Друг получит 10% скидку, а вы 500 бонусов!</p>
+            </div>
+
+            <div>
+                <h3 class="text-xs font-black opacity-40 uppercase mb-4 tracking-widest px-4">История покупок</h3>
+                <div id="orders-list" class="space-y-3">
+                    <p class="text-[10px] opacity-20 text-center py-4">У вас пока нет активных заказов</p>
+                </div>
+            </div>
+
+            <button onclick="logout()" class="w-full text-red-500 font-bold text-[10px] uppercase tracking-widest pt-10">Выйти из аккаунта</button>
         </div>
     </div>
 
-    <div onclick="toggleChat()" class="fixed bottom-6 right-6 w-14 h-14 bg-white rounded-full flex items-center justify-center text-2xl shadow-2xl z-50 cursor-pointer">🤖</div>
-
-    <div id="auth-modal" class="modal">
-        <div class="bg-[#0d0d0d] p-8 rounded-[35px] border border-white/5 w-full max-w-sm space-y-4">
-            <h2 class="text-xl font-black text-center gold-grad uppercase">Регистрация</h2>
+    <div id="auth-modal" class="modal flex items-center">
+        <div class="bg-[#0d0d0d] p-8 rounded-[40px] border border-white/5 w-full max-w-sm space-y-4 mx-auto">
+            <h2 class="text-2xl font-black text-center gold-grad uppercase italic">Регистрация</h2>
             <input type="tel" id="r-phone" placeholder="Номер телефона" class="input-dark">
             <input type="password" id="r-pass" placeholder="Пароль" class="input-dark">
             <input type="text" id="r-word" placeholder="Кодовое слово" class="input-dark">
-            <button onclick="register()" class="w-full bg-[#bf953f] text-black p-4 rounded-xl font-black uppercase text-xs">Создать аккаунт</button>
-            <button onclick="closeModals()" class="w-full text-[10px] opacity-30 uppercase font-black">Отмена</button>
-        </div>
-    </div>
-
-    <div id="profile-modal" class="modal">
-        <div class="bg-[#0d0d0d] p-10 rounded-[35px] w-full max-w-sm text-center space-y-6 border border-white/5">
-            <h2 class="text-xl font-black gold-grad italic">ПРОФИЛЬ</h2>
-            <div class="bg-white/5 p-5 rounded-2xl">
-                <p id="profile-xp" class="text-4xl font-black gold-grad">0 XP</p>
-            </div>
-            <button onclick="logout()" class="text-red-500 font-bold text-xs uppercase">Выйти</button>
-            <button onclick="closeModals()" class="w-full text-[10px] opacity-30 uppercase font-black">Закрыть</button>
+            <button onclick="register()" class="btn-gold">Стать участником</button>
+            <p onclick="closeModals()" class="text-center text-[10px] opacity-30 uppercase font-black pt-2">Закрыть</p>
         </div>
     </div>
 
@@ -99,14 +107,14 @@
         firebase.initializeApp(fbCfg);
         const db = firebase.database();
 
-        let user = JSON.parse(localStorage.getItem('sim_user_omni')) || null;
+        let user = JSON.parse(localStorage.getItem('sim_user_pro')) || null;
         let favs = JSON.parse(localStorage.getItem('sim_favs')) || [];
         let inventory = {};
         let currentFilter = 'ALL';
 
         if(user) updateUI();
 
-        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function openModal(id) { document.getElementById(id).style.display = 'block'; if(id === 'auth-modal') document.getElementById(id).style.display = 'flex'; }
         function closeModals() { document.querySelectorAll('.modal').forEach(m => m.style.display = 'none'); }
         function openProfile() { openModal('profile-modal'); }
 
@@ -114,23 +122,31 @@
             const ph = document.getElementById('r-phone').value;
             const ps = document.getElementById('r-pass').value;
             const wd = document.getElementById('r-word').value;
-            if(!ph || !ps || !wd) return alert("Заполни всё!");
-            user = { phone: ph, points: 50 };
-            localStorage.setItem('sim_user_omni', JSON.stringify(user));
+            if(!ph || !ps || !wd) return alert("Заполните данные!");
+            
+            user = { phone: ph, pass: ps, word: wd, points: 500, orders: [] }; // Бонус за регистрацию 500
+            localStorage.setItem('sim_user_pro', JSON.stringify(user));
             updateUI(); closeModals();
         }
 
-        function logout() { localStorage.removeItem('sim_user_omni'); location.reload(); }
+        function logout() { localStorage.removeItem('sim_user_pro'); location.reload(); }
+
         function updateUI() {
             document.getElementById('login-btn').classList.add('hidden');
             document.getElementById('user-ui').classList.remove('hidden');
             document.getElementById('points-display').innerText = user.points + " XP";
             document.getElementById('profile-xp').innerText = user.points + " XP";
+            document.getElementById('ref-code').innerText = user.phone;
+            
+            let rank = "Bronze";
+            if(user.points > 1000) rank = "Silver";
+            if(user.points > 5000) rank = "Gold VIP";
+            document.getElementById('rank-display').innerText = rank;
         }
 
         function filterOp(op, el) {
             currentFilter = op;
-            document.querySelectorAll('.modern-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             el.classList.add('active');
             renderItems();
         }
@@ -143,31 +159,23 @@
             renderItems();
         }
 
-        // AI ЛОГИКА
-        function toggleChat() { 
-            const w = document.getElementById('chat-window');
-            w.style.display = (w.style.display === 'flex') ? 'none' : 'flex';
-        }
-
-        function sendMsg() {
-            const inp = document.getElementById('chat-inp');
-            const box = document.getElementById('chat-msgs');
-            if(!inp.value) return;
-            box.innerHTML += `<div class="msg msg-user">${inp.value}</div>`;
-            
-            let reply = "Напишите Курбану напрямую для заказа!";
-            const txt = inp.value.toLowerCase();
-            if(txt.includes("цен")) reply = "Цены зависят от красоты номера. Стартуем от 3000р.";
-            if(txt.includes("мтс")) reply = "У нас лучшие VIP номера МТС в Хасавюрте!";
-            
-            setTimeout(() => {
-                box.innerHTML += `<div class="msg msg-bot">${reply}</div>`;
-                box.scrollTop = box.scrollHeight;
-            }, 600);
-            inp.value = "";
-        }
-
         db.ref('inventory').on('value', s => { inventory = s.val() || {}; renderItems(); });
+
+        function buyNumber(num, price) {
+            if(!user) return openModal('auth-modal');
+            
+            // Расчет бонуса (5% от цены)
+            const cashback = Math.floor(price * 0.05);
+            user.points += cashback;
+            
+            // Сохраняем в историю
+            if(!user.orders) user.orders = [];
+            user.orders.push({ num: num, price: price, date: new Date().toLocaleDateString() });
+            
+            localStorage.setItem('sim_user_pro', JSON.stringify(user));
+            updateUI();
+            alert(`Заявка принята! Вам начислено ${cashback} XP бонусов.`);
+        }
 
         function renderItems() {
             const list = document.getElementById('list');
@@ -182,15 +190,16 @@
 
                 list.innerHTML += `
                     <div class="neon-card">
-                        <div class="p-6 relative z-10">
-                            <div class="flex justify-between items-start mb-4">
-                                <span class="text-[8px] font-black opacity-30 uppercase tracking-widest">${op}</span>
-                                <span onclick="toggleFav('${i.num}', event)" class="text-xl cursor-pointer">${isFav ? '❤️' : '🤍'}</span>
+                        <div class="p-7 relative z-10">
+                            <div class="flex justify-between items-start mb-6">
+                                <span class="text-[9px] font-black opacity-30 tracking-[4px]">${op}</span>
+                                <span onclick="toggleFav('${i.num}', event)" class="text-2xl cursor-pointer">${isFav ? '❤️' : '🤍'}</span>
                             </div>
-                            <h3 class="text-3xl font-black italic tracking-tighter mb-1">+7 ${i.num}</h3>
-                            <div class="flex justify-between items-center mt-4">
-                                <span class="text-xl font-black gold-grad">${i.price} ₽</span>
-                                <button onclick="alert('Оформляем заказ...') " class="bg-[#bf953f] text-black px-4 py-2 rounded-xl text-[10px] font-black">КУПИТЬ</button>
+                            <h3 class="text-4xl font-black italic tracking-tighter mb-2">+7 ${i.num}</h3>
+                            <p class="text-[9px] text-[#bf953f] font-bold uppercase mb-6">+${Math.floor(i.price*0.05)} XP Кэшбэк</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-2xl font-black gold-grad">${i.price} ₽</span>
+                                <button onclick="buyNumber('${i.num}', ${i.price})" class="bg-white text-black px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest active:scale-95 transition">Купить</button>
                             </div>
                         </div>
                     </div>`;
