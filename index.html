@@ -1,192 +1,129 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SIM MARKET | PREMIUM</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">Загрузка...</title>
+    <meta name="description" id="meta-desc" content="">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap');
-        body { font-family: 'Manrope', sans-serif; background: #000; color: #fff; margin: 0; }
+        @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800&display=swap');
+        body { font-family: 'Manrope', sans-serif; background: #050505; color: #fff; }
         .gold-text { color: #bf953f; }
-        
-        /* Золотой переливающийся ободок */
-        .premium-card {
-            position: relative;
-            background: #0d0d0d;
-            border-radius: 22px;
-            padding: 2px;
-            overflow: hidden;
-            margin-bottom: 15px;
-        }
-        .premium-card::before {
-            content: '';
-            position: absolute;
-            top: -50%; left: -50%; width: 200%; height: 200%;
-            background: conic-gradient(transparent, transparent, transparent, #bf953f);
-            animation: rotate 4s linear infinite;
-        }
-        @keyframes rotate { 100% { transform: rotate(360deg); } }
-        
-        .card-content {
-            background: #0d0d0d;
-            border-radius: 20px;
-            padding: 20px;
-            z-index: 1;
-            position: relative;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .op-badge { font-size: 8px; padding: 2px 8px; border-radius: 6px; font-weight: 800; text-transform: uppercase; margin-bottom: 4px; display: inline-block; }
-        .op-МТС { background: #ff0000; color: white; }
-        .op-БИЛАЙН { background: #ffcc00; color: black; }
-        .op-МЕГАФОН { background: #00b956; color: white; }
-
-        .btn-buy { background: #bf953f; color: #000; font-weight: 800; padding: 12px 18px; border-radius: 14px; font-size: 10px; text-transform: uppercase; }
-        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px; }
-        .modal.active { display: flex; }
-        input { background: #151515!important; border: 1px solid #222!important; color: #fff!important; padding: 16px; border-radius: 16px; width: 100%; outline: none; margin-bottom: 10px; }
+        .gold-bg { background: #bf953f; color: #000; }
+        .glass { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; }
+        input { background: #111; border: 1px solid #222; padding: 15px; border-radius: 12px; width: 100%; color: #fff; outline: none; }
     </style>
 </head>
 <body>
 
-    <header class="p-6 flex justify-between items-center sticky top-0 bg-black/90 backdrop-blur-md z-50 border-b border-white/5">
-        <h1 class="text-xl font-black italic gold-text">SIM <span class="text-white">MARKET</span></h1>
-        <div id="auth-section">
-            <button onclick="openM('auth-m')" class="text-[9px] font-black uppercase bg-white text-black px-5 py-2.5 rounded-full">Вход / Рег</button>
-        </div>
-        <div id="user-info" class="hidden flex items-center gap-3">
-            <div class="text-right">
-                <p id="u-name" class="text-[10px] font-black uppercase white"></p>
-                <p id="u-phone" class="text-[9px] gold-text font-bold"></p>
-            </div>
-            <button onclick="logout()" class="text-[18px] opacity-30">✕</button>
-        </div>
+    <!-- Шапка -->
+    <header class="p-6 flex justify-between items-center max-w-6xl mx-auto">
+        <h1 class="text-2xl font-black italic gold-text">SIM<span class="text-white">MARKET</span></h1>
+        <nav class="hidden md:flex gap-8 text-sm font-bold uppercase tracking-widest">
+            <a href="#numbers" class="hover:gold-text transition">Номера</a>
+            <a href="#blog" class="hover:gold-text transition">Новости</a>
+            <a href="admin.html" class="opacity-30">Вход</a>
+        </nav>
     </header>
 
-    <main class="p-4">
-        <div id="numbers-grid" class="space-y-1"></div>
-    </main>
+    <!-- Главный блок (Hero) -->
+    <section class="py-20 px-6 text-center max-w-4xl mx-auto">
+        <h2 id="hero-title" class="text-5xl md:text-7xl font-black mb-6 uppercase">КРАСИВЫЕ НОМЕРА</h2>
+        <p id="hero-desc" class="text-gray-400 text-lg mb-10">Загрузка информации...</p>
+        <a href="#order" class="gold-bg px-10 py-4 rounded-full font-black uppercase inline-block">Оставить заявку</a>
+    </section>
 
-    <div id="auth-m" class="modal">
-        <div class="bg-[#0d0d0d] p-8 rounded-3xl w-full max-w-sm border border-white/10">
-            <h3 class="text-xl font-black gold-text mb-6 uppercase italic">Авторизация</h3>
-            <div id="auth-form" class="space-y-2">
-                <input type="text" id="l-phone" placeholder="Ваш номер (928...)">
-                <input type="text" id="l-name" placeholder="Ваше Имя (для новых)">
-                <input type="password" id="l-pass" placeholder="Пароль">
-                <button onclick="doAuth()" class="btn-buy w-full py-4 text-xs mt-4">Продолжить</button>
-                <button onclick="closeM()" class="w-full text-[9px] opacity-20 uppercase mt-4">Закрыть</button>
-            </div>
+    <!-- Блог (Новости из Админки) -->
+    <section id="blog" class="py-20 px-6 max-w-6xl mx-auto">
+        <h3 class="text-3xl font-black mb-10 italic uppercase">Новости и Акции</h3>
+        <div id="blog-container" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Сюда придут посты из админки -->
+            <p class="opacity-20">Загрузка новостей...</p>
         </div>
-    </div>
+    </section>
 
-    <script>
-        const conf = { 
-            apiKey: "AIzaSyCRjRJkH4dPxvyYD-37emejFvK11g6hZ44", 
-            databaseURL: "https://nnnmb-a0b52-default-rtdb.firebaseio.com" 
-        };
-        firebase.initializeApp(conf);
-        const db = firebase.database();
+    <!-- Форма заказа (Леды) -->
+    <section id="order" class="py-20 px-6 max-w-xl mx-auto">
+        <div class="glass p-8 space-y-6">
+            <h3 class="text-2xl font-black text-center uppercase">Заказать номер</h3>
+            <input type="text" id="order-name" placeholder="Ваше имя">
+            <input type="tel" id="order-phone" placeholder="Ваш телефон (+7)">
+            <input type="text" id="order-num" placeholder="Желаемый номер или маска (напр. *777*)">
+            <button onclick="sendOrder()" class="gold-bg w-full py-4 rounded-xl font-black uppercase">Отправить в SIM CORE</button>
+        </div>
+    </section>
 
-        function openM(id) { document.getElementById(id).classList.add('active'); }
-        function closeM() { document.querySelectorAll('.modal').forEach(m => m.classList.remove('active')); }
+<script>
+    // ТВОЙ FIREBASE (Тот же, что в админке)
+    const firebaseConfig = { 
+        apiKey: "AIzaSyCRjRJkH4dPxvyYD-37emejFvK11g6hZ44", 
+        databaseURL: "https://nnnmb-a0b52-default-rtdb.firebaseio.com" 
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
 
-        // УМНАЯ АВТОРИЗАЦИЯ (ВХОД + РЕГИСТРАЦИЯ С ИМЕНЕМ)
-        function doAuth() {
-            const p = document.getElementById('l-phone').value.replace(/\D/g, "");
-            const pass = document.getElementById('l-pass').value;
-            const name = document.getElementById('l-name').value;
-
-            if(p.length < 10 || pass.length < 3) return alert("Заполните данные корректно");
-
-            db.ref('users/' + p).once('value', snap => {
-                const u = snap.val();
-                if(u) {
-                    // ЕСЛИ ЮЗЕР ЕСТЬ - ПРОВЕРЯЕМ ПАРОЛЬ И БАН
-                    if(u.banned && (u.banned === 'forever' || Date.now() < u.banned)) return alert("ВЫ ЗАБАНЕНЫ");
-                    if(u.pass === pass) {
-                        localStorage.setItem('user', p);
-                        localStorage.setItem('userName', u.name || "Клиент");
-                        location.reload();
-                    } else alert("Неверный пароль");
-                } else {
-                    // ЕСЛИ ЮЗЕРА НЕТ - РЕГИСТРИРУЕМ (Имя обязательно)
-                    if(!name) return alert("Введите ваше Имя для регистрации!");
-                    db.ref('users/' + p).set({ 
-                        name: name, 
-                        pass: pass, 
-                        role: 'user',
-                        regDate: Date.now()
-                    }).then(() => {
-                        localStorage.setItem('user', p);
-                        localStorage.setItem('userName', name);
-                        location.reload();
-                    });
-                }
-            });
-        }
-
-        // ЗАГРУЗКА НОМЕРОВ С ПЕРЕЛИВОМ
-        function loadNumbers() {
-            db.ref('inventory').on('value', snap => {
-                const grid = document.getElementById('numbers-grid');
-                grid.innerHTML = "";
-                snap.forEach(c => {
-                    const i = c.val();
-                    grid.innerHTML += `
-                        <div class="premium-card">
-                            <div class="card-content">
-                                <div>
-                                    <span class="op-badge op-${i.op}">${i.op}</span>
-                                    <h4 class="text-2xl font-black italic tracking-tighter">+7 ${i.num}</h4>
-                                    <p class="gold-text font-black text-lg">${i.price} ₽</p>
-                                </div>
-                                <button onclick="buy('${i.num}', '${i.op}')" class="btn-buy">Купить</button>
-                            </div>
-                        </div>`;
-                });
-            });
-        }
-
-        // ПОКУПКА - ОТПРАВЛЯЕТ ИМЯ, ТЕЛЕФОН И ВЫБРАННЫЙ НОМЕР
-        function buy(num, op) {
-            const uPhone = localStorage.getItem('user');
-            const uName = localStorage.getItem('userName');
-
-            if(!uPhone) return openM('auth-m');
-
-            const orderData = {
-                clientName: uName,
-                clientPhone: uPhone,
-                wantedNum: num,
-                operator: op,
-                date: new Date().toLocaleString(),
-                status: 'new'
-            };
-
-            db.ref('orders/' + Date.now()).set(orderData).then(() => {
-                alert(uName + ", ваша заявка принята! Мы свяжемся с вами.");
-            });
-        }
-
-        function logout() { localStorage.clear(); location.reload(); }
-
-        window.onload = () => {
-            const u = localStorage.getItem('user');
-            const n = localStorage.getItem('userName');
-            if(u) {
-                document.getElementById('auth-section').classList.add('hidden');
-                document.getElementById('user-info').classList.remove('hidden');
-                document.getElementById('u-phone').innerText = "+7 " + u;
-                document.getElementById('u-name').innerText = n;
+    // 1. СИНХРОНИЗАЦИЯ НАСТРОЕК (SEO и Тексты)
+    function loadSettings() {
+        db.ref('settings').on('value', snap => {
+            const data = snap.val();
+            if (data) {
+                document.title = data.siteName || "SIM MARKET";
+                document.getElementById('page-title').innerText = data.siteName || "SIM MARKET";
+                document.getElementById('meta-desc').content = data.seoDesc || "";
+                document.getElementById('hero-title').innerText = data.siteName || "КРАСИВЫЕ НОМЕРА";
+                document.getElementById('hero-desc').innerText = data.seoDesc || "Лучшие предложения в регионе.";
             }
-            loadNumbers();
-        };
-    </script>
+        });
+    }
+
+    // 2. ЗАГРУЗКА БЛОГА (Из админки)
+    function loadBlog() {
+        db.ref('blog').on('value', snap => {
+            const container = document.getElementById('blog-container');
+            container.innerHTML = "";
+            snap.forEach(post => {
+                const d = post.val();
+                container.innerHTML += `
+                    <div class="glass p-6 hover:border-[#bf953f] transition duration-500">
+                        <p class="text-[10px] gold-text font-bold mb-2 uppercase">${d.date}</p>
+                        <h4 class="text-xl font-bold mb-3">${d.title}</h4>
+                        <p class="text-sm text-gray-400 leading-relaxed">${d.text}</p>
+                    </div>`;
+            });
+        });
+    }
+
+    // 3. ОТПРАВКА ЗАЯВКИ (В админку)
+    function sendOrder() {
+        const name = document.getElementById('order-name').value;
+        const phone = document.getElementById('order-phone').value;
+        const num = document.getElementById('order-num').value;
+
+        if(!name || !phone) return alert("Пожалуйста, заполни имя и телефон!");
+
+        db.ref('orders').push({
+            clientName: name,
+            clientPhone: phone,
+            wantedNum: num,
+            date: new Date().toLocaleString('ru-RU'),
+            read: false
+        }).then(() => {
+            alert("Заявка успешно отправлена! Мы свяжемся с вами.");
+            document.getElementById('order-name').value = "";
+            document.getElementById('order-phone').value = "";
+            document.getElementById('order-num').value = "";
+        });
+    }
+
+    window.onload = () => {
+        loadSettings();
+        loadBlog();
+    };
+</script>
 </body>
 </html>
+           
