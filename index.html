@@ -3,110 +3,179 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SIM MARKET | КРАСИВЫЕ НОМЕРА</title>
+    <title>SIM MARKET | PREMIUM</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;900&display=swap');
-        body { font-family: 'Manrope', sans-serif; background: #050505; color: #fff; }
+        @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap');
+        body { font-family: 'Manrope', sans-serif; background: #000; color: #fff; margin: 0; overflow-x: hidden; }
         .gold-text { color: #bf953f; }
-        .gold-bg { background: #bf953f; color: #000; }
-        .glass { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 15px; }
-        .num-card { border-left: 4px solid #bf953f; transition: 0.3s; }
+        
+        /* Золотой переливающийся ободок */
+        .premium-card {
+            position: relative;
+            background: #0d0d0d;
+            border-radius: 22px;
+            padding: 2px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+        .premium-card::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%; width: 200%; height: 200%;
+            background: conic-gradient(transparent, transparent, transparent, #bf953f);
+            animation: rotate 4s linear infinite;
+        }
+        @keyframes rotate { 100% { transform: rotate(360deg); } }
+        
+        .card-content {
+            background: #0d0d0d;
+            border-radius: 20px;
+            padding: 20px;
+            z-index: 1;
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .op-badge { font-size: 8px; padding: 2px 8px; border-radius: 6px; font-weight: 800; text-transform: uppercase; margin-bottom: 4px; display: inline-block; }
+        .op-МТС { background: #ff0000; color: white; }
+        .op-БИЛАЙН { background: #ffcc00; color: black; }
+        .op-МЕГАФОН { background: #00b956; color: white; }
+
+        .btn-buy { background: #bf953f; color: #000; font-weight: 800; padding: 12px 18px; border-radius: 14px; font-size: 10px; text-transform: uppercase; }
+        .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px; }
+        .modal.active { display: flex; }
+        input { background: #151515!important; border: 1px solid #222!important; color: #fff!important; padding: 16px; border-radius: 16px; width: 100%; outline: none; }
+        
+        .no-scrollbar::-webkit-scrollbar { display: none; }
     </style>
 </head>
 <body>
 
-    <header class="p-5 border-b border-white/5 bg-[#050505]">
-        <h1 class="text-xl font-black italic gold-text">SIM<span class="text-white">MARKET</span></h1>
+    <header class="p-6 flex justify-between items-center sticky top-0 bg-black/90 backdrop-blur-md z-50 border-b border-white/5">
+        <h1 class="text-xl font-black italic gold-text">SIM <span class="text-white">MARKET</span></h1>
+        <div id="auth-section">
+            <button onclick="openM('login-m')" class="text-[9px] font-black uppercase bg-white text-black px-5 py-2.5 rounded-full">Вход / Рег</button>
+        </div>
+        <div id="user-info" class="hidden flex items-center gap-3">
+            <span id="u-phone" class="text-xs font-black gold-text"></span>
+            <button onclick="logout()" class="text-[8px] opacity-30 uppercase">Выйти</button>
+        </div>
     </header>
 
-    <section class="py-10 px-5 max-w-6xl mx-auto">
-        <h3 class="text-2xl font-black uppercase mb-6 italic">Номера в наличии</h3>
-        
-        <div id="numbers-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <p class="opacity-20 text-sm">Загрузка номеров...</p>
+    <main class="p-4">
+        <div class="flex gap-2 overflow-x-auto pb-6 no-scrollbar">
+            <button onclick="loadNumbers('ALL')" class="bg-white/10 px-6 py-2 rounded-full text-[10px] font-black uppercase whitespace-nowrap">Все</button>
+            <button onclick="loadNumbers('МТС')" class="bg-red-600/20 text-red-500 px-6 py-2 rounded-full text-[10px] font-black uppercase">МТС</button>
+            <button onclick="loadNumbers('БИЛАЙН')" class="bg-yellow-500/20 text-yellow-500 px-6 py-2 rounded-full text-[10px] font-black uppercase">Билайн</button>
+            <button onclick="loadNumbers('МЕГАФОН')" class="bg-green-600/20 text-green-500 px-6 py-2 rounded-full text-[10px] font-black uppercase">Мегафон</button>
         </div>
-    </section>
 
-    <section id="order" class="py-10 px-5 max-w-md mx-auto">
-        <div class="glass p-6 space-y-4">
-            <h3 class="text-xl font-black uppercase text-center">Оформить заказ</h3>
-            <input type="text" id="order-num" placeholder="Номер телефона" class="w-full bg-[#111] border border-white/10 p-4 rounded-xl text-[#bf953f] font-bold outline-none">
-            <input type="text" id="order-name" placeholder="Ваше имя" class="w-full bg-[#111] border border-white/10 p-4 rounded-xl text-white outline-none">
-            <input type="tel" id="order-phone" placeholder="Ваш контактный телефон" class="w-full bg-[#111] border border-white/10 p-4 rounded-xl text-white outline-none">
-            <button onclick="sendOrder()" class="gold-bg w-full py-4 rounded-xl font-black uppercase">Заказать номер</button>
+        <div id="numbers-grid" class="space-y-1"></div>
+    </main>
+
+    <div id="login-m" class="modal">
+        <div class="bg-[#0d0d0d] p-8 rounded-3xl w-full max-w-sm border border-white/10">
+            <h3 class="text-xl font-black gold-text mb-6 uppercase italic">Авторизация</h3>
+            <div class="space-y-4">
+                <input type="text" id="l-phone" placeholder="9xx xxx xx xx">
+                <input type="password" id="l-pass" placeholder="Пароль">
+                <button onclick="doAuth()" class="btn-buy w-full py-4 text-xs">Войти / Регистрация</button>
+                <button onclick="closeM()" class="w-full text-[9px] opacity-20 uppercase mt-2">Отмена</button>
+            </div>
         </div>
-    </section>
+    </div>
 
-<script>
-    const firebaseConfig = { 
-        apiKey: "AIzaSyCRjRJkH4dPxvyYD-37emejFvK11g6hZ44", 
-        databaseURL: "https://nnnmb-a0b52-default-rtdb.firebaseio.com" 
-    };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
+    <script>
+        const conf = { 
+            apiKey: "AIzaSyCRjRJkH4dPxvyYD-37emejFvK11g6hZ44", 
+            databaseURL: "https://nnnmb-a0b52-default-rtdb.firebaseio.com" 
+        };
+        firebase.initializeApp(conf);
+        const db = firebase.database();
 
-    // ЗАГРУЗКА НОМЕРОВ
-    function loadNumbers() {
-        // Мы обращаемся к ветке 'inventory', где лежат твои номера
-        db.ref('inventory').on('value', snap => {
-            const grid = document.getElementById('numbers-grid');
-            grid.innerHTML = "";
-            
-            if(!snap.exists()) {
-                grid.innerHTML = "<p class='opacity-40'>База номеров пуста. Добавьте их в админке.</p>";
-                return;
-            }
+        function openM(id) { document.getElementById(id).classList.add('active'); }
+        function closeM() { document.querySelectorAll('.modal').forEach(m => m.classList.remove('active')); }
 
-            snap.forEach(child => {
-                const data = child.val();
-                // child.key — это сам номер (например 9287777777)
-                const phoneDigit = child.key; 
-                const price = data.price || "Договорная";
-                const category = data.category || "VIP";
+        // ПРОВЕРКА БАНА
+        function isBanned(u) {
+            if(!u.banned) return false;
+            if(u.banned === 'forever') return "НАВСЕГДА";
+            if(Date.now() < u.banned) return "на 24 часа";
+            return false;
+        }
 
-                grid.innerHTML += `
-                    <div class="glass p-5 num-card flex justify-between items-center cursor-pointer active:scale-95 transition" onclick="selectNum('${phoneDigit}')">
-                        <div>
-                            <p class="text-2xl font-black tracking-tight text-white">${phoneDigit}</p>
-                            <p class="text-[10px] font-bold gold-text uppercase">${category}</p>
-                        </div>
-                        <div class="text-right">
-                            <p class="text-lg font-black">${price} ₽</p>
-                            <p class="text-[9px] text-green-500 font-bold">ВЫБРАТЬ</p>
-                        </div>
-                    </div>`;
+        function doAuth() {
+            const p = document.getElementById('l-phone').value.replace(/\D/g, "");
+            const pass = document.getElementById('l-pass').value;
+            if(p.length < 10) return alert("Введите номер");
+
+            db.ref('users/' + p).once('value', snap => {
+                const u = snap.val();
+                if(u) {
+                    const banReason = isBanned(u);
+                    if(banReason) return alert("ВЫ ЗАБАНЕНЫ " + banReason);
+                    if(u.pass === pass) {
+                        localStorage.setItem('user', p);
+                        location.reload();
+                    } else alert("Неверный пароль");
+                } else {
+                    // Если юзера нет — регистрируем
+                    db.ref('users/' + p).set({ pass: pass, role: 'user' }).then(() => {
+                        localStorage.setItem('user', p);
+                        location.reload();
+                    });
+                }
             });
-        });
-    }
+        }
 
-    function selectNum(num) {
-        document.getElementById('order-num').value = num;
-        window.scrollTo({ top: document.getElementById('order').offsetTop - 50, behavior: 'smooth' });
-    }
+        function loadNumbers(filter = 'ALL') {
+            db.ref('inventory').on('value', snap => {
+                const grid = document.getElementById('numbers-grid');
+                grid.innerHTML = "";
+                snap.forEach(c => {
+                    const i = c.val();
+                    if(filter !== 'ALL' && i.op !== filter) return;
+                    grid.innerHTML += `
+                        <div class="premium-card">
+                            <div class="card-content">
+                                <div>
+                                    <span class="op-badge op-${i.op}">${i.op}</span>
+                                    <h4 class="text-2xl font-black italic tracking-tighter">+7 ${i.num}</h4>
+                                    <p class="gold-text font-black text-lg">${i.price} ₽</p>
+                                </div>
+                                <button onclick="buy('${i.num}', '${i.op}')" class="btn-buy">Купить</button>
+                            </div>
+                        </div>`;
+                });
+            });
+        }
 
-    function sendOrder() {
-        const num = document.getElementById('order-num').value;
-        const name = document.getElementById('order-name').value;
-        const phone = document.getElementById('order-phone').value;
+        function buy(num, op) {
+            const u = localStorage.getItem('user');
+            if(!u) return openM('login-m');
+            db.ref('orders/' + Date.now()).set({ client: u, number: num, op: op, status: 'new' })
+            .then(() => alert("Заявка отправлена!"));
+        }
 
-        if(!name || !phone || !num) return alert("Заполните все поля!");
+        function logout() { localStorage.clear(); location.reload(); }
 
-        db.ref('orders').push({
-            wantedNum: num,
-            clientName: name,
-            clientPhone: phone,
-            date: new Date().toLocaleString('ru-RU')
-        }).then(() => {
-            alert("Заявка отправлена!");
-            document.getElementById('order-name').value = "";
-            document.getElementById('order-phone').value = "";
-        });
-    }
-
-    window.onload = loadNumbers;
-</script>
+        window.onload = () => {
+            const u = localStorage.getItem('user');
+            if(u) {
+                db.ref('users/' + u).once('value', snap => {
+                    if(isBanned(snap.val())) { logout(); }
+                });
+                document.getElementById('auth-section').classList.add('hidden');
+                document.getElementById('user-info').classList.remove('hidden');
+                document.getElementById('u-phone').innerText = "+7 " + u;
+            }
+            loadNumbers();
+        };
+    </script>
 </body>
 </html>
