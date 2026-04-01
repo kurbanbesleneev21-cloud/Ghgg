@@ -10,90 +10,117 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800&display=swap');
         :root { --gold: #bf953f; }
-        body { font-family: 'Manrope', sans-serif; background: #050505; color: #fff; overflow-x: hidden; }
+        body { 
+            font-family: 'Manrope', sans-serif; 
+            background: #050505; 
+            color: #fff; 
+            margin: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
         
-        /* Тот самый эффект переливания */
+        /* Эффект глянцевых переливающихся карточек */
         .num-card { 
-            background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%);
-            border: 1px solid rgba(255,255,255,0.1);
+            background: linear-gradient(145deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%);
+            border: 1px solid rgba(255,255,255,0.08);
             border-radius: 24px;
             position: relative;
             overflow: hidden;
-            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
         }
-        .num-card::before {
+        .num-card:active { transform: scale(0.97); border-color: var(--gold); }
+        .num-card::after {
             content: '';
             position: absolute;
             top: -50%; left: -50%; width: 200%; height: 200%;
-            background: radial-gradient(circle, rgba(191,149,63,0.1) 0%, transparent 70%);
-            opacity: 0; transition: 0.5s;
+            background: radial-gradient(circle, rgba(191,149,63,0.08) 0%, transparent 60%);
+            pointer-events: none;
         }
-        .num-card:hover { transform: translateY(-5px); border-color: var(--gold); }
-        .num-card:hover::before { opacity: 1; }
 
         .gold-text { color: var(--gold); }
-        .btn-gold { background: var(--gold); color: #000; font-weight: 800; border-radius: 14px; transition: 0.3s; }
+        .btn-gold { 
+            background: linear-gradient(to right, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
+            color: #000; 
+            font-weight: 800; 
+            border-radius: 16px; 
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
         
-        input, select { background: #111!important; border: 1px solid #222!important; color: #fff!important; padding: 14px; border-radius: 14px; width: 100%; outline: none; }
+        .glass-input { 
+            background: rgba(255,255,255,0.03)!important; 
+            border: 1px solid rgba(255,255,255,0.1)!important; 
+            color: #fff!important; 
+            padding: 16px; 
+            border-radius: 16px; 
+            width: 100%; 
+            outline: none; 
+        }
+        .glass-input:focus { border-color: var(--gold)!important; }
+        
         .hidden { display: none; }
+        
+        /* Анимация появления */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade { animation: fadeIn 0.5s ease forwards; }
     </style>
 </head>
 <body>
 
     <!-- Шапка -->
-    <header class="p-5 flex justify-between items-center sticky top-0 bg-[#050505]/80 backdrop-blur-lg z-50">
-        <h1 class="text-xl font-black italic gold-text">SIM<span class="text-white">MARKET</span></h1>
-        <div id="user-status" class="text-[10px] font-bold uppercase tracking-widest border border-white/10 px-4 py-2 rounded-full">
-            Войти
+    <header class="p-5 flex justify-between items-center sticky top-0 bg-[#050505]/90 backdrop-blur-xl z-50 border-b border-white/5">
+        <h1 class="text-xl font-black italic gold-text tracking-tighter">SIM<span class="text-white">MARKET</span></h1>
+        <div class="px-4 py-2 border border-white/10 rounded-full text-[10px] font-bold uppercase tracking-widest bg-white/5">
+            Дагестан
         </div>
     </header>
 
-    <!-- Главный экран -->
-    <section class="py-12 px-5 text-center">
-        <h2 class="text-4xl font-black mb-2 uppercase italic leading-tight">Красивые <span class="gold-text">Номера</span></h2>
-        <p class="text-gray-500 text-xs uppercase tracking-widest">Дагестан • Официальное оформление</p>
+    <!-- Главный заголовок -->
+    <section class="py-10 px-5 text-center animate-fade">
+        <h2 class="text-4xl font-black mb-2 uppercase italic leading-tight">КРАСИВЫЕ <br> <span class="gold-text">НОМЕРА</span></h2>
+        <p class="text-gray-500 text-[10px] uppercase tracking-[0.3em]">Официальное оформление • VIP Сервис</p>
     </section>
 
-    <!-- Витрина номеров -->
-    <section class="px-5 max-w-5xl mx-auto pb-20">
-        <div id="numbers-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <!-- Сетка номеров -->
+    <section class="px-4 max-w-5xl mx-auto pb-32">
+        <div id="numbers-grid" class="grid grid-cols-1 gap-4">
             <!-- Номера загружаются сюда -->
-            <p class="text-center opacity-20 animate-pulse">Загрузка коллекции...</p>
+            <div class="p-10 text-center opacity-20 text-xs uppercase tracking-widest">Синхронизация с базой...</div>
         </div>
     </section>
 
-    <!-- Модальное окно: Регистрация / Заказ -->
-    <div id="modal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-[100] hidden flex items-center justify-center p-5">
-        <div class="glass p-8 w-full max-w-md relative border border-white/10 rounded-[30px] bg-[#0a0a0a]">
-            <button onclick="closeModal()" class="absolute top-5 right-5 opacity-50">✕</button>
+    <!-- Модальное окно покупки (Регистрация) -->
+    <div id="modal" class="fixed inset-0 bg-black/95 backdrop-blur-lg z-[100] hidden flex items-center justify-center p-6">
+        <div class="w-full max-w-sm animate-fade">
+            <div class="flex justify-between items-center mb-8">
+                <h3 class="text-xl font-black uppercase italic">Оформление</h3>
+                <button onclick="closeModal()" class="text-gray-500 text-2xl">&times;</button>
+            </div>
             
-            <div id="form-content">
-                <h3 class="text-2xl font-black mb-2 uppercase text-center">Оформление</h3>
-                <p class="text-gray-500 text-[10px] text-center mb-6 uppercase tracking-widest">Создайте профиль для покупки</p>
+            <div class="space-y-4">
+                <p id="selected-num-display" class="text-center text-lg font-black gold-text mb-6 p-4 bg-white/5 rounded-2xl border border-white/5"></p>
                 
-                <div class="space-y-3">
-                    <input type="text" id="reg-name" placeholder="Ваше Имя">
-                    <input type="tel" id="reg-phone" placeholder="Ваш номер телефона">
-                    <input type="password" id="reg-pass" placeholder="Придумайте пароль">
-                    
-                    <select id="reg-op">
-                        <option value="" disabled selected>Выберите оператора</option>
-                        <option value="Мегафон">Мегафон</option>
-                        <option value="Билайн">Билайн</option>
-                        <option value="МТС">МТС</option>
-                        <option value="Теле2">Теле2</option>
-                    </select>
+                <input type="text" id="reg-name" placeholder="Ваше Имя" class="glass-input">
+                <input type="tel" id="reg-phone" placeholder="Ваш телефон (+7...)" class="glass-input">
+                <input type="password" id="reg-pass" placeholder="Придумайте пароль" class="glass-input">
+                
+                <select id="reg-op" class="glass-input appearance-none">
+                    <option value="" disabled selected>Выберите оператора</option>
+                    <option value="Мегафон">Мегафон</option>
+                    <option value="Билайн">Билайн</option>
+                    <option value="МТС">МТС</option>
+                    <option value="Теле2">Теле2</option>
+                </select>
 
-                    <div class="pt-4">
-                        <p id="selected-num-display" class="text-center text-sm font-bold gold-text mb-4"></p>
-                        <button onclick="handleAuthAndOrder()" class="btn-gold w-full py-4 shadow-xl shadow-[#bf953f]/20">ПОДТВЕРДИТЬ ЗАКАЗ</button>
-                    </div>
-                </div>
+                <button onclick="handleAuthAndOrder()" class="btn-gold w-full py-5 mt-4 shadow-2xl shadow-[#bf953f]/30">
+                    Купить номер
+                </button>
             </div>
         </div>
     </div>
 
 <script>
+    // Твои настройки Firebase
     const firebaseConfig = { 
         apiKey: "AIzaSyCRjRJkH4dPxvyYD-37emejFvK11g6hZ44", 
         databaseURL: "https://nnnmb-a0b52-default-rtdb.firebaseio.com" 
@@ -101,49 +128,64 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    let selectedNumber = "";
+    let currentSelectedNum = "";
 
-    // 1. ЗАГРУЗКА НОМЕРОВ (С переливающимися карточками)
+    // ФУНКЦИЯ ЗАГРУЗКИ И ОЧИСТКИ НОМЕРОВ ОТ БУКВ
     function loadNumbers() {
         db.ref('inventory').on('value', snap => {
             const grid = document.getElementById('numbers-grid');
             grid.innerHTML = "";
             
             snap.forEach(child => {
-                const n = child.val();
-                const phone = child.key; // Берем ключ как номер (цифры)
+                const data = child.val();
                 
-                // Форматируем для красоты: 9287777777 -> +7 (928) 777-77-77
-                const fPhone = `+7 (${phone.substring(0,3)}) ${phone.substring(3,6)}-${phone.substring(6,8)}-${phone.substring(8,10)}`;
+                // Исправление бага со скрина: если в ключе буквы (0bg-qy), ищем поле 'number'
+                // Если и его нет, пробуем очистить ключ от мусора
+                let rawNum = data.number || child.key; 
+                let cleanNum = rawNum.toString().replace(/\D/g, '');
+
+                // Если номер короткий (без 7), добавляем 7
+                if (cleanNum.length === 10) cleanNum = '7' + cleanNum;
+
+                // Красивое форматирование для витрины
+                let formattedPhone;
+                if (cleanNum.length >= 11) {
+                    formattedPhone = `+7 (${cleanNum.substring(1,4)}) ${cleanNum.substring(4,7)}-${cleanNum.substring(7,9)}-${cleanNum.substring(9,11)}`;
+                } else {
+                    formattedPhone = rawNum; // Если совсем не номер, выводим как есть
+                }
 
                 grid.innerHTML += `
-                    <div class="num-card p-6 flex justify-between items-center" onclick="openOrder('${fPhone}')">
+                    <div class="num-card p-6 flex justify-between items-center animate-fade" onclick="openOrder('${formattedPhone}')">
                         <div>
-                            <p class="text-2xl font-black tracking-tighter">${fPhone}</p>
-                            <div class="flex gap-2 mt-1">
-                                <span class="text-[9px] font-bold px-2 py-0.5 bg-white/5 rounded text-gray-400 uppercase">${n.category || 'VIP'}</span>
+                            <p class="text-[22px] font-black tracking-tighter leading-none">${formattedPhone}</p>
+                            <div class="flex gap-2 mt-2">
+                                <span class="text-[8px] font-extrabold px-2 py-0.5 bg-white/10 rounded-md text-gray-300 uppercase tracking-widest">${data.category || 'VIP'}</span>
                             </div>
                         </div>
                         <div class="text-right">
-                            <p class="text-xl font-black gold-text">${n.price} ₽</p>
-                            <p class="text-[8px] font-black text-green-500 uppercase tracking-widest mt-1">В наличии</p>
+                            <p class="text-xl font-black gold-text">${data.price} ₽</p>
+                            <p class="text-[8px] font-bold text-green-500 uppercase mt-1">Доступен</p>
                         </div>
                     </div>`;
             });
         });
     }
 
-    // 2. ЛОГИКА ЗАКАЗА И РЕГИСТРАЦИИ
+    // ЛОГИКА МОДАЛЬНОГО ОКНА
     function openOrder(num) {
-        selectedNumber = num;
-        document.getElementById('selected-num-display').innerText = "Вы выбрали: " + num;
+        currentSelectedNum = num;
+        document.getElementById('selected-num-display').innerText = num;
         document.getElementById('modal').classList.remove('hidden');
+        document.body.style.overflow = 'hidden'; // Запрет скролла
     }
 
     function closeModal() {
         document.getElementById('modal').classList.add('hidden');
+        document.body.style.overflow = 'auto';
     }
 
+    // РЕГИСТРАЦИЯ И ЗАКАЗ
     function handleAuthAndOrder() {
         const name = document.getElementById('reg-name').value;
         const phone = document.getElementById('reg-phone').value;
@@ -151,35 +193,36 @@
         const op = document.getElementById('reg-op').value;
 
         if(!name || !phone || !pass || !op) {
-            return alert("Курбан, нужно заполнить все поля!");
+            alert("Пожалуйста, заполните все поля оформления");
+            return;
         }
 
-        // Чистим телефон клиента от лишних знаков
-        const cleanPhone = phone.replace(/\D/g, '');
+        const cleanClientPhone = phone.replace(/\D/g, '');
 
-        // Сохраняем пользователя
-        db.ref('users/' + cleanPhone).set({
+        // 1. Сохраняем данные пользователя (Регистрация)
+        db.ref('users/' + cleanClientPhone).set({
             name: name,
             password: pass,
             operator: op,
-            role: 'user',
-            date: new Date().toLocaleDateString()
+            regDate: new Date().toLocaleDateString(),
+            role: 'user'
         });
 
-        // Создаем заявку на номер
+        // 2. Создаем заявку на покупку
         db.ref('orders').push({
             clientName: name,
-            clientPhone: cleanPhone,
-            wantedNum: selectedNumber,
+            clientPhone: cleanClientPhone,
+            wantedNum: currentSelectedNum,
             operator: op,
-            status: 'new',
-            date: new Date().toLocaleString('ru-RU')
+            timestamp: Date.now(),
+            status: 'new'
         }).then(() => {
-            alert("Заказ принят! Мы свяжемся с вами.");
+            alert("Заявка успешно отправлена! Ожидайте звонка.");
             closeModal();
         });
     }
 
+    // Запуск при загрузке
     window.onload = loadNumbers;
 </script>
 </body>
