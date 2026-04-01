@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+            <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SIM MARKET | PREMIUM</title>
+    <title id="site-title">SIM MARKET | PREMIUM</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
@@ -50,12 +50,15 @@
         .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px; }
         .modal.active { display: flex; }
         input { background: #151515!important; border: 1px solid #222!important; color: #fff!important; padding: 16px; border-radius: 16px; width: 100%; outline: none; margin-bottom: 10px; }
+        
+        /* Стиль для блога из админки */
+        .blog-post { background: #0a0a0a; border: 1px solid #1a1a1a; padding: 15px; border-radius: 15px; margin-bottom: 10px; }
     </style>
 </head>
 <body>
 
     <header class="p-6 flex justify-between items-center sticky top-0 bg-black/90 backdrop-blur-md z-50 border-b border-white/5">
-        <h1 class="text-xl font-black italic gold-text">SIM <span class="text-white">MARKET</span></h1>
+        <h1 class="text-xl font-black italic gold-text" id="logo-text">SIM <span class="text-white">MARKET</span></h1>
         <div id="auth-section">
             <button onclick="openM('auth-m')" class="text-[9px] font-black uppercase bg-white text-black px-5 py-2.5 rounded-full">Вход / Рег</button>
         </div>
@@ -69,6 +72,12 @@
     </header>
 
     <main class="p-4">
+        <!-- Блок новостей/блога из админки -->
+        <div id="blog-container" class="mb-8 hidden">
+            <h2 class="text-[10px] font-bold uppercase tracking-widest mb-3 opacity-40">Новости маркета</h2>
+            <div id="blog-content"></div>
+        </div>
+
         <div id="numbers-grid" class="space-y-1"></div>
     </main>
 
@@ -96,7 +105,47 @@
         function openM(id) { document.getElementById(id).classList.add('active'); }
         function closeM() { document.querySelectorAll('.modal').forEach(m => m.classList.remove('active')); }
 
-        // УМНАЯ АВТОРИЗАЦИЯ (ВХОД + РЕГИСТРАЦИЯ С ИМЕНЕМ)
+        // 1. ФУНКЦИЯ SEO: Читает настройки из админки
+        function syncSettings() {
+            db.ref('settings/seo').on('value', snap => {
+                const s = snap.val();
+                if(s) {
+                    document.getElementById('site-title').innerText = s.title || "SIM MARKET";
+                    if(s.title) document.getElementById('logo-text').innerHTML = s.title.replace(" ", " <span class='text-white'>") + "</span>";
+                }
+            });
+        }
+
+        // 2. ФУНКЦИЯ БЛОГА: Показывает посты из админки
+        function loadBlog() {
+            db.ref('blog').on('value', snap => {
+                const container = document.getElementById('blog-content');
+                const box = document.getElementById('blog-container');
+                container.innerHTML = "";
+                if(snap.exists()) {
+                    box.classList.remove('hidden');
+                    snap.forEach(post => {
+                        const d = post.val();
+                        container.innerHTML += `
+                            <div class="blog-post">
+                                <h5 class="text-xs font-bold gold-text">${d.title}</h5>
+                                <p class="text-[10px] opacity-60 mt-1">${d.text || ''}</p>
+                                <span class="text-[8px] opacity-20 mt-2 block">${d.date}</span>
+                            </div>`;
+                    });
+                }
+            });
+        }
+
+        // 3. СТАТУС ОНЛАЙН: Обновляет время последнего входа юзера для админки
+        function updateOnlineStatus(phone) {
+            if(!phone) return;
+            db.ref('users/' + phone).update({
+                lastSeen: new Date().toLocaleString(),
+                status: "Online"
+            });
+        }
+
         function doAuth() {
             const p = document.getElementById('l-phone').value.replace(/\D/g, "");
             const pass = document.getElementById('l-pass').value;
@@ -107,21 +156,22 @@
             db.ref('users/' + p).once('value', snap => {
                 const u = snap.val();
                 if(u) {
-                    // ЕСЛИ ЮЗЕР ЕСТЬ - ПРОВЕРЯЕМ ПАРОЛЬ И БАН
                     if(u.banned && (u.banned === 'forever' || Date.now() < u.banned)) return alert("ВЫ ЗАБАНЕНЫ");
                     if(u.pass === pass) {
                         localStorage.setItem('user', p);
                         localStorage.setItem('userName', u.name || "Клиент");
+                        updateOnlineStatus(p); // Сообщаем админке
                         location.reload();
                     } else alert("Неверный пароль");
                 } else {
-                    // ЕСЛИ ЮЗЕРА НЕТ - РЕГИСТРИРУЕМ (Имя обязательно)
                     if(!name) return alert("Введите ваше Имя для регистрации!");
                     db.ref('users/' + p).set({ 
                         name: name, 
                         pass: pass, 
                         role: 'user',
-                        regDate: Date.now()
+                        regDate: Date.now(),
+                        ip: "Скрыт", // Админка сможет подтянуть IP если нужно
+                        status: "Online"
                     }).then(() => {
                         localStorage.setItem('user', p);
                         localStorage.setItem('userName', name);
@@ -131,7 +181,6 @@
             });
         }
 
-        // ЗАГРУЗКА НОМЕРОВ С ПЕРЕЛИВОМ
         function loadNumbers() {
             db.ref('inventory').on('value', snap => {
                 const grid = document.getElementById('numbers-grid');
@@ -153,7 +202,6 @@
             });
         }
 
-        // ПОКУПКА - ОТПРАВЛЯЕТ ИМЯ, ТЕЛЕФОН И ВЫБРАННЫЙ НОМЕР
         function buy(num, op) {
             const uPhone = localStorage.getItem('user');
             const uName = localStorage.getItem('userName');
@@ -174,9 +222,16 @@
             });
         }
 
-        function logout() { localStorage.clear(); location.reload(); }
+        function logout() { 
+            const u = localStorage.getItem('user');
+            if(u) db.ref('users/' + u).update({ status: "Offline" });
+            localStorage.clear(); 
+            location.reload(); 
+        }
 
         window.onload = () => {
+            syncSettings(); // Связь с SEO админки
+            loadBlog();     // Связь с Блогом админки
             const u = localStorage.getItem('user');
             const n = localStorage.getItem('userName');
             if(u) {
@@ -184,6 +239,7 @@
                 document.getElementById('user-info').classList.remove('hidden');
                 document.getElementById('u-phone').innerText = "+7 " + u;
                 document.getElementById('u-name').innerText = n;
+                updateOnlineStatus(u); // Обновляем "Онлайн" в админке
             }
             loadNumbers();
         };
