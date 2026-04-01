@@ -36,9 +36,7 @@
             padding: 20px;
             z-index: 1;
             position: relative;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            display: flex; justify-content: space-between; align-items: center;
         }
 
         /* Цветные операторы */
@@ -48,45 +46,45 @@
         .tag-МЕГАФОН { background: #00B956; color: #fff; }
         .tag-ТЕЛЕ2 { background: #fff; color: #000; }
 
-        .filter-tab { padding: 10px 20px; border-radius: 12px; font-size: 11px; font-weight: 800; text-transform: uppercase; white-space: nowrap; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); }
-        .filter-tab.active { background: #bf953f; color: #000; }
-
         /* Баннер рекламы */
         #promo-box {
             background: linear-gradient(135deg, rgba(191,149,63,0.1) 0%, rgba(0,0,0,0) 100%);
             border: 1px solid rgba(191,149,63,0.3);
-            border-radius: 20px;
-            padding: 15px;
-            margin: 10px 15px 20px;
+            border-radius: 20px; padding: 15px; margin: 10px 15px 20px;
         }
+
+        .filter-tab { padding: 10px 20px; border-radius: 12px; font-size: 11px; font-weight: 800; text-transform: uppercase; white-space: nowrap; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); }
+        .filter-tab.active { background: #bf953f; color: #000; }
 
         .btn-buy { background: #bf953f; color: #000; font-weight: 800; padding: 12px 20px; border-radius: 14px; font-size: 11px; text-transform: uppercase; }
         
+        /* Модальные окна */
         .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px; }
         .modal.active { display: flex; }
         
-        .auth-input { 
-            background: #111!important; 
-            border: 1px solid rgba(255,255,255,0.1)!important; 
-            color: #fff!important; 
-            padding: 20px; 
-            border-radius: 20px; 
-            width: 100%; 
-            outline: none; 
-            font-size: 16px;
-        }
+        .auth-input { background: #111!important; border: 1px solid rgba(255,255,255,0.1)!important; color: #fff!important; padding: 20px; border-radius: 20px; width: 100%; outline: none; font-size: 16px; }
         .auth-input:focus { border-color: #bf953f!important; }
 
-        .gold-btn-main {
-            background: linear-gradient(to right, #bf953f, #fcf6ba, #b38728);
-            color: #000;
-            font-weight: 900;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+        .gold-btn-main { background: linear-gradient(to right, #bf953f, #fcf6ba, #b38728); color: #000; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* КРАСИВОЕ УВЕДОМЛЕНИЕ (TOAST) */
+        #toast {
+            position: fixed; top: -100px; left: 50%; transform: translateX(-50%);
+            background: #111; border: 1px solid #bf953f; color: #fff;
+            padding: 16px 24px; border-radius: 20px; z-index: 2000;
+            width: 90%; max-width: 350px; text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            transition: top 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
+        #toast.show { top: 30px; }
     </style>
 </head>
 <body>
+
+    <div id="toast">
+        <p class="text-[10px] gold-text font-black uppercase mb-1">Успешно</p>
+        <p class="text-xs font-bold leading-tight">Заявка в обработке, оператор свяжется с вами в ближайшее время.</p>
+    </div>
 
     <header class="p-6 flex justify-between items-center sticky top-0 bg-black/95 backdrop-blur-md z-50 border-b border-white/5">
         <h1 class="text-xl font-black italic gold-text">SIM <span class="text-white">MARKET</span></h1>
@@ -122,26 +120,15 @@
 
     <div id="auth-m" class="modal">
         <div class="bg-black/90 p-8 rounded-[40px] w-full max-w-sm border border-white/5 text-center backdrop-blur-xl">
-            <h3 id="auth-title" class="text-3xl font-black gold-text mb-8 uppercase tracking-widest italic">Вход</h3>
-            
+            <h3 id="auth-title" class="text-3xl font-black gold-text mb-8 uppercase tracking-widest italic text-center">Вход</h3>
             <div class="space-y-4">
                 <input type="tel" id="reg-phone" placeholder="Номер телефона" class="auth-input">
-                
                 <input type="text" id="reg-name" placeholder="Имя клиента" class="auth-input hidden">
-                
                 <input type="password" id="reg-pass" placeholder="Пароль" class="auth-input">
-                
-                <button onclick="handleAuth()" id="auth-main-btn" class="w-full py-5 rounded-full gold-btn-main text-sm mt-4 active:scale-95 transition-transform">
-                    Войти
-                </button>
-
+                <button onclick="handleAuth()" id="auth-main-btn" class="w-full py-5 rounded-full gold-btn-main text-sm mt-4">Войти</button>
                 <div class="mt-6 flex flex-col gap-4">
-                    <button onclick="toggleAuthMode()" id="auth-toggle-btn" class="text-[10px] text-[#bf953f] font-bold uppercase tracking-widest">
-                        Нет аккаунта? Регистрация
-                    </button>
-                    <button onclick="closeM()" class="text-[10px] text-gray-600 font-bold uppercase tracking-widest">
-                        Закрыть
-                    </button>
+                    <button onclick="toggleAuthMode()" id="auth-toggle-btn" class="text-[10px] text-[#bf953f] font-bold uppercase tracking-widest">Нет аккаунта? Регистрация</button>
+                    <button onclick="closeM()" class="text-[10px] text-gray-600 font-bold uppercase tracking-widest">Закрыть</button>
                 </div>
             </div>
         </div>
@@ -158,31 +145,30 @@
         let currentFilter = "ВСЕ";
         let isRegisterMode = false;
 
+        function showToast() {
+            const t = document.getElementById('toast');
+            t.classList.add('show');
+            setTimeout(() => { t.classList.remove('show'); }, 4000);
+        }
+
         function openM(id) { document.getElementById(id).classList.add('active'); }
         function closeM() { document.querySelectorAll('.modal').forEach(m => m.classList.remove('active')); }
 
-        // Переключение между Входом и Регистрацией
         function toggleAuthMode() {
             isRegisterMode = !isRegisterMode;
             const title = document.getElementById('auth-title');
             const nameInput = document.getElementById('reg-name');
             const mainBtn = document.getElementById('auth-main-btn');
             const toggleBtn = document.getElementById('auth-toggle-btn');
-
             if (isRegisterMode) {
-                title.innerText = "Регистрация";
-                nameInput.classList.remove('hidden');
-                mainBtn.innerText = "Зарегистрироваться";
-                toggleBtn.innerText = "Уже есть аккаунт? Вход";
+                title.innerText = "Регистрация"; nameInput.classList.remove('hidden');
+                mainBtn.innerText = "Зарегистрироваться"; toggleBtn.innerText = "Уже есть аккаунт? Вход";
             } else {
-                title.innerText = "Вход";
-                nameInput.classList.add('hidden');
-                mainBtn.innerText = "Войти";
-                toggleBtn.innerText = "Нет аккаунта? Регистрация";
+                title.innerText = "Вход"; nameInput.classList.add('hidden');
+                mainBtn.innerText = "Войти"; toggleBtn.innerText = "Нет аккаунта? Регистрация";
             }
         }
 
-        // Загрузка баннера рекламы
         function loadPromo() {
             db.ref('blog').limitToLast(1).on('value', snap => {
                 const box = document.getElementById('promo-box');
@@ -202,38 +188,21 @@
             const pass = document.getElementById('reg-pass').value.trim();
             const name = document.getElementById('reg-name').value.trim();
             const cleanPhone = phone.replace(/\D/g, "");
-
-            if (!phone || !pass || (isRegisterMode && !name)) {
-                alert("Заполните все поля!");
-                return;
-            }
-
+            if (!phone || !pass || (isRegisterMode && !name)) return alert("Заполните все поля!");
             const userRef = db.ref('users/' + cleanPhone);
-            
             userRef.once('value', snap => {
-                const u = snap.val();
                 if (isRegisterMode) {
-                    if (snap.exists()) {
-                        alert("Этот номер уже зарегистрирован!");
-                    } else {
-                        userRef.set({ name: name, pass: pass, role: 'user', regDate: new Date().toLocaleString() })
-                        .then(() => { login(cleanPhone, name); });
-                    }
+                    if (snap.exists()) alert("Этот номер уже зарегистрирован!");
+                    else userRef.set({ name: name, pass: pass, role: 'user', regDate: new Date().toLocaleString() }).then(() => login(cleanPhone, name));
                 } else {
-                    if (u && u.pass === pass) {
-                        login(cleanPhone, u.name);
-                    } else {
-                        alert("Неверные данные для входа!");
-                    }
+                    const u = snap.val();
+                    if (u && u.pass === pass) login(cleanPhone, u.name);
+                    else alert("Неверные данные!");
                 }
             });
         }
 
-        function login(p, n) {
-            localStorage.setItem('user', p);
-            localStorage.setItem('userName', n);
-            location.reload();
-        }
+        function login(p, n) { localStorage.setItem('user', p); localStorage.setItem('userName', n); location.reload(); }
 
         function filterOp(op) {
             currentFilter = op;
@@ -253,7 +222,6 @@
                     const i = c.val();
                     const op = (i.op || 'МЕГАФОН').toUpperCase();
                     if(currentFilter !== "ВСЕ" && op !== currentFilter) return;
-
                     grid.innerHTML += `
                         <div class="premium-card">
                             <div class="card-content">
@@ -275,7 +243,7 @@
             db.ref('orders/' + Date.now()).set({
                 clientName: localStorage.getItem('userName'),
                 clientPhone: uPhone, wantedNum: num, operator: op, date: new Date().toLocaleString(), status: 'new'
-            }).then(() => alert("Заявка принята!"));
+            }).then(() => { showToast(); });
         }
 
         function logout() { localStorage.clear(); location.reload(); }
@@ -288,8 +256,7 @@
                 document.getElementById('u-phone').innerText = "+7 " + u;
                 document.getElementById('u-name').innerText = localStorage.getItem('userName');
             }
-            loadPromo();
-            loadNumbers();
+            loadPromo(); loadNumbers();
         };
     </script>
 </body>
