@@ -2,69 +2,63 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title id="page-title">SIM MARKET | КРАСИВЫЕ НОМЕРА</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;900&display=swap');
-        body { font-family: 'Manrope', sans-serif; background: #050505; color: #fff; }
+        body { font-family: 'Manrope', sans-serif; background: #050505; color: #fff; -webkit-tap-highlight-color: transparent; }
         .gold-text { color: #bf953f; }
         .gold-bg { background: #bf953f; color: #000; }
-        .glass { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 24px; }
-        .num-card { transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer; }
-        .num-card:hover { transform: scale(1.05); border-color: #bf953f; background: rgba(191, 149, 63, 0.05); }
-        .category-btn { padding: 8px 20px; border-radius: 99px; font-size: 12px; font-weight: 800; border: 1px solid rgba(255,255,255,0.1); }
+        .glass { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 20px; }
+        .num-card { transition: 0.3s ease; cursor: pointer; border-left: 4px solid transparent; }
+        .num-card:hover { transform: translateY(-2px); border-color: #bf953f; background: rgba(191, 149, 63, 0.04); }
+        .category-btn { padding: 6px 16px; border-radius: 99px; font-size: 11px; font-weight: 800; border: 1px solid rgba(255,255,255,0.08); text-transform: uppercase; }
         .category-btn.active { background: #bf953f; color: #000; border-color: #bf953f; }
     </style>
 </head>
 <body>
 
-    <!-- Header -->
-    <header class="p-6 flex justify-between items-center max-w-6xl mx-auto sticky top-0 bg-[#050505]/80 backdrop-blur-lg z-50">
-        <h1 class="text-2xl font-black italic gold-text">SIM<span class="text-white">MARKET</span></h1>
-        <a href="#order" class="text-[10px] font-black uppercase tracking-widest border border-white/10 px-4 py-2 rounded-lg">Заказать подбор</a>
+    <header class="p-5 flex justify-between items-center max-w-6xl mx-auto sticky top-0 bg-[#050505]/90 backdrop-blur-sm z-50 border-b border-white/5 md:border-0">
+        <h1 class="text-xl font-black italic gold-text">SIM<span class="text-white">MARKET</span></h1>
+        <a href="#order" class="text-[9px] font-black uppercase tracking-widest border border-white/10 px-4 py-2 rounded-lg hover:bg-white/5 transition">Заявка</a>
     </header>
 
-    <!-- Hero -->
-    <section class="py-16 px-6 text-center">
-        <h2 id="hero-title" class="text-4xl md:text-6xl font-black mb-4 uppercase leading-tight">ЭКСКЛЮЗИВНЫЕ <br><span class="gold-text">НОМЕРА</span></h2>
-        <p id="hero-desc" class="text-gray-500 max-w-xl mx-auto text-sm">Официальное переоформление, лучшие цены в Дагестане.</p>
+    <section class="py-12 px-5 text-center max-w-2xl mx-auto">
+        <h2 id="hero-title" class="text-4xl md:text-5xl font-black mb-3 uppercase leading-tight">PREMIUM <br><span class="gold-text italic">НОМЕРА</span></h2>
+        <p id="hero-desc" class="text-gray-500 text-xs md:text-sm">Официальное переоформление, лучшие цены в Дагестане.</p>
     </section>
 
-    <!-- КАТАЛОГ НОМЕРОВ (ТО ЧТО МЫ ВЕРНУЛИ) -->
-    <section class="py-10 px-6 max-w-6xl mx-auto">
-        <div class="flex justify-between items-end mb-8">
-            <h3 class="text-2xl font-black uppercase italic">В наличии</h3>
-            <div class="flex gap-2 overflow-x-auto pb-2 no-scrollbar">
+    <section class="py-8 px-5 max-w-6xl mx-auto">
+        <div class="flex justify-between items-end mb-6">
+            <h3 class="text-xl font-black uppercase italic tracking-tight">В наличии</h3>
+            <div class="flex gap-1.5 overflow-x-auto pb-1 no-scrollbar text-[10px]">
                 <button class="category-btn active">ВСЕ</button>
                 <button class="category-btn">VIP</button>
                 <button class="category-btn">GOLD</button>
             </div>
         </div>
 
-        <div id="numbers-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <!-- НОМЕРА БУДУТ ТУТ -->
-            <p class="opacity-20 animate-pulse">Загрузка витрины...</p>
+        <div id="numbers-grid" class="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <p class="opacity-20 animate-pulse text-xs">Загрузка витрины...</p>
         </div>
     </section>
 
-    <!-- Блог (Новости) -->
-    <section id="blog" class="py-20 px-6 max-w-6xl mx-auto border-t border-white/5">
-        <h3 class="text-xl font-black mb-8 uppercase gold-text">Новости</h3>
-        <div id="blog-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+    <section id="blog" class="py-16 px-5 max-w-6xl mx-auto border-t border-white/5">
+        <h3 class="text-lg font-black mb-6 uppercase gold-text">Новости</h3>
+        <div id="blog-container" class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs"></div>
     </section>
 
-    <!-- Order Form -->
-    <section id="order" class="py-20 px-6 max-w-lg mx-auto">
-        <div class="glass p-8 space-y-5 text-center">
-            <h3 class="text-2xl font-black uppercase">Купить номер</h3>
-            <p class="text-xs text-gray-500">Оставьте данные, и мы свяжемся с вами для оформления</p>
-            <input type="text" id="order-name" placeholder="Имя" class="w-full bg-[#111] border border-white/5 p-4 rounded-xl text-white outline-none">
-            <input type="tel" id="order-phone" placeholder="+7 (928) 000-00-00" class="w-full bg-[#111] border border-white/5 p-4 rounded-xl text-white outline-none">
-            <input type="text" id="order-num" placeholder="Выбранный номер" class="w-full bg-[#111] border border-white/5 p-4 rounded-xl text-white outline-none">
-            <button onclick="sendOrder()" class="gold-bg w-full py-4 rounded-xl font-black uppercase text-sm">Оформить заказ</button>
+    <section id="order" class="py-16 px-5 max-w-md mx-auto">
+        <div class="glass p-7 space-y-4 text-center">
+            <h3 class="text-xl font-black uppercase tracking-tight">Купить номер</h3>
+            <p class="text-[11px] text-gray-500 max-w-xs mx-auto">Заполните данные, и мы свяжемся с вами в течение 5 минут</p>
+            <input type="text" id="order-name" placeholder="Имя" class="w-full bg-[#111] border border-white/5 p-4 rounded-xl text-white outline-none text-sm">
+            <input type="tel" id="order-phone" placeholder="+7 (928) 000-00-00" class="w-full bg-[#111] border border-white/5 p-4 rounded-xl text-white outline-none text-sm">
+            <input type="text" id="order-num" placeholder="Выбранный номер" class="w-full bg-[#111] border border-white/5 p-4 rounded-xl text-white outline-none text-sm font-black gold-text">
+            <button onclick="sendOrder()" class="gold-bg w-full py-4 rounded-xl font-black uppercase text-xs active:scale-95 transition">Оформить заказ</button>
         </div>
     </section>
 
@@ -83,21 +77,29 @@
             grid.innerHTML = "";
             
             if(!snap.exists()) {
-                grid.innerHTML = "<p class='opacity-40'>Номера скоро появятся...</p>";
+                grid.innerHTML = "<p class='text-sm opacity-30'>Витрина временно пуста...</p>";
                 return;
             }
 
             snap.forEach(child => {
                 const n = child.val();
+                
+                // ВНИМАНИЕ КУРБАН! Я ИСПРАВИЛ ЗДЕСЬ. 
+                // Вместо 'n.phone' мы берем 'child.key' (сам заголовок в Firebase)
+                const phoneNumberRaw = child.key; 
+
+                // Форматируем номер для красивого отображения (напр. +7 928 000-00-00)
+                const phoneNumberFormatted = `+7 ${phoneNumberRaw.substring(0,3)} ${phoneNumberRaw.substring(3,6)}-${phoneNumberRaw.substring(6,8)}-${phoneNumberRaw.substring(8,10)}`;
+
                 grid.innerHTML += `
-                    <div class="glass p-6 num-card flex justify-between items-center border-l-4 border-[#bf953f]" onclick="selectNum('${n.phone}')">
+                    <div class="glass p-5 num-card flex justify-between items-center" onclick="selectNum('${phoneNumberFormatted}')">
                         <div>
-                            <p class="text-2xl font-black tracking-tighter">${n.phone}</p>
-                            <span class="text-[10px] opacity-40 font-bold uppercase">${n.category || 'Без категории'}</span>
+                            <p class="text-2xl font-black tracking-tighter">${phoneNumberFormatted}</p>
+                            <span class="text-[9px] opacity-40 font-bold uppercase">${n.category || 'Красивый'}</span>
                         </div>
                         <div class="text-right">
                             <p class="text-lg font-black gold-text">${n.price} ₽</p>
-                            <p class="text-[9px] uppercase font-bold text-green-500">В наличии</p>
+                            <p class="text-[8px] uppercase font-bold text-green-500">Доступен</p>
                         </div>
                     </div>`;
             });
@@ -117,10 +119,10 @@
             snap.forEach(post => {
                 const d = post.val();
                 container.innerHTML += `
-                    <div class="glass p-5">
-                        <p class="text-[9px] gold-text font-bold mb-1 uppercase">${d.date}</p>
-                        <h4 class="font-bold mb-2">${d.title}</h4>
-                        <p class="text-xs text-gray-500">${d.text.substring(0, 100)}...</p>
+                    <div class="glass p-5 border border-white/5 hover:border-white/10 transition">
+                        <p class="text-[8px] gold-text font-bold mb-1.5 uppercase tracking-wider">${d.date}</p>
+                        <h4 class="font-bold mb-2 text-sm">${d.title}</h4>
+                        <p class="text-[11px] text-gray-500 leading-relaxed">${d.text.substring(0, 120)}...</p>
                     </div>`;
             });
         });
@@ -138,10 +140,13 @@
             clientName: name,
             clientPhone: phone,
             wantedNum: num,
-            date: new Date().toLocaleString(),
+            date: new Date().toLocaleString('ru-RU'),
             status: 'new'
         }).then(() => {
             alert("Заявка принята! Ожидайте звонка.");
+            document.getElementById('order-name').value = "";
+            document.getElementById('order-phone').value = "";
+            document.getElementById('order-num').value = "";
         });
     }
 
