@@ -12,7 +12,7 @@
         body { font-family: 'Manrope', sans-serif; background: #000; color: #fff; margin: 0; overflow-x: hidden; }
         .gold-text { color: #bf953f; }
         
-        /* Анимация бегущего ободка */
+        /* Золотой ободок карточек */
         .premium-card {
             position: relative;
             background: #0d0d0d;
@@ -41,28 +41,27 @@
             align-items: center;
         }
 
-        /* Стили плашек операторов */
+        /* Цветные операторы */
         .op-tag { font-size: 9px; padding: 4px 12px; border-radius: 8px; font-weight: 900; text-transform: uppercase; margin-bottom: 8px; display: inline-block; }
         .tag-МТС { background: #E30613; color: #fff; }
         .tag-БИЛАЙН { background: #FFD800; color: #000; }
         .tag-МЕГАФОН { background: #00B956; color: #fff; }
         .tag-ТЕЛЕ2 { background: #fff; color: #000; }
 
-        .filter-tab {
-            padding: 10px 20px;
-            border-radius: 12px;
-            font-size: 11px;
-            font-weight: 800;
-            text-transform: uppercase;
-            white-space: nowrap;
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-        }
+        .filter-tab { padding: 10px 20px; border-radius: 12px; font-size: 11px; font-weight: 800; text-transform: uppercase; white-space: nowrap; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); }
         .filter-tab.active { background: #bf953f; color: #000; }
+
+        /* Баннер рекламы */
+        #promo-box {
+            background: linear-gradient(135deg, rgba(191,149,63,0.1) 0%, rgba(0,0,0,0) 100%);
+            border: 1px solid rgba(191,149,63,0.3);
+            border-radius: 20px;
+            padding: 15px;
+            margin: 10px 15px 20px;
+        }
 
         .btn-buy { background: #bf953f; color: #000; font-weight: 800; padding: 12px 20px; border-radius: 14px; font-size: 11px; text-transform: uppercase; }
         
-        /* Модальное окно регистрации */
         .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px; }
         .modal.active { display: flex; }
         
@@ -74,7 +73,7 @@
             border-radius: 20px; 
             width: 100%; 
             outline: none; 
-            font-size: 18px;
+            font-size: 16px;
         }
         .auth-input:focus { border-color: #bf953f!important; }
 
@@ -84,14 +83,13 @@
             font-weight: 900;
             text-transform: uppercase;
             letter-spacing: 1px;
-            box-shadow: 0 10px 20px rgba(191, 149, 63, 0.2);
         }
     </style>
 </head>
 <body>
 
     <header class="p-6 flex justify-between items-center sticky top-0 bg-black/95 backdrop-blur-md z-50 border-b border-white/5">
-        <h1 class="text-xl font-black italic gold-text" id="logo-text">SIM <span class="text-white">MARKET</span></h1>
+        <h1 class="text-xl font-black italic gold-text">SIM <span class="text-white">MARKET</span></h1>
         <div id="auth-section">
             <button onclick="openM('auth-m')" class="text-[9px] font-black uppercase bg-white text-black px-5 py-2.5 rounded-full">Вход / Рег</button>
         </div>
@@ -103,6 +101,12 @@
             <button onclick="logout()" class="text-[18px] opacity-40">✕</button>
         </div>
     </header>
+
+    <div id="promo-box" class="hidden">
+        <p class="text-[9px] font-black gold-text uppercase mb-1 tracking-widest">Акция</p>
+        <h2 id="promo-title" class="text-sm font-bold mb-1"></h2>
+        <p id="promo-text" class="text-xs opacity-60"></p>
+    </div>
 
     <div class="flex gap-2 p-4 overflow-x-auto no-scrollbar">
         <button onclick="filterOp('ВСЕ')" class="filter-tab active" id="btn-all">Все</button>
@@ -116,22 +120,27 @@
         <div id="numbers-grid" class="space-y-1"></div>
     </main>
 
-    <!-- НОВОЕ ОКНО РЕГИСТРАЦИИ -->
     <div id="auth-m" class="modal">
         <div class="bg-black/90 p-8 rounded-[40px] w-full max-w-sm border border-white/5 text-center backdrop-blur-xl">
-            <h3 class="text-3xl font-black gold-text mb-10 uppercase tracking-widest italic">Регистрация</h3>
+            <h3 id="auth-title" class="text-3xl font-black gold-text mb-8 uppercase tracking-widest italic">Вход</h3>
+            
             <div class="space-y-4">
-                <input type="tel" id="reg-phone" placeholder="89005550204" class="auth-input">
-                <input type="text" id="reg-name" placeholder="Имя клиента" class="auth-input">
-                <input type="password" id="reg-pass" placeholder="19778877" class="auth-input">
+                <input type="tel" id="reg-phone" placeholder="Номер телефона" class="auth-input">
                 
-                <button onclick="strictRegister()" class="w-full py-5 rounded-full gold-btn-main text-sm mt-4 active:scale-95 transition-transform">
-                    Зарегистрироваться
+                <input type="text" id="reg-name" placeholder="Имя клиента" class="auth-input hidden">
+                
+                <input type="password" id="reg-pass" placeholder="Пароль" class="auth-input">
+                
+                <button onclick="handleAuth()" id="auth-main-btn" class="w-full py-5 rounded-full gold-btn-main text-sm mt-4 active:scale-95 transition-transform">
+                    Войти
                 </button>
 
-                <div class="mt-8 space-y-4">
-                    <button onclick="closeM()" class="block w-full text-[10px] text-gray-600 font-bold uppercase tracking-widest">
-                        Вернуться назад
+                <div class="mt-6 flex flex-col gap-4">
+                    <button onclick="toggleAuthMode()" id="auth-toggle-btn" class="text-[10px] text-[#bf953f] font-bold uppercase tracking-widest">
+                        Нет аккаунта? Регистрация
+                    </button>
+                    <button onclick="closeM()" class="text-[10px] text-gray-600 font-bold uppercase tracking-widest">
+                        Закрыть
                     </button>
                 </div>
             </div>
@@ -147,9 +156,84 @@
         const db = firebase.database();
 
         let currentFilter = "ВСЕ";
+        let isRegisterMode = false;
 
         function openM(id) { document.getElementById(id).classList.add('active'); }
         function closeM() { document.querySelectorAll('.modal').forEach(m => m.classList.remove('active')); }
+
+        // Переключение между Входом и Регистрацией
+        function toggleAuthMode() {
+            isRegisterMode = !isRegisterMode;
+            const title = document.getElementById('auth-title');
+            const nameInput = document.getElementById('reg-name');
+            const mainBtn = document.getElementById('auth-main-btn');
+            const toggleBtn = document.getElementById('auth-toggle-btn');
+
+            if (isRegisterMode) {
+                title.innerText = "Регистрация";
+                nameInput.classList.remove('hidden');
+                mainBtn.innerText = "Зарегистрироваться";
+                toggleBtn.innerText = "Уже есть аккаунт? Вход";
+            } else {
+                title.innerText = "Вход";
+                nameInput.classList.add('hidden');
+                mainBtn.innerText = "Войти";
+                toggleBtn.innerText = "Нет аккаунта? Регистрация";
+            }
+        }
+
+        // Загрузка баннера рекламы
+        function loadPromo() {
+            db.ref('blog').limitToLast(1).on('value', snap => {
+                const box = document.getElementById('promo-box');
+                if(snap.exists()) {
+                    box.classList.remove('hidden');
+                    snap.forEach(p => {
+                        const d = p.val();
+                        document.getElementById('promo-title').innerText = d.title;
+                        document.getElementById('promo-text').innerText = d.text;
+                    });
+                }
+            });
+        }
+
+        function handleAuth() {
+            const phone = document.getElementById('reg-phone').value.trim();
+            const pass = document.getElementById('reg-pass').value.trim();
+            const name = document.getElementById('reg-name').value.trim();
+            const cleanPhone = phone.replace(/\D/g, "");
+
+            if (!phone || !pass || (isRegisterMode && !name)) {
+                alert("Заполните все поля!");
+                return;
+            }
+
+            const userRef = db.ref('users/' + cleanPhone);
+            
+            userRef.once('value', snap => {
+                const u = snap.val();
+                if (isRegisterMode) {
+                    if (snap.exists()) {
+                        alert("Этот номер уже зарегистрирован!");
+                    } else {
+                        userRef.set({ name: name, pass: pass, role: 'user', regDate: new Date().toLocaleString() })
+                        .then(() => { login(cleanPhone, name); });
+                    }
+                } else {
+                    if (u && u.pass === pass) {
+                        login(cleanPhone, u.name);
+                    } else {
+                        alert("Неверные данные для входа!");
+                    }
+                }
+            });
+        }
+
+        function login(p, n) {
+            localStorage.setItem('user', p);
+            localStorage.setItem('userName', n);
+            location.reload();
+        }
 
         function filterOp(op) {
             currentFilter = op;
@@ -159,40 +243,6 @@
             });
             if(op === 'ВСЕ') document.getElementById('btn-all').classList.add('active');
             loadNumbers();
-        }
-
-        // НОВАЯ ФУНКЦИЯ РЕГИСТРАЦИИ (3 ОБЯЗАТЕЛЬНЫХ ПОЛЯ)
-        function strictRegister() {
-            const phone = document.getElementById('reg-phone').value.trim();
-            const name = document.getElementById('reg-name').value.trim();
-            const pass = document.getElementById('reg-pass').value.trim();
-
-            if (!phone || !name || !pass) {
-                alert("Заполните все три поля: Телефон, Имя и Пароль!");
-                return;
-            }
-
-            const cleanPhone = phone.replace(/\D/g, "");
-            const userRef = db.ref('users/' + cleanPhone);
-            
-            userRef.once('value', snap => {
-                if (snap.exists()) {
-                    // Если уже есть — заходим по паролю
-                    const u = snap.val();
-                    if(u.pass === pass) {
-                        localStorage.setItem('user', cleanPhone);
-                        localStorage.setItem('userName', u.name);
-                        location.reload();
-                    } else { alert("Неверный пароль!"); }
-                } else {
-                    // Регистрация нового
-                    userRef.set({ name: name, pass: pass, role: 'user', regDate: new Date().toLocaleString() }).then(() => {
-                        localStorage.setItem('user', cleanPhone);
-                        localStorage.setItem('userName', name);
-                        location.reload();
-                    });
-                }
-            });
         }
 
         function loadNumbers() {
@@ -224,11 +274,7 @@
             if(!uPhone) return openM('auth-m');
             db.ref('orders/' + Date.now()).set({
                 clientName: localStorage.getItem('userName'),
-                clientPhone: uPhone,
-                wantedNum: num,
-                operator: op,
-                date: new Date().toLocaleString(),
-                status: 'new'
+                clientPhone: uPhone, wantedNum: num, operator: op, date: new Date().toLocaleString(), status: 'new'
             }).then(() => alert("Заявка принята!"));
         }
 
@@ -242,6 +288,7 @@
                 document.getElementById('u-phone').innerText = "+7 " + u;
                 document.getElementById('u-name').innerText = localStorage.getItem('userName');
             }
+            loadPromo();
             loadNumbers();
         };
     </script>
