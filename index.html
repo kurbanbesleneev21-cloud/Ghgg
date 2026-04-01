@@ -1,4 +1,4 @@
-            <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -12,7 +12,7 @@
         body { font-family: 'Manrope', sans-serif; background: #000; color: #fff; margin: 0; }
         .gold-text { color: #bf953f; }
         
-        /* Золотой переливающийся ободок */
+        /* Твой золотой ободок */
         .premium-card {
             position: relative;
             background: #0d0d0d;
@@ -41,6 +41,15 @@
             align-items: center;
         }
 
+        /* Новый стиль для Новостей из админки */
+        #blog-container {
+            margin: 10px 15px 25px 15px;
+            padding: 15px;
+            background: linear-gradient(135deg, #111 0%, #050505 100%);
+            border-left: 3px solid #bf953f;
+            border-radius: 12px;
+        }
+
         .op-badge { font-size: 8px; padding: 2px 8px; border-radius: 6px; font-weight: 800; text-transform: uppercase; margin-bottom: 4px; display: inline-block; }
         .op-МТС { background: #ff0000; color: white; }
         .op-БИЛАЙН { background: #ffcc00; color: black; }
@@ -50,9 +59,6 @@
         .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px; }
         .modal.active { display: flex; }
         input { background: #151515!important; border: 1px solid #222!important; color: #fff!important; padding: 16px; border-radius: 16px; width: 100%; outline: none; margin-bottom: 10px; }
-        
-        /* Стиль для блога из админки */
-        .blog-post { background: #0a0a0a; border: 1px solid #1a1a1a; padding: 15px; border-radius: 15px; margin-bottom: 10px; }
     </style>
 </head>
 <body>
@@ -60,30 +66,32 @@
     <header class="p-6 flex justify-between items-center sticky top-0 bg-black/90 backdrop-blur-md z-50 border-b border-white/5">
         <h1 class="text-xl font-black italic gold-text" id="logo-text">SIM <span class="text-white">MARKET</span></h1>
         <div id="auth-section">
-            <button onclick="openM('auth-m')" class="text-[9px] font-black uppercase bg-white text-black px-5 py-2.5 rounded-full">Вход / Рег</button>
+            <button onclick="openM('auth-m')" class="text-[9px] font-black uppercase bg-white text-black px-5 py-2.5 rounded-full shadow-lg shadow-white/10">Вход / Рег</button>
         </div>
         <div id="user-info" class="hidden flex items-center gap-3">
             <div class="text-right">
                 <p id="u-name" class="text-[10px] font-black uppercase white"></p>
                 <p id="u-phone" class="text-[9px] gold-text font-bold"></p>
+                <p class="text-[7px] text-green-500 font-bold uppercase tracking-widest">Онлайн</p>
             </div>
             <button onclick="logout()" class="text-[18px] opacity-30">✕</button>
         </div>
     </header>
 
-    <main class="p-4">
-        <!-- Блок новостей/блога из админки -->
-        <div id="blog-container" class="mb-8 hidden">
-            <h2 class="text-[10px] font-bold uppercase tracking-widest mb-3 opacity-40">Новости маркета</h2>
-            <div id="blog-content"></div>
-        </div>
+    <!-- СЕКЦИЯ НОВОСТЕЙ (ИЗ АДМИНКИ) -->
+    <div id="blog-container" class="hidden">
+        <p class="text-[9px] font-black gold-text uppercase mb-2 tracking-[0.2em]">Объявление от админа:</p>
+        <div id="blog-content" class="text-sm font-medium leading-relaxed opacity-90"></div>
+    </div>
 
+    <main class="p-4">
         <div id="numbers-grid" class="space-y-1"></div>
     </main>
 
     <div id="auth-m" class="modal">
-        <div class="bg-[#0d0d0d] p-8 rounded-3xl w-full max-w-sm border border-white/10">
-            <h3 class="text-xl font-black gold-text mb-6 uppercase italic">Авторизация</h3>
+        <div class="bg-[#0d0d0d] p-8 rounded-3xl w-full max-w-sm border border-white/10 shadow-2xl">
+            <h3 class="text-xl font-black gold-text mb-2 uppercase italic">Личный кабинет</h3>
+            <p class="text-[10px] text-gray-500 mb-6 uppercase">Введите данные для входа или регистрации</p>
             <div id="auth-form" class="space-y-2">
                 <input type="text" id="l-phone" placeholder="Ваш номер (928...)">
                 <input type="text" id="l-name" placeholder="Ваше Имя (для новых)">
@@ -105,44 +113,29 @@
         function openM(id) { document.getElementById(id).classList.add('active'); }
         function closeM() { document.querySelectorAll('.modal').forEach(m => m.classList.remove('active')); }
 
-        // 1. ФУНКЦИЯ SEO: Читает настройки из админки
-        function syncSettings() {
+        // СИНХРОНИЗАЦИЯ SEO И НАЗВАНИЯ
+        function syncAdminSettings() {
             db.ref('settings/seo').on('value', snap => {
                 const s = snap.val();
-                if(s) {
-                    document.getElementById('site-title').innerText = s.title || "SIM MARKET";
-                    if(s.title) document.getElementById('logo-text').innerHTML = s.title.replace(" ", " <span class='text-white'>") + "</span>";
+                if(s && s.title) {
+                    document.getElementById('site-title').innerText = s.title;
+                    document.getElementById('logo-text').innerHTML = s.title.split(' ')[0] + " <span class='text-white'>" + (s.title.split(' ')[1] || '') + "</span>";
                 }
             });
         }
 
-        // 2. ФУНКЦИЯ БЛОГА: Показывает посты из админки
-        function loadBlog() {
-            db.ref('blog').on('value', snap => {
-                const container = document.getElementById('blog-content');
+        // ЗАГРУЗКА НОВОСТЕЙ ИЗ АДМИНКИ
+        function loadAdminBlog() {
+            db.ref('blog').limitToLast(1).on('value', snap => {
                 const box = document.getElementById('blog-container');
-                container.innerHTML = "";
+                const content = document.getElementById('blog-content');
                 if(snap.exists()) {
                     box.classList.remove('hidden');
                     snap.forEach(post => {
                         const d = post.val();
-                        container.innerHTML += `
-                            <div class="blog-post">
-                                <h5 class="text-xs font-bold gold-text">${d.title}</h5>
-                                <p class="text-[10px] opacity-60 mt-1">${d.text || ''}</p>
-                                <span class="text-[8px] opacity-20 mt-2 block">${d.date}</span>
-                            </div>`;
+                        content.innerHTML = `<span class="font-bold">${d.title}</span><br>${d.text}`;
                     });
                 }
-            });
-        }
-
-        // 3. СТАТУС ОНЛАЙН: Обновляет время последнего входа юзера для админки
-        function updateOnlineStatus(phone) {
-            if(!phone) return;
-            db.ref('users/' + phone).update({
-                lastSeen: new Date().toLocaleString(),
-                status: "Online"
             });
         }
 
@@ -160,18 +153,13 @@
                     if(u.pass === pass) {
                         localStorage.setItem('user', p);
                         localStorage.setItem('userName', u.name || "Клиент");
-                        updateOnlineStatus(p); // Сообщаем админке
+                        db.ref('users/' + p).update({ status: "Online", lastSeen: new Date().toLocaleString() });
                         location.reload();
                     } else alert("Неверный пароль");
                 } else {
-                    if(!name) return alert("Введите ваше Имя для регистрации!");
+                    if(!name) return alert("Введите имя для регистрации!");
                     db.ref('users/' + p).set({ 
-                        name: name, 
-                        pass: pass, 
-                        role: 'user',
-                        regDate: Date.now(),
-                        ip: "Скрыт", // Админка сможет подтянуть IP если нужно
-                        status: "Online"
+                        name: name, pass: pass, role: 'user', regDate: Date.now(), status: "Online"
                     }).then(() => {
                         localStorage.setItem('user', p);
                         localStorage.setItem('userName', name);
@@ -205,21 +193,10 @@
         function buy(num, op) {
             const uPhone = localStorage.getItem('user');
             const uName = localStorage.getItem('userName');
-
             if(!uPhone) return openM('auth-m');
-
-            const orderData = {
-                clientName: uName,
-                clientPhone: uPhone,
-                wantedNum: num,
-                operator: op,
-                date: new Date().toLocaleString(),
-                status: 'new'
-            };
-
-            db.ref('orders/' + Date.now()).set(orderData).then(() => {
-                alert(uName + ", ваша заявка принята! Мы свяжемся с вами.");
-            });
+            db.ref('orders/' + Date.now()).set({
+                clientName: uName, clientPhone: uPhone, wantedNum: num, operator: op, date: new Date().toLocaleString(), status: 'new'
+            }).then(() => alert(uName + ", заявка принята!"));
         }
 
         function logout() { 
@@ -230,16 +207,14 @@
         }
 
         window.onload = () => {
-            syncSettings(); // Связь с SEO админки
-            loadBlog();     // Связь с Блогом админки
+            syncAdminSettings();
+            loadAdminBlog();
             const u = localStorage.getItem('user');
-            const n = localStorage.getItem('userName');
             if(u) {
                 document.getElementById('auth-section').classList.add('hidden');
                 document.getElementById('user-info').classList.remove('hidden');
                 document.getElementById('u-phone').innerText = "+7 " + u;
-                document.getElementById('u-name').innerText = n;
-                updateOnlineStatus(u); // Обновляем "Онлайн" в админке
+                document.getElementById('u-name').innerText = localStorage.getItem('userName');
             }
             loadNumbers();
         };
