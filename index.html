@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" class="notranslate" translate="no">
 <head>
     <meta charset="UTF-8">
+    <meta name="google" content="notranslate">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SIM MARKET | PREMIUM</title>
+    <title>SIM MARKET</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
@@ -11,7 +12,6 @@
         @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap');
         body { font-family: 'Manrope', sans-serif; background: #000; color: #fff; margin: 0; overflow-x: hidden; }
         
-        /* Золотой переливающийся текст для логотипа */
         .gold-text { 
             background: linear-gradient(to right, #bf953f 20%, #fcf6ba 40%, #b38728 60%, #bf953f 80%);
             background-size: 200% auto;
@@ -22,7 +22,6 @@
         }
         @keyframes shine { to { background-position: 200% center; } }
 
-        /* Золотой ободок карточек */
         .premium-card {
             position: relative;
             background: #0d0d0d;
@@ -58,23 +57,22 @@
         .filter-tab { padding: 10px 20px; border-radius: 12px; font-size: 11px; font-weight: 800; text-transform: uppercase; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); }
         .filter-tab.active { background: #bf953f; color: #000; border-color: #bf953f; }
 
-        /* Кнопка КУПИТЬ */
         .btn-buy { 
             background: linear-gradient(to right, #bf953f, #fcf6ba, #b38728);
-            color: #000; 
+            color: #000 !important; 
             font-weight: 900; 
             padding: 14px 24px; 
             border-radius: 16px; 
-            font-size: 11px; 
+            font-size: 12px; 
             text-transform: uppercase;
-            box-shadow: 0 4px 15px rgba(191, 149, 63, 0.3);
+            border: none;
+            cursor: pointer;
         }
 
         .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px; }
         .modal.active { display: flex; }
         
         .auth-input { background: #111!important; border: 1px solid rgba(255,255,255,0.1)!important; color: #fff!important; padding: 20px; border-radius: 20px; width: 100%; outline: none; font-size: 16px; }
-        .auth-input:focus { border-color: #bf953f!important; }
 
         #toast {
             position: fixed; top: -100px; left: 50%; transform: translateX(-50%);
@@ -89,15 +87,15 @@
 </head>
 <body>
 
-    <div id="toast">
+    <div id="toast" class="notranslate">
         <p id="toast-title" class="text-[10px] text-[#bf953f] font-black uppercase mb-1">Успешно</p>
         <p id="toast-msg" class="text-xs font-bold leading-tight"></p>
     </div>
 
     <header class="p-6 flex justify-between items-center sticky top-0 bg-black/95 backdrop-blur-md z-50 border-b border-white/5">
-        <h1 class="text-2xl font-black italic gold-text">SIM MARKET</h1>
+        <h1 class="text-2xl font-black italic gold-text notranslate">SIM MARKET</h1>
         <div id="auth-section">
-            <button onclick="openM('auth-m')" class="text-[9px] font-black uppercase bg-white text-black px-5 py-2.5 rounded-full">Вход / Регистрация</button>
+            <button onclick="openM('auth-m')" class="text-[9px] font-black uppercase bg-white text-black px-5 py-2.5 rounded-full">Вход</button>
         </div>
         <div id="user-info" class="hidden flex items-center gap-3">
             <div class="text-right">
@@ -114,7 +112,7 @@
         <p id="promo-text" class="text-xs opacity-60"></p>
     </div>
 
-    <div class="flex gap-2 p-4 overflow-x-auto no-scrollbar">
+    <div class="flex gap-2 p-4 overflow-x-auto no-scrollbar notranslate">
         <button onclick="filterOp('ВСЕ')" class="filter-tab active" id="btn-all">Все</button>
         <button onclick="filterOp('МЕГАФОН')" class="filter-tab">Мегафон</button>
         <button onclick="filterOp('БИЛАЙН')" class="filter-tab">Билайн</button>
@@ -172,7 +170,7 @@
             const toggleBtn = document.getElementById('auth-toggle-btn');
             if (isRegisterMode) {
                 title.innerText = "Регистрация"; nameInput.classList.remove('hidden');
-                mainBtn.innerText = "Зарегистрироваться"; toggleBtn.innerText = "Уже есть аккаунт? Вход";
+                mainBtn.innerText = "Создать аккаунт"; toggleBtn.innerText = "Уже есть аккаунт? Вход";
             } else {
                 title.innerText = "Вход"; nameInput.classList.add('hidden');
                 mainBtn.innerText = "Войти"; toggleBtn.innerText = "Нет аккаунта? Регистрация";
@@ -220,7 +218,6 @@
                 btn.classList.remove('active');
                 if(btn.innerText.toUpperCase() === op) btn.classList.add('active');
             });
-            if(op === 'ВСЕ') document.getElementById('btn-all').classList.add('active');
             loadNumbers();
         }
 
@@ -240,7 +237,7 @@
                                     <h4 class="text-2xl font-black italic tracking-tighter text-white">+7 ${i.num}</h4>
                                     <p class="text-[#bf953f] font-black text-lg mt-1">${i.price} ₽</p>
                                 </div>
-                                <button onclick="buy('${i.num}', '${op}')" class="btn-buy">Купить</button>
+                                <button onclick="buy('${i.num}', '${op}')" class="btn-buy notranslate">КУПИТЬ</button>
                             </div>
                         </div>`;
                 });
