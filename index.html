@@ -10,9 +10,19 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap');
         body { font-family: 'Manrope', sans-serif; background: #000; color: #fff; margin: 0; overflow-x: hidden; }
-        .gold-text { color: #bf953f; }
         
-        /* Бегущий золотой ободок */
+        /* Золотой переливающийся текст для логотипа */
+        .gold-text { 
+            background: linear-gradient(to right, #bf953f 20%, #fcf6ba 40%, #b38728 60%, #bf953f 80%);
+            background-size: 200% auto;
+            color: transparent;
+            -webkit-background-clip: text;
+            background-clip: text;
+            animation: shine 3s linear infinite;
+        }
+        @keyframes shine { to { background-position: 200% center; } }
+
+        /* Золотой ободок карточек */
         .premium-card {
             position: relative;
             background: #0d0d0d;
@@ -39,34 +49,33 @@
             display: flex; justify-content: space-between; align-items: center;
         }
 
-        /* Цветные плашки операторов */
         .op-tag { font-size: 9px; padding: 4px 12px; border-radius: 8px; font-weight: 900; text-transform: uppercase; margin-bottom: 8px; display: inline-block; }
         .tag-МТС { background: #E30613; color: #fff; }
         .tag-БИЛАЙН { background: #FFD800; color: #000; }
         .tag-МЕГАФОН { background: #00B956; color: #fff; }
         .tag-ТЕЛЕ2 { background: #fff; color: #000; }
 
-        /* Баннер из админки */
-        #promo-box {
-            background: linear-gradient(135deg, rgba(191,149,63,0.1) 0%, rgba(0,0,0,0) 100%);
-            border: 1px solid rgba(191,149,63,0.3);
-            border-radius: 20px; padding: 15px; margin: 10px 15px 20px;
-        }
-
         .filter-tab { padding: 10px 20px; border-radius: 12px; font-size: 11px; font-weight: 800; text-transform: uppercase; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); }
         .filter-tab.active { background: #bf953f; color: #000; border-color: #bf953f; }
 
-        .btn-buy { background: #bf953f; color: #000; font-weight: 800; padding: 12px 20px; border-radius: 14px; font-size: 11px; text-transform: uppercase; }
-        
+        /* Кнопка КУПИТЬ */
+        .btn-buy { 
+            background: linear-gradient(to right, #bf953f, #fcf6ba, #b38728);
+            color: #000; 
+            font-weight: 900; 
+            padding: 14px 24px; 
+            border-radius: 16px; 
+            font-size: 11px; 
+            text-transform: uppercase;
+            box-shadow: 0 4px 15px rgba(191, 149, 63, 0.3);
+        }
+
         .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px; }
         .modal.active { display: flex; }
         
         .auth-input { background: #111!important; border: 1px solid rgba(255,255,255,0.1)!important; color: #fff!important; padding: 20px; border-radius: 20px; width: 100%; outline: none; font-size: 16px; }
         .auth-input:focus { border-color: #bf953f!important; }
 
-        .gold-btn-main { background: linear-gradient(to right, #bf953f, #fcf6ba, #b38728); color: #000; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; }
-
-        /* Красивое уведомление */
         #toast {
             position: fixed; top: -100px; left: 50%; transform: translateX(-50%);
             background: #111; border: 1px solid #bf953f; color: #fff;
@@ -80,35 +89,31 @@
 </head>
 <body>
 
-    <!-- Уведомление -->
     <div id="toast">
-        <p id="toast-title" class="text-[10px] gold-text font-black uppercase mb-1">Успешно</p>
-        <p id="toast-msg" class="text-xs font-bold leading-tight">Заявка в обработке, оператор свяжется с вами в ближайшее время.</p>
+        <p id="toast-title" class="text-[10px] text-[#bf953f] font-black uppercase mb-1">Успешно</p>
+        <p id="toast-msg" class="text-xs font-bold leading-tight"></p>
     </div>
 
-    <!-- Шапка -->
     <header class="p-6 flex justify-between items-center sticky top-0 bg-black/95 backdrop-blur-md z-50 border-b border-white/5">
-        <h1 class="text-xl font-black italic gold-text">SIM <span class="text-white">MARKET</span></h1>
+        <h1 class="text-2xl font-black italic gold-text">SIM MARKET</h1>
         <div id="auth-section">
-            <button onclick="openM('auth-m')" class="text-[9px] font-black uppercase bg-white text-black px-5 py-2.5 rounded-full">Вход / Рег</button>
+            <button onclick="openM('auth-m')" class="text-[9px] font-black uppercase bg-white text-black px-5 py-2.5 rounded-full">Вход / Регистрация</button>
         </div>
         <div id="user-info" class="hidden flex items-center gap-3">
             <div class="text-right">
-                <p id="u-name" class="text-[10px] font-black uppercase white"></p>
-                <p id="u-phone" class="text-[9px] gold-text font-bold"></p>
+                <p id="u-name" class="text-[10px] font-black uppercase text-white"></p>
+                <p id="u-phone" class="text-[9px] text-[#bf953f] font-bold"></p>
             </div>
             <button onclick="logout()" class="text-[18px] opacity-40">✕</button>
         </div>
     </header>
 
-    <!-- Баннер (Блог) -->
-    <div id="promo-box" class="hidden">
-        <p class="text-[9px] font-black gold-text uppercase mb-1 tracking-widest">Акция</p>
+    <div id="promo-box" class="hidden mx-4 my-4 p-4 rounded-2xl border border-[#bf953f]/30 bg-gradient-to-br from-[#bf953f]/10 to-transparent">
+        <p class="text-[9px] font-black text-[#bf953f] uppercase mb-1 tracking-widest">Акция</p>
         <h2 id="promo-title" class="text-sm font-bold mb-1"></h2>
         <p id="promo-text" class="text-xs opacity-60"></p>
     </div>
 
-    <!-- Фильтры -->
     <div class="flex gap-2 p-4 overflow-x-auto no-scrollbar">
         <button onclick="filterOp('ВСЕ')" class="filter-tab active" id="btn-all">Все</button>
         <button onclick="filterOp('МЕГАФОН')" class="filter-tab">Мегафон</button>
@@ -117,21 +122,19 @@
         <button onclick="filterOp('ТЕЛЕ2')" class="filter-tab">Tele2</button>
     </div>
 
-    <!-- Сетка номеров -->
     <main class="p-4 pb-20">
         <div id="numbers-grid" class="space-y-1"></div>
     </main>
 
-    <!-- Окно авторизации/регистрации -->
     <div id="auth-m" class="modal">
         <div class="bg-black/90 p-8 rounded-[40px] w-full max-w-sm border border-white/5 text-center backdrop-blur-xl">
-            <h3 id="auth-title" class="text-3xl font-black gold-text mb-8 uppercase tracking-widest italic">Вход</h3>
-            <div class="space-y-4 text-left">
+            <h3 id="auth-title" class="text-3xl font-black text-[#bf953f] mb-8 uppercase tracking-widest italic">Вход</h3>
+            <div class="space-y-4">
                 <input type="tel" id="reg-phone" placeholder="Номер телефона" class="auth-input">
                 <input type="text" id="reg-name" placeholder="Имя клиента" class="auth-input hidden">
                 <input type="password" id="reg-pass" placeholder="Пароль" class="auth-input">
-                <button onclick="handleAuth()" id="auth-main-btn" class="w-full py-5 rounded-full gold-btn-main text-sm mt-4">Войти</button>
-                <div class="mt-6 flex flex-col gap-4 items-center">
+                <button onclick="handleAuth()" id="auth-main-btn" class="w-full py-5 rounded-full bg-gradient-to-r from-[#bf953f] via-[#fcf6ba] to-[#b38728] text-black font-black text-sm mt-4">Войти</button>
+                <div class="mt-6 flex flex-col gap-4">
                     <button onclick="toggleAuthMode()" id="auth-toggle-btn" class="text-[10px] text-[#bf953f] font-bold uppercase tracking-widest">Нет аккаунта? Регистрация</button>
                     <button onclick="closeM()" class="text-[10px] text-gray-600 font-bold uppercase tracking-widest">Закрыть</button>
                 </div>
@@ -234,8 +237,8 @@
                             <div class="card-content">
                                 <div>
                                     <span class="op-tag tag-${op}">${op}</span>
-                                    <h4 class="text-2xl font-black italic tracking-tighter">+7 ${i.num}</h4>
-                                    <p class="gold-text font-black text-lg mt-1">${i.price} ₽</p>
+                                    <h4 class="text-2xl font-black italic tracking-tighter text-white">+7 ${i.num}</h4>
+                                    <p class="text-[#bf953f] font-black text-lg mt-1">${i.price} ₽</p>
                                 </div>
                                 <button onclick="buy('${i.num}', '${op}')" class="btn-buy">Купить</button>
                             </div>
@@ -244,7 +247,6 @@
             });
         }
 
-        // КУПИТЬ С ПРОВЕРКОЙ НА ДУБЛИКАТЫ
         function buy(num, op) {
             const uPhone = localStorage.getItem('user');
             const uName = localStorage.getItem('userName');
