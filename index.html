@@ -27,7 +27,6 @@
         .gold-border { border: 1px solid rgba(212, 175, 55, 0.3); }
         .glass { background: var(--card-bg); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.08); }
         
-        /* Кнопка купить */
         .btn-buy {
             background: var(--gold);
             color: #000;
@@ -37,7 +36,6 @@
         }
         .btn-buy:active { transform: scale(0.95); }
 
-        /* Поиск */
         .search-box {
             background: rgba(255,255,255,0.05);
             border: 1px solid rgba(255,255,255,0.1);
@@ -47,21 +45,27 @@
         }
         .search-box:focus-within { border-color: #d4af37; background: rgba(255,255,255,0.08); }
 
-        /* Анимация появления */
         .fade-in { animation: fadeIn 0.6s ease forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .no-scrollbar::-webkit-scrollbar { display: none; }
+        /* Уведомление об успешном заказе */
+        #toast {
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+            background: #d4af37; color: #000; padding: 12px 24px;
+            border-radius: 50px; font-weight: 800; font-size: 14px;
+            z-index: 1000; display: none; box-shadow: 0 10px 30px rgba(212, 175, 55, 0.4);
+        }
     </style>
 </head>
 <body class="pb-10">
 
-    <!-- HEADER -->
+    <div id="toast">Заявка отправлена! Ожидайте связи.</div>
+
     <header class="p-6 sticky top-0 z-50 bg-[#080808]/90 backdrop-blur-xl">
         <div class="flex justify-between items-center mb-8">
             <div>
                 <h1 class="text-2xl font-extrabold tracking-tighter gold-text uppercase italic">S-MARKET</h1>
-                <p class="text-[9px] text-gray-500 tracking-[4px] font-medium mt-1">KHASAVYURT ELITE</p>
+                <p class="text-[9px] text-gray-500 tracking-[4px] font-medium mt-1">ELITE NUMBERS</p>
             </div>
             <div class="w-12 h-12 rounded-2xl glass flex items-center justify-center gold-border">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#d4af37" stroke-width="1.5">
@@ -70,26 +74,19 @@
             </div>
         </div>
 
-        <!-- SEARCH -->
         <div class="search-box flex items-center gap-3 mb-6">
             <svg width="20" height="20" fill="none" stroke="gray" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
             <input type="text" id="searchInput" placeholder="Поиск номера..." class="bg-transparent border-none outline-none w-full text-sm font-medium text-white placeholder-gray-500">
         </div>
-
-        <!-- FILTERS -->
-        <div class="flex gap-3 overflow-x-auto no-scrollbar pb-2">
-            <button class="px-5 py-2 rounded-full glass text-xs font-bold whitespace-nowrap gold-border active" onclick="filterData('all', this)">Все номера</button>
-            <button class="px-5 py-2 rounded-full glass text-xs font-bold whitespace-nowrap opacity-50" onclick="filterData('gold', this)">Золото</button>
-            <button class="px-5 py-2 rounded-full glass text-xs font-bold whitespace-nowrap opacity-50" onclick="filterData('vip', this)">VIP</button>
-        </div>
     </header>
 
-    <!-- CATALOG -->
-    <main id="catalog" class="px-6 space-y-4">
-        <!-- Карточки будут здесь -->
-    </main>
+    <main id="catalog" class="px-6 space-y-4"></main>
 
     <script>
+        // Твои настройки
+        const TELEGRAM_TOKEN = '8624578892:AAEr7CLID8dkEM0zCPAoIOkn6anZff8w2pE';
+        const TELEGRAM_CHAT_ID = '8768514374';
+
         const firebaseConfig = {
             apiKey: "AIzaSyCRjRJkH4dPxvyYD-37emejFvK11g6hZ44",
             databaseURL: "https://nnnmb-a0b52-default-rtdb.firebaseio.com"
@@ -101,7 +98,11 @@
 
         db.ref('inventory').on('value', snapshot => {
             allData = [];
-            snapshot.forEach(child => { allData.push(child.val()); });
+            snapshot.forEach(child => {
+                let val = child.val();
+                val.id = child.key;
+                allData.push(val);
+            });
             render(allData);
         });
 
@@ -115,10 +116,42 @@
                     </div>
                     <div class="text-right">
                         <p class="text-xl font-bold gold-text">${item.price} ₽</p>
-                        <button onclick="window.open('https://t.me/kurban_smarket', '_blank')" class="btn-buy px-5 py-2 rounded-xl text-[10px] mt-2 uppercase">Купить</button>
+                        <button onclick="orderNumber('${item.num}', '${item.price}', '${item.op}')" class="btn-buy px-5 py-2 rounded-xl text-[10px] mt-2 uppercase">Заказать</button>
                     </div>
                 </div>
-            `).join('') : '<p class="text-center text-gray-500 py-10">Ничего не найдено...</p>';
+            `).join('') : '<p class="text-center text-gray-500 py-10">Номера не найдены...</p>';
+        }
+
+        async function orderNumber(num, price, op) {
+            const message = `🚀 НОВАЯ ЗАЯВКА!\n\n🔹 Номер: +7 ${num}\n💰 Цена: ${price} ₽\n📱 Оператор: ${op}`;
+            
+            // 1. Отправка в Telegram
+            try {
+                await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: message })
+                });
+
+                // 2. Сохранение в Админ-панель (раздел orders)
+                await db.ref('orders').push({
+                    number: num,
+                    price: price,
+                    operator: op,
+                    date: new Date().toLocaleString(),
+                    status: 'new'
+                });
+
+                showToast();
+            } catch (error) {
+                alert('Ошибка при отправке. Попробуйте еще раз.');
+            }
+        }
+
+        function showToast() {
+            const toast = document.getElementById('toast');
+            toast.style.display = 'block';
+            setTimeout(() => { toast.style.display = 'none'; }, 3000);
         }
 
         document.getElementById('searchInput').addEventListener('input', e => {
@@ -126,13 +159,6 @@
             const filtered = allData.filter(i => i.num.includes(val));
             render(filtered);
         });
-
-        function filterData(cat, el) {
-            document.querySelectorAll('button').forEach(b => b.classList.add('opacity-50', 'gold-border'));
-            el.classList.remove('opacity-50');
-            // Логика фильтрации по категориям (если они есть в базе)
-            if(cat === 'all') render(allData);
-        }
     </script>
 </body>
 </html>
