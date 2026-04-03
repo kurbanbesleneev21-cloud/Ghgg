@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="google" content="notranslate">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SIM MARKET</title>
+    <title>SIM MARKET | PREMIUM</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
@@ -15,36 +15,41 @@
         .gold-text { 
             background: linear-gradient(to right, #bf953f 20%, #fcf6ba 40%, #b38728 60%, #bf953f 80%);
             background-size: 200% auto;
-            color: transparent;
-            -webkit-background-clip: text;
-            background-clip: text;
+            color: transparent; -webkit-background-clip: text; background-clip: text;
             animation: shine 3s linear infinite;
         }
         @keyframes shine { to { background-position: 200% center; } }
 
-        .premium-card {
-            position: relative;
-            background: #0d0d0d;
+        /* Рекламный баннер */
+        #promo-box {
+            margin: 15px;
             border-radius: 24px;
-            padding: 2px;
             overflow: hidden;
-            margin-bottom: 16px;
+            border: 1px solid rgba(191, 149, 63, 0.3);
+            background: #0d0d0d;
+            transition: all 0.3s ease;
+        }
+        #promo-img {
+            width: 100%;
+            height: auto;
+            max-height: 250px;
+            object-fit: cover;
+            display: none; /* Скрыто, если нет фото */
+        }
+        .promo-content { padding: 15px; }
+
+        .premium-card {
+            position: relative; background: #0d0d0d; border-radius: 24px; padding: 2px; overflow: hidden; margin-bottom: 16px;
         }
         .premium-card::before {
-            content: '';
-            position: absolute;
-            top: -50%; left: -50%; width: 200%; height: 200%;
+            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
             background: conic-gradient(from 0deg, transparent 70%, #bf953f 100%);
             animation: border-crawl 3s linear infinite;
         }
         @keyframes border-crawl { 100% { transform: rotate(360deg); } }
         
         .card-content {
-            background: #0d0d0d;
-            border-radius: 22px;
-            padding: 20px;
-            z-index: 1;
-            position: relative;
+            background: #0d0d0d; border-radius: 22px; padding: 20px; z-index: 1; position: relative;
             display: flex; justify-content: space-between; align-items: center;
         }
 
@@ -59,27 +64,16 @@
 
         .btn-buy { 
             background: linear-gradient(to right, #bf953f, #fcf6ba, #b38728);
-            color: #000 !important; 
-            font-weight: 900; 
-            padding: 14px 24px; 
-            border-radius: 16px; 
-            font-size: 12px; 
-            text-transform: uppercase;
-            border: none;
-            cursor: pointer;
+            color: #000 !important; font-weight: 900; padding: 14px 24px; border-radius: 16px; font-size: 12px; text-transform: uppercase;
         }
 
         .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.98); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px; }
         .modal.active { display: flex; }
         
-        .auth-input { background: #111!important; border: 1px solid rgba(255,255,255,0.1)!important; color: #fff!important; padding: 20px; border-radius: 20px; width: 100%; outline: none; font-size: 16px; }
-
         #toast {
             position: fixed; top: -100px; left: 50%; transform: translateX(-50%);
             background: #111; border: 1px solid #bf953f; color: #fff;
-            padding: 16px 24px; border-radius: 20px; z-index: 2000;
-            width: 90%; max-width: 350px; text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            padding: 16px 24px; border-radius: 20px; z-index: 2000; width: 90%; max-width: 350px; text-align: center;
             transition: top 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         #toast.show { top: 30px; }
@@ -89,7 +83,7 @@
 
     <div id="toast" class="notranslate">
         <p id="toast-title" class="text-[10px] text-[#bf953f] font-black uppercase mb-1">Успешно</p>
-        <p id="toast-msg" class="text-xs font-bold leading-tight"></p>
+        <p id="toast-msg" class="text-xs font-bold"></p>
     </div>
 
     <header class="p-6 flex justify-between items-center sticky top-0 bg-black/95 backdrop-blur-md z-50 border-b border-white/5">
@@ -106,10 +100,14 @@
         </div>
     </header>
 
-    <div id="promo-box" class="hidden mx-4 my-4 p-4 rounded-2xl border border-[#bf953f]/30 bg-gradient-to-br from-[#bf953f]/10 to-transparent">
-        <p class="text-[9px] font-black text-[#bf953f] uppercase mb-1 tracking-widest">Акция</p>
-        <h2 id="promo-title" class="text-sm font-bold mb-1"></h2>
-        <p id="promo-text" class="text-xs opacity-60"></p>
+    <!-- НОВЫЙ БАННЕР С ФОТО -->
+    <div id="promo-box" class="hidden">
+        <img id="promo-img" src="" alt="Promo">
+        <div class="promo-content">
+            <p class="text-[9px] font-black text-[#bf953f] uppercase mb-1 tracking-widest">Объявление</p>
+            <h2 id="promo-title" class="text-base font-bold mb-1"></h2>
+            <p id="promo-text" class="text-xs opacity-60"></p>
+        </div>
     </div>
 
     <div class="flex gap-2 p-4 overflow-x-auto no-scrollbar notranslate">
@@ -124,19 +122,16 @@
         <div id="numbers-grid" class="space-y-1"></div>
     </main>
 
+    <!-- Окно авторизации -->
     <div id="auth-m" class="modal">
-        <div class="bg-black/90 p-8 rounded-[40px] w-full max-w-sm border border-white/5 text-center backdrop-blur-xl">
-            <h3 id="auth-title" class="text-3xl font-black text-[#bf953f] mb-8 uppercase tracking-widest italic">Вход</h3>
-            <div class="space-y-4">
-                <input type="tel" id="reg-phone" placeholder="Номер телефона" class="auth-input">
-                <input type="text" id="reg-name" placeholder="Имя клиента" class="auth-input hidden">
-                <input type="password" id="reg-pass" placeholder="Пароль" class="auth-input">
-                <button onclick="handleAuth()" id="auth-main-btn" class="w-full py-5 rounded-full bg-gradient-to-r from-[#bf953f] via-[#fcf6ba] to-[#b38728] text-black font-black text-sm mt-4">Войти</button>
-                <div class="mt-6 flex flex-col gap-4">
-                    <button onclick="toggleAuthMode()" id="auth-toggle-btn" class="text-[10px] text-[#bf953f] font-bold uppercase tracking-widest">Нет аккаунта? Регистрация</button>
-                    <button onclick="closeM()" class="text-[10px] text-gray-600 font-bold uppercase tracking-widest">Закрыть</button>
-                </div>
-            </div>
+        <div class="bg-black/90 p-8 rounded-[40px] w-full max-w-sm border border-white/5 text-center">
+            <h3 id="auth-title" class="text-3xl font-black text-[#bf953f] mb-8 uppercase italic">Вход</h3>
+            <input type="tel" id="reg-phone" placeholder="Номер" class="w-full bg-[#111] border border-white/10 p-5 rounded-2xl mb-4 text-white outline-none focus:border-[#bf953f]">
+            <input type="text" id="reg-name" placeholder="Имя" class="hidden w-full bg-[#111] border border-white/10 p-5 rounded-2xl mb-4 text-white outline-none">
+            <input type="password" id="reg-pass" placeholder="Пароль" class="w-full bg-[#111] border border-white/10 p-5 rounded-2xl mb-6 text-white outline-none">
+            <button onclick="handleAuth()" id="auth-main-btn" class="w-full py-5 rounded-full bg-gradient-to-r from-[#bf953f] to-[#b38728] text-black font-black uppercase text-sm">Войти</button>
+            <button onclick="toggleAuthMode()" id="auth-toggle-btn" class="mt-6 text-[10px] text-[#bf953f] font-bold uppercase">Нет аккаунта? Регистрация</button>
+            <button onclick="closeM()" class="mt-4 text-[10px] text-gray-500 uppercase block mx-auto">Закрыть</button>
         </div>
     </div>
 
@@ -147,9 +142,6 @@
         };
         firebase.initializeApp(conf);
         const db = firebase.database();
-
-        let currentFilter = "ВСЕ";
-        let isRegisterMode = false;
 
         function showToast(title, msg) {
             const t = document.getElementById('toast');
@@ -162,63 +154,26 @@
         function openM(id) { document.getElementById(id).classList.add('active'); }
         function closeM() { document.querySelectorAll('.modal').forEach(m => m.classList.remove('active')); }
 
-        function toggleAuthMode() {
-            isRegisterMode = !isRegisterMode;
-            const title = document.getElementById('auth-title');
-            const nameInput = document.getElementById('reg-name');
-            const mainBtn = document.getElementById('auth-main-btn');
-            const toggleBtn = document.getElementById('auth-toggle-btn');
-            if (isRegisterMode) {
-                title.innerText = "Регистрация"; nameInput.classList.remove('hidden');
-                mainBtn.innerText = "Создать аккаунт"; toggleBtn.innerText = "Уже есть аккаунт? Вход";
-            } else {
-                title.innerText = "Вход"; nameInput.classList.add('hidden');
-                mainBtn.innerText = "Войти"; toggleBtn.innerText = "Нет аккаунта? Регистрация";
-            }
-        }
-
+        // ЗАГРУЗКА РЕКЛАМЫ (ФОТО + ТЕКСТ)
         function loadPromo() {
             db.ref('blog').limitToLast(1).on('value', snap => {
                 const box = document.getElementById('promo-box');
+                const img = document.getElementById('promo-img');
                 if(snap.exists()) {
                     box.classList.remove('hidden');
                     snap.forEach(p => {
                         const d = p.val();
-                        document.getElementById('promo-title').innerText = d.title;
-                        document.getElementById('promo-text').innerText = d.text;
+                        document.getElementById('promo-title').innerText = d.title || "";
+                        document.getElementById('promo-text').innerText = d.text || "";
+                        if(d.image) {
+                            img.src = d.image;
+                            img.style.display = 'block';
+                        } else {
+                            img.style.display = 'none';
+                        }
                     });
                 }
             });
-        }
-
-        function handleAuth() {
-            const phone = document.getElementById('reg-phone').value.trim();
-            const pass = document.getElementById('reg-pass').value.trim();
-            const name = document.getElementById('reg-name').value.trim();
-            const cleanPhone = phone.replace(/\D/g, "");
-            if (!phone || !pass || (isRegisterMode && !name)) return alert("Заполните все поля!");
-            const userRef = db.ref('users/' + cleanPhone);
-            userRef.once('value', snap => {
-                if (isRegisterMode) {
-                    if (snap.exists()) alert("Этот номер уже зарегистрирован!");
-                    else userRef.set({ name: name, pass: pass, role: 'user', regDate: new Date().toLocaleString() }).then(() => login(cleanPhone, name));
-                } else {
-                    const u = snap.val();
-                    if (u && u.pass === pass) login(cleanPhone, u.name);
-                    else alert("Неверные данные!");
-                }
-            });
-        }
-
-        function login(p, n) { localStorage.setItem('user', p); localStorage.setItem('userName', n); location.reload(); }
-
-        function filterOp(op) {
-            currentFilter = op;
-            document.querySelectorAll('.filter-tab').forEach(btn => {
-                btn.classList.remove('active');
-                if(btn.innerText.toUpperCase() === op) btn.classList.add('active');
-            });
-            loadNumbers();
         }
 
         function loadNumbers() {
@@ -228,7 +183,6 @@
                 snap.forEach(c => {
                     const i = c.val();
                     const op = (i.op || 'МЕГАФОН').toUpperCase();
-                    if(currentFilter !== "ВСЕ" && op !== currentFilter) return;
                     grid.innerHTML += `
                         <div class="premium-card">
                             <div class="card-content">
@@ -248,23 +202,41 @@
             const uPhone = localStorage.getItem('user');
             const uName = localStorage.getItem('userName');
             if(!uPhone) return openM('auth-m');
-
             db.ref('orders').orderByChild('wantedNum').equalTo(num).once('value', snap => {
-                let alreadyExists = false;
-                snap.forEach(s => { if(s.val().clientPhone === uPhone) alreadyExists = true; });
-
-                if(alreadyExists) {
-                    showToast("Внимание", "Вы уже отправили заявку на этот номер. Ожидайте звонка.");
-                } else {
-                    db.ref('orders/' + Date.now()).set({
-                        clientName: uName, clientPhone: uPhone, wantedNum: num, operator: op, date: new Date().toLocaleString(), status: 'new'
-                    }).then(() => { 
-                        showToast("Успешно", "Заявка в обработке, оператор свяжется с вами в ближайшее время.");
-                    });
-                }
+                let exists = false; snap.forEach(s => { if(s.val().clientPhone === uPhone) exists = true; });
+                if(exists) return showToast("Внимание", "Вы уже отправили заявку.");
+                db.ref('orders/' + Date.now()).set({
+                    clientName: uName, clientPhone: uPhone, wantedNum: num, operator: op, date: new Date().toLocaleString(), status: 'new'
+                }).then(() => showToast("Успешно", "Заявка принята!"));
             });
         }
 
+        // Авторизация
+        let isReg = false;
+        function toggleAuthMode() {
+            isReg = !isReg;
+            document.getElementById('auth-title').innerText = isReg ? "Регистрация" : "Вход";
+            document.getElementById('reg-name').classList.toggle('hidden', !isReg);
+            document.getElementById('auth-main-btn').innerText = isReg ? "Создать" : "Войти";
+        }
+        function handleAuth() {
+            const phone = document.getElementById('reg-phone').value.replace(/\D/g, "");
+            const pass = document.getElementById('reg-pass').value;
+            const name = document.getElementById('reg-name').value;
+            if(!phone || !pass) return alert("Заполните поля");
+            const ref = db.ref('users/' + phone);
+            ref.once('value', snap => {
+                if(isReg) {
+                    if(snap.exists()) return alert("Уже есть!");
+                    ref.set({name, pass}).then(() => login(phone, name));
+                } else {
+                    const u = snap.val();
+                    if(u && u.pass === pass) login(phone, u.name);
+                    else alert("Ошибка!");
+                }
+            });
+        }
+        function login(p, n) { localStorage.setItem('user', p); localStorage.setItem('userName', n); location.reload(); }
         function logout() { localStorage.clear(); location.reload(); }
 
         window.onload = () => {
