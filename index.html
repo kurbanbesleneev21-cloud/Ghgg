@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>S-MARKET | Premium Numbers</title>
+    <title>S-MARKET | Premium Edition</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
@@ -12,152 +12,186 @@
         
         :root {
             --gold: linear-gradient(135deg, #d4af37 0%, #f1d279 50%, #b8860b 100%);
-            --bg: #080808;
-            --card-bg: rgba(255, 255, 255, 0.03);
+            --bg: #050505;
         }
 
-        body { 
-            background-color: var(--bg); 
-            color: #fff; 
-            font-family: 'Manrope', sans-serif;
-            -webkit-font-smoothing: antialiased;
-        }
-
+        body { background-color: var(--bg); color: #fff; font-family: 'Manrope', sans-serif; overflow-x: hidden; }
         .gold-text { background: var(--gold); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .gold-border { border: 1px solid rgba(212, 175, 55, 0.3); }
-        .glass { background: var(--card-bg); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.08); }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.08); }
         
-        .btn-buy {
-            background: var(--gold);
-            color: #000;
-            font-weight: 800;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
+        /* БАННЕР */
+        .banner {
+            background: linear-gradient(260deg, #1a1a1a 0%, #000 100%);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            position: relative; overflow: hidden;
         }
-        .btn-buy:active { transform: scale(0.95); }
-
-        .search-box {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 20px;
-            padding: 14px 20px;
-            transition: 0.3s;
+        .banner::after {
+            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: radial-gradient(circle, rgba(212,175,55,0.05) 0%, transparent 70%);
         }
-        .search-box:focus-within { border-color: #d4af37; background: rgba(255,255,255,0.08); }
 
-        .fade-in { animation: fadeIn 0.6s ease forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        /* МОДАЛЬНОЕ ОКНО */
+        #orderModal {
+            display: none; position: fixed; inset: 0; z-index: 1000;
+            background: rgba(0,0,0,0.85); backdrop-filter: blur(8px);
+            align-items: center; justify-content: center; padding: 20px;
+        }
+        .modal-content {
+            background: #0f0f0f; border: 1px solid rgba(212,175,55,0.3);
+            border-radius: 32px; width: 100%; max-width: 400px; padding: 30px;
+            animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
-        /* Уведомление об успешном заказе */
-        #toast {
-            position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
-            background: #d4af37; color: #000; padding: 12px 24px;
-            border-radius: 50px; font-weight: 800; font-size: 14px;
-            z-index: 1000; display: none; box-shadow: 0 10px 30px rgba(212, 175, 55, 0.4);
+        @keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+
+        input {
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px; padding: 14px; width: 100%; color: #fff; outline: none; transition: 0.3s;
+        }
+        input:focus { border-color: #d4af37; background: rgba(255,255,255,0.08); }
+
+        .btn-gold {
+            background: var(--gold); color: #000; font-weight: 800;
+            border-radius: 16px; padding: 14px; width: 100%; transition: 0.3s;
+        }
+
+        /* УВЕДОМЛЕНИЕ */
+        #statusToast {
+            position: fixed; bottom: 30px; left: 20px; right: 20px;
+            background: #111; border: 1px solid #d4af37; color: #fff;
+            padding: 18px; border-radius: 20px; font-size: 13px; text-align: center;
+            z-index: 2000; display: none; box-shadow: 0 15px 40px rgba(0,0,0,0.8);
+            animation: fadeIn 0.5s ease;
         }
     </style>
 </head>
 <body class="pb-10">
 
-    <div id="toast">Заявка отправлена! Ожидайте связи.</div>
+    <div id="statusToast">
+        <p class="font-bold text-[#d4af37] mb-1">Заявка на рассмотрении</p>
+        <p class="text-gray-400 text-[11px]">В ближайшее время с вами свяжется оператор</p>
+    </div>
 
-    <header class="p-6 sticky top-0 z-50 bg-[#080808]/90 backdrop-blur-xl">
-        <div class="flex justify-between items-center mb-8">
-            <div>
-                <h1 class="text-2xl font-extrabold tracking-tighter gold-text uppercase italic">S-MARKET</h1>
-                <p class="text-[9px] text-gray-500 tracking-[4px] font-medium mt-1">ELITE NUMBERS</p>
+    <div id="orderModal">
+        <div class="modal-content text-center">
+            <h2 class="text-xl font-black mb-2 gold-text">ОФОРМЛЕНИЕ ЗАКАЗА</h2>
+            <p id="selectedNumDisplay" class="text-gray-400 text-sm mb-6"></p>
+            
+            <div class="space-y-4">
+                <input type="text" id="clientName" placeholder="Ваше имя">
+                <input type="tel" id="clientPhone" placeholder="Ваш номер телефона">
+                <button onclick="submitOrder()" class="btn-gold mt-4 uppercase">Подтвердить заказ</button>
+                <button onclick="closeModal()" class="text-gray-500 text-xs font-bold uppercase tracking-widest mt-2">Отмена</button>
             </div>
-            <div class="w-12 h-12 rounded-2xl glass flex items-center justify-center gold-border">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#d4af37" stroke-width="1.5">
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
-                </svg>
+        </div>
+    </div>
+
+    <header class="p-6 sticky top-0 z-50 bg-[#050505]/90 backdrop-blur-xl">
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-2xl font-black gold-text italic tracking-tighter uppercase">S-MARKET</h1>
+            <div class="w-10 h-10 rounded-full glass flex items-center justify-center">
+                <div class="w-2 h-2 bg-[#d4af37] rounded-full animate-pulse"></div>
             </div>
         </div>
 
-        <div class="search-box flex items-center gap-3 mb-6">
-            <svg width="20" height="20" fill="none" stroke="gray" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-            <input type="text" id="searchInput" placeholder="Поиск номера..." class="bg-transparent border-none outline-none w-full text-sm font-medium text-white placeholder-gray-500">
+        <div class="banner rounded-[28px] p-6 mb-8 relative">
+            <p class="text-[10px] font-bold text-[#d4af37] tracking-[3px] uppercase mb-1">Welcome to</p>
+            <h2 class="text-2xl font-black leading-tight mb-2">МАГАЗИН ЭЛИТНЫХ<br>НОМЕРОВ</h2>
+            <p class="text-gray-400 text-[11px] leading-relaxed max-w-[200px]">Самые редкие комбинации цифр в Дагестане.</p>
+        </div>
+
+        <div class="relative">
+            <input type="text" id="searchInput" placeholder="Поиск по цифрам..." class="bg-white/5 border-none p-4 pl-12 rounded-2xl w-full text-sm">
+            <svg class="absolute left-4 top-4 opacity-20" width="18" height="18" fill="white" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
         </div>
     </header>
 
-    <main id="catalog" class="px-6 space-y-4"></main>
+    <main id="catalog" class="px-6 space-y-4 pt-4"></main>
 
     <script>
-        // Твои настройки
         const TELEGRAM_TOKEN = '8624578892:AAEr7CLID8dkEM0zCPAoIOkn6anZff8w2pE';
         const TELEGRAM_CHAT_ID = '8768514374';
 
-        const firebaseConfig = {
+        firebase.initializeApp({
             apiKey: "AIzaSyCRjRJkH4dPxvyYD-37emejFvK11g6hZ44",
             databaseURL: "https://nnnmb-a0b52-default-rtdb.firebaseio.com"
-        };
-        firebase.initializeApp(firebaseConfig);
+        });
         const db = firebase.database();
 
         let allData = [];
+        let currentOrder = null;
 
-        db.ref('inventory').on('value', snapshot => {
+        db.ref('inventory').on('value', s => {
             allData = [];
-            snapshot.forEach(child => {
-                let val = child.val();
-                val.id = child.key;
-                allData.push(val);
-            });
+            s.forEach(c => { allData.push(c.val()); });
             render(allData);
         });
 
         function render(items) {
-            const container = document.getElementById('catalog');
-            container.innerHTML = items.length ? items.map(item => `
-                <div class="glass p-5 rounded-[30px] flex justify-between items-center fade-in">
-                    <div class="space-y-1">
-                        <span class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">${item.op || 'Оператор'}</span>
-                        <h3 class="text-2xl font-extrabold tracking-tight text-white">+7 ${item.num}</h3>
+            const cont = document.getElementById('catalog');
+            cont.innerHTML = items.map(item => `
+                <div class="glass p-5 rounded-[30px] flex justify-between items-center">
+                    <div>
+                        <p class="text-[9px] font-bold text-gray-500 uppercase tracking-widest">${item.op}</p>
+                        <h3 class="text-xl font-black">+7 ${item.num}</h3>
                     </div>
                     <div class="text-right">
-                        <p class="text-xl font-bold gold-text">${item.price} ₽</p>
-                        <button onclick="orderNumber('${item.num}', '${item.price}', '${item.op}')" class="btn-buy px-5 py-2 rounded-xl text-[10px] mt-2 uppercase">Заказать</button>
+                        <p class="text-lg font-bold gold-text">${item.price} ₽</p>
+                        <button onclick="openModal('${item.num}', '${item.price}')" class="bg-white/5 px-4 py-2 rounded-xl text-[10px] font-black uppercase mt-1 border border-white/5">Купить</button>
                     </div>
                 </div>
-            `).join('') : '<p class="text-center text-gray-500 py-10">Номера не найдены...</p>';
+            `).join('');
         }
 
-        async function orderNumber(num, price, op) {
-            const message = `🚀 НОВАЯ ЗАЯВКА!\n\n🔹 Номер: +7 ${num}\n💰 Цена: ${price} ₽\n📱 Оператор: ${op}`;
-            
-            // 1. Отправка в Telegram
+        function openModal(num, price) {
+            currentOrder = { num, price };
+            document.getElementById('selectedNumDisplay').innerText = `Номер: +7 ${num} за ${price} ₽`;
+            document.getElementById('orderModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('orderModal').style.display = 'none';
+        }
+
+        async function submitOrder() {
+            const name = document.getElementById('clientName').value;
+            const phone = document.getElementById('clientPhone').value;
+
+            if(!name || !phone) return alert('Пожалуйста, заполните все поля');
+
+            const text = `🔥 НОВЫЙ ЗАКАЗ!\n\n👑 Клиент: ${name}\n📞 Тел: ${phone}\n💎 Номер: +7 ${currentOrder.num}\n💰 Цена: ${currentOrder.price} ₽`;
+
             try {
+                // В Telegram
                 await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: message })
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({chat_id: TELEGRAM_CHAT_ID, text: text})
                 });
 
-                // 2. Сохранение в Админ-панель (раздел orders)
+                // В Базу
                 await db.ref('orders').push({
-                    number: num,
-                    price: price,
-                    operator: op,
-                    date: new Date().toLocaleString(),
-                    status: 'new'
+                    client: name, contact: phone,
+                    number: currentOrder.num, price: currentOrder.price,
+                    time: new Date().toLocaleString()
                 });
 
+                closeModal();
                 showToast();
-            } catch (error) {
-                alert('Ошибка при отправке. Попробуйте еще раз.');
+            } catch (e) {
+                alert('Ошибка. Попробуйте еще раз.');
             }
         }
 
         function showToast() {
-            const toast = document.getElementById('toast');
+            const toast = document.getElementById('statusToast');
             toast.style.display = 'block';
-            setTimeout(() => { toast.style.display = 'none'; }, 3000);
+            setTimeout(() => { toast.style.display = 'none'; }, 5000);
         }
 
         document.getElementById('searchInput').addEventListener('input', e => {
-            const val = e.target.value.toLowerCase();
-            const filtered = allData.filter(i => i.num.includes(val));
-            render(filtered);
+            const v = e.target.value.toLowerCase();
+            render(allData.filter(i => i.num.includes(v)));
         });
     </script>
 </body>
