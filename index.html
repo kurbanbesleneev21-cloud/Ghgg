@@ -2,64 +2,62 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <!-- НОВЫЙ ТЕГ GOOGLE ПРОВЕРКИ -->
+    <meta name="google-site-verification" content="jyP0Po8jGw1Gc_gAck06U7vM7fIgBDYiqMpUykFBTxY" />
+    
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>S-MARKET | Элитные Номера</title>
+    <title>S-MARKET | МАГАЗИН НОМЕРОВ</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
-        body { background: #0f0f0f; color: #fff; font-family: 'Inter', sans-serif; overflow-x: hidden; }
-        
-        .gold-gradient { background: linear-gradient(135.47deg, #D4AF37 0%, #F1D279 50%, #B8860B 100%); }
-        .glass-card { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); backdrop-filter: blur(10px); }
-        
-        /* Стили для поиска */
-        .search-input { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px; transition: 0.3s; }
-        .search-input:focus { border-color: #D4AF37; outline: none; background: rgba(255, 255, 255, 0.08); }
-
-        /* Категории */
-        .tab { padding: 8px 16px; border-radius: 12px; font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.3s; border: 1px solid transparent; }
-        .tab.active { background: #D4AF37; color: #000; }
-        .tab:not(.active) { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.6); }
-
-        /* Номер */
-        .phone-num { letter-spacing: -1px; font-weight: 800; }
+        @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800;900&display=swap');
+        body { background: #000; color: #fff; font-family: 'Manrope', sans-serif; overflow-x: hidden; }
+        .gold-text { background: linear-gradient(to right, #bf953f, #fcf6ba, #b38728); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .card { 
+            background: linear-gradient(145deg, #0f0f0f, #050505);
+            border: 1px solid rgba(255,255,255,0.03);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .card:active { transform: scale(0.95); border-color: #bf953f; box-shadow: 0 0 20px rgba(191,149,63,0.2); }
+        .btn-gold { 
+            background: linear-gradient(to right, #bf953f, #fcf6ba, #b38728); 
+            color: #000; font-weight: 900;
+        }
     </style>
 </head>
-<body class="pb-24">
+<body class="p-5">
 
-    <!-- HEADER -->
-    <header class="p-6 sticky top-0 z-50 bg-[#0f0f0f]/80 backdrop-blur-md">
-        <div class="flex justify-between items-center mb-6">
+    <div class="max-w-md mx-auto">
+        <!-- ШАПКА И ЛИЧНЫЙ КАБИНЕТ -->
+        <div class="flex justify-between items-center mb-8">
             <div>
-                <h1 class="text-xl font-black italic tracking-tighter text-[#D4AF37]">S-MARKET</h1>
-                <p class="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Premium Numbers</p>
+                <h1 class="text-3xl font-black italic gold-text tracking-tighter">S-MARKET</h1>
+                <p class="text-[9px] uppercase tracking-[3px] opacity-40 font-bold">Premium Numbers</p>
             </div>
-            <div class="w-10 h-10 rounded-2xl glass-card flex items-center justify-center">
-                <svg width="20" height="20" fill="none" stroke="#D4AF37" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-            </div>
+            <button onclick="location.href='https://sim-admin.vercel.app'" class="p-3 bg-white/5 rounded-2xl border border-white/10 active:scale-90 transition-all">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#bf953f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            </button>
         </div>
 
-        <!-- ПОИСК -->
-        <div class="relative mb-6">
-            <input type="text" id="searchInput" placeholder="Поиск номера (например, 777)..." class="search-input w-full p-4 pl-12 text-sm">
-            <svg class="absolute left-4 top-4 opacity-30" width="18" height="18" fill="white" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-        </div>
+        <!-- РЕКЛАМА -->
+        <div id="promo-section" class="mb-10"></div>
 
-        <!-- КАТЕГОРИИ -->
-        <div class="flex gap-2 overflow-x-auto no-scrollbar pb-2">
-            <div class="tab active" onclick="filterCat('all', this)">Все</div>
-            <div class="tab" onclick="filterCat('gold', this)">Золотые</div>
-            <div class="tab" onclick="filterCat('vip', this)">VIP</div>
-            <div class="tab" onclick="filterCat('platinum', this)">Платина</div>
-        </div>
-    </header>
+        <!-- КАТАЛОГ С ЭФФЕКТАМИ ПРИБЛИЖЕНИЯ -->
+        <h2 class="text-sm font-black uppercase tracking-widest opacity-30 mb-5 ml-1 italic">Доступные лоты</h2>
+        <div id="catalog" class="space-y-4"></div>
+    </div>
 
-    <!-- КАТАЛОГ -->
-    <main id="catalog" class="px-6 grid grid-cols-1 gap-4">
-        <!-- Сюда прилетают номера -->
-    </main>
+    <!-- МОДАЛКА ЗАКАЗА -->
+    <div id="modal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-50 hidden flex items-center justify-center p-6">
+        <div class="card w-full max-w-sm rounded-[32px] p-8 space-y-5">
+            <h3 id="m-num" class="text-3xl font-black italic gold-text text-center"></h3>
+            <input type="text" id="m-name" placeholder="Ваше имя" class="w-full bg-white/5 border border-white/10 p-5 rounded-2xl outline-none">
+            <input type="tel" id="m-phone" placeholder="Ваш номер" class="w-full bg-white/5 border border-white/10 p-5 rounded-2xl outline-none">
+            <button onclick="sendOrder()" class="btn-gold w-full py-5 rounded-2xl uppercase font-black">Заказать</button>
+            <button onclick="closeModal()" class="w-full text-[10px] opacity-30 font-bold">ОТМЕНА</button>
+        </div>
+    </div>
 
     <script>
         const conf = { 
@@ -68,50 +66,56 @@
         };
         firebase.initializeApp(conf);
         const db = firebase.database();
+        let targetNum = "";
 
-        let allNumbers = [];
-
-        db.ref('inventory').on('value', s => {
-            allNumbers = [];
-            s.forEach(c => { allNumbers.push(c.val()); });
-            render(allNumbers);
-        });
-
-        function render(data) {
-            const cont = document.getElementById('catalog');
-            cont.innerHTML = data.map(i => `
-                <div class="glass-card p-5 rounded-[28px] flex justify-between items-center animate-in fade-in duration-500">
-                    <div>
-                        <div class="flex items-center gap-2 mb-1">
-                            <span class="text-[9px] font-bold text-[#D4AF37] px-2 py-0.5 rounded-full bg-[#D4AF37]/10 border border-[#D4AF37]/20 uppercase">${i.op}</span>
+        // Загрузка рекламы
+        db.ref('blog/promo').on('value', s => {
+            const d = s.val();
+            if(d) {
+                document.getElementById('promo-section').innerHTML = `
+                    <div class="card rounded-[30px] overflow-hidden relative border-0">
+                        <img src="${d.image}" class="w-full h-56 object-cover opacity-60">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black p-6 flex flex-col justify-end">
+                            <h3 class="text-xl font-black italic uppercase">${d.title}</h3>
+                            <p class="text-[11px] opacity-70 mt-1">${d.text || ''}</p>
                         </div>
-                        <p class="phone-num text-2xl text-white">+7 ${i.num}</p>
-                    </div>
-                    <div class="text-right">
-                        <p class="text-lg font-black text-white">${i.price} ₽</p>
-                        <button onclick="window.open('https://t.me/твой_ник','_blank')" class="mt-2 text-[10px] font-bold gold-gradient text-black px-4 py-2 rounded-xl uppercase active:scale-95 transition-all">Купить</button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // Поиск в реальном времени
-        document.getElementById('searchInput').addEventListener('input', (e) => {
-            const val = e.target.value;
-            const filtered = allNumbers.filter(n => n.num.includes(val));
-            render(filtered);
+                    </div>`;
+            }
         });
 
-        // Фильтр категорий
-        function filterCat(cat, el) {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            el.classList.add('active');
-            
-            if(cat === 'all') { render(allNumbers); }
-            else {
-                const filtered = allNumbers.filter(n => n.category && n.category.toLowerCase() === cat);
-                render(filtered);
-            }
+        // Загрузка каталога с анимацией карточек
+        db.ref('inventory').on('value', s => {
+            const cont = document.getElementById('catalog');
+            cont.innerHTML = "";
+            s.forEach(c => {
+                const i = c.val();
+                cont.innerHTML += `
+                    <div class="card rounded-3xl p-5 flex justify-between items-center group cursor-pointer hover:scale-[1.02]" onclick="openOrder('${i.num}')">
+                        <div>
+                            <p class="text-[9px] font-black opacity-40 uppercase tracking-widest">${i.op}</p>
+                            <p class="text-2xl font-black italic tracking-tighter group-active:gold-text">+7 ${i.num}</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-xl font-black gold-text">${i.price} ₽</p>
+                            <p class="text-[8px] font-bold opacity-30 uppercase">Купить</p>
+                        </div>
+                    </div>`;
+            });
+        });
+
+        function openOrder(n) {
+            targetNum = n;
+            document.getElementById('m-num').innerText = "+7 " + n;
+            document.getElementById('modal').classList.remove('hidden');
+        }
+        function closeModal() { document.getElementById('modal').classList.add('hidden'); }
+        function sendOrder() {
+            const name = document.getElementById('m-name').value;
+            const phone = document.getElementById('m-phone').value;
+            if(!name || !phone) return alert("Заполни поля!");
+            db.ref('orders').push({ wantedNum: targetNum, clientName: name, clientPhone: phone, date: Date.now() }).then(() => {
+                alert("Заказ принят!"); closeModal();
+            });
         }
     </script>
 </body>
