@@ -3,109 +3,186 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>S-MARKET | LUXURY</title>
+    <title>S-MARKET | LUXURY ELITE</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;600;800&display=swap' );
         
         :root {
-            --gold: linear-gradient(90deg, #b8860b, #f1d279, #d4af37, #b8860b);
-            --bg: #050505;
+            --gold: #d4af37;
+            --gold-light: #f1d279;
+            --bg: #080808;
+            --card-bg: #121212;
         }
 
-        body { background-color: var(--bg); color: #fff; font-family: 'Manrope', sans-serif; }
-        
-        /* ЗОЛОТАЯ ПЕРЕЛИВАЮЩАЯСЯ РАМКА */
+        body { 
+            background-color: var(--bg); 
+            color: #fff; 
+            font-family: 'Manrope', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .gold-text { 
+            background: linear-gradient(135deg, var(--gold), var(--gold-light), var(--gold)); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent;
+            background-size: 200% auto;
+            animation: shine 3s linear infinite;
+        }
+
+        @keyframes shine {
+            to { background-position: 200% center; }
+        }
+
+        /* Улучшенная золотая рамка */
         .gold-card {
             position: relative;
-            background: rgba(255, 255, 255, 0.03);
+            background: var(--card-bg);
             border-radius: 24px;
-            padding: 1px; /* Толщина рамки */
-            overflow: hidden;
-            z-index: 1;
+            padding: 1px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(212, 175, 55, 0.1);
         }
 
-        .gold-card::before {
-            content: '';
-            position: absolute;
-            top: -50%; left: -50%;
-            width: 200%; height: 200%;
-            background: conic-gradient(from 0deg, transparent, #d4af37, transparent 30%);
-            animation: rotate 4s linear infinite;
-            z-index: -1;
+        .gold-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.15);
+            border-color: rgba(212, 175, 55, 0.5);
         }
 
         .card-inner {
             background: #0f0f0f;
             border-radius: 23px;
-            padding: 20px;
+            padding: 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        @keyframes rotate {
-            100% { transform: rotate(360deg); }
+        /* Стилизация поиска */
+        .search-container input {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
         }
 
-        /* БАННЕР */
-        .banner-box {
-            background: linear-gradient(135deg, #111 0%, #000 100%);
+        .search-container input:focus {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--gold);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+        }
+
+        /* Модальное окно */
+        .modal-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(12px);
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: #111;
             border: 1px solid rgba(212, 175, 55, 0.3);
-            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.1);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         }
 
-        .gold-text { background: linear-gradient(135deg, #d4af37, #f1d279); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-
-        /* МОДАЛКА */
-        #orderModal {
-            display: none; position: fixed; inset: 0; z-index: 1000;
-            background: rgba(0,0,0,0.9); backdrop-filter: blur(10px);
-            align-items: center; justify-content: center; padding: 20px;
+        /* Кнопки */
+        .btn-primary {
+            background: linear-gradient(135deg, var(--gold), #b8860b);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
 
-        input { background: #1a1a1a; border: 1px solid #333; border-radius: 12px; padding: 12px; width: 100%; color: #fff; margin-bottom: 12px; outline: none; }
-        input:focus { border-color: #d4af37; }
+        .btn-primary:active { transform: scale(0.95); }
+
+        /* Скелетон загрузки */
+        .skeleton {
+            background: linear-gradient(90deg, #1a1a1a 25%, #222 50%, #1a1a1a 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
 
         #statusToast {
-            position: fixed; top: 20px; left: 20px; right: 20px;
-            background: #d4af37; color: #000; padding: 15px; border-radius: 15px;
-            font-weight: 800; text-align: center; display: none; z-index: 2000;
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+            background: var(--gold); color: #000; padding: 16px 32px; border-radius: 50px;
+            font-weight: 800; box-shadow: 0 10px 25px rgba(212, 175, 55, 0.4);
+            display: none; z-index: 2000;
         }
     </style>
 </head>
-<body class="pb-10">
+<body class="pb-24">
 
-    <div id="statusToast">Заявка принята! Ожидайте звонка.</div>
+    <div id="statusToast" class="animate__animated animate__fadeInUp">Заявка успешно отправлена! 👑</div>
 
-    <div id="orderModal">
-        <div class="bg-[#0f0f0f] border border-[#d4af37]/30 p-8 rounded-[32px] w-full max-w-sm text-center">
-            <h2 class="text-xl font-black gold-text mb-4">ОФОРМИТЬ ЗАКАЗ</h2>
-            <input type="text" id="cName" placeholder="Ваше Имя">
-            <input type="tel" id="cPhone" placeholder="Ваш Телефон">
-            <button onclick="sendOrder()" class="bg-[#d4af37] text-black w-full py-3 rounded-xl font-black mt-2">ПОДТВЕРДИТЬ</button>
-            <button onclick="closeModal()" class="text-gray-500 text-xs mt-4 uppercase">Закрыть</button>
+    <!-- Модалка заказа -->
+    <div id="orderModal" class="modal-backdrop">
+        <div class="modal-content p-8 rounded-[32px] w-full max-w-sm text-center animate__animated animate__zoomIn">
+            <div class="w-16 h-1 w-16 bg-gold/20 mx-auto mb-6 rounded-full"></div>
+            <h2 class="text-2xl font-black gold-text mb-2">ОФОРМЛЕНИЕ</h2>
+            <p id="orderDetails" class="text-gray-400 text-sm mb-6"></p>
+            
+            <div class="space-y-3">
+                <input type="text" id="cName" placeholder="Ваше Имя" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-gold/50 transition-all">
+                <input type="tel" id="cPhone" placeholder="Ваш Телефон" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl outline-none focus:border-gold/50 transition-all">
+            </div>
+
+            <button onclick="sendOrder()" class="btn-primary text-black w-full py-4 rounded-2xl font-black mt-6 shadow-lg shadow-gold/20">ПОДТВЕРДИТЬ ЗАКАЗ</button>
+            <button onclick="closeModal()" class="text-gray-500 text-xs mt-6 uppercase tracking-widest hover:text-white transition-colors">Отмена</button>
         </div>
     </div>
 
-    <header class="p-6">
-        <div class="flex justify-between items-center mb-6">
-            <h1 class="text-2xl font-black gold-text italic tracking-tighter">S-MARKET</h1>
-            <span class="text-[10px] bg-[#d4af37]/10 text-[#d4af37] px-3 py-1 rounded-full border border-[#d4af37]/20 font-bold uppercase">Online</span>
+    <header class="p-8 sticky top-0 z-50 bg-[#080808]/80 backdrop-blur-md">
+        <div class="flex justify-between items-center mb-8">
+            <div>
+                <h1 class="text-3xl font-black gold-text italic tracking-tighter leading-none">S-MARKET</h1>
+                <p class="text-[10px] text-gray-500 font-bold uppercase tracking-[0.2em] mt-1">Luxury Numbers</p>
+            </div>
+            <div class="flex items-center gap-2">
+                <span class="relative flex h-2 w-2">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                </span>
+                <span class="text-[10px] text-green-500 font-bold uppercase">Online</span>
+            </div>
         </div>
 
-        <!-- ДИНАМИЧЕСКИЙ БАННЕР -->
-        <div id="mainBanner" class="banner-box rounded-[30px] p-6 mb-8">
-            <h2 id="bannerTitle" class="text-2xl font-extrabold mb-1">Загрузка...</h2>
-            <p id="bannerSub" class="text-gray-500 text-xs"></p>
+        <!-- Баннер -->
+        <div id="mainBanner" class="relative overflow-hidden rounded-[32px] p-8 mb-8 border border-white/5 bg-gradient-to-br from-[#111] to-[#000]">
+            <div class="relative z-10">
+                <h2 id="bannerTitle" class="text-3xl font-black mb-2 leading-tight">Загрузка...</h2>
+                <p id="bannerSub" class="text-gray-400 text-sm font-medium"></p>
+            </div>
+            <div class="absolute -right-10 -top-10 w-40 h-40 bg-gold/5 rounded-full blur-3xl"></div>
         </div>
 
-        <input type="text" id="search" placeholder="Поиск номера..." class="bg-white/5 border-none p-4 rounded-2xl w-full text-sm">
+        <div class="search-container relative">
+            <input type="text" id="search" placeholder="Поиск красивого номера..." class="w-full p-5 pl-12 rounded-2xl text-sm outline-none">
+            <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+        </div>
     </header>
 
-    <main id="list" class="px-6 space-y-5"></main>
+    <main id="list" class="px-8 space-y-6">
+        <!-- Скелетоны при загрузке -->
+        <div class="gold-card"><div class="card-inner h-24 skeleton opacity-20"></div></div>
+        <div class="gold-card"><div class="card-inner h-24 skeleton opacity-20"></div></div>
+    </main>
 
     <script>
         const TG_TOKEN = '8624578892:AAEr7CLID8dkEM0zCPAoIOkn6anZff8w2pE';
@@ -114,7 +191,7 @@
         firebase.initializeApp({
             apiKey: "AIzaSyCRjRJkH4dPxvyYD-37emejFvK11g6hZ44",
             databaseURL: "https://nnnmb-a0b52-default-rtdb.firebaseio.com"
-        });
+        } );
         const db = firebase.database();
 
         let numbers = [];
@@ -122,7 +199,7 @@
 
         // Загрузка настроек баннера
         db.ref('settings/banner').on('value', s => {
-            const data = s.val() || { title: "S-MARKET ELITE", sub: "Лучшие номера здесь" };
+            const data = s.val() || { title: "S-MARKET ELITE", sub: "Эксклюзивные номера для вашего статуса" };
             document.getElementById('bannerTitle').innerText = data.title;
             document.getElementById('bannerSub').innerText = data.sub;
         });
@@ -135,16 +212,25 @@
         });
 
         function draw(data) {
-            document.getElementById('list').innerHTML = data.map(i => `
-                <div class="gold-card">
+            const list = document.getElementById('list');
+            if (data.length === 0) {
+                list.innerHTML = `<div class="text-center py-20 text-gray-600 font-bold uppercase tracking-widest">Ничего не найдено</div>`;
+                return;
+            }
+
+            list.innerHTML = data.map((i, index) => `
+                <div class="gold-card animate__animated animate__fadeInUp" style="animation-delay: ${index * 0.05}s">
                     <div class="card-inner">
                         <div>
-                            <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mb-1">${i.op}</p>
-                            <h3 class="text-xl font-black tracking-tight text-white">+7 ${i.num}</h3>
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="text-[9px] bg-white/5 text-gray-400 px-2 py-0.5 rounded border border-white/10 font-black uppercase tracking-tighter">${i.op}</span>
+                                <span class="text-[9px] text-gold font-bold uppercase tracking-widest">Premium</span>
+                            </div>
+                            <h3 class="text-2xl font-black tracking-tighter text-white">+7 ${i.num}</h3>
                         </div>
                         <div class="text-right">
-                            <p class="text-lg font-black gold-text">${i.price} ₽</p>
-                            <button onclick="openForm('${i.num}', '${i.price}')" class="bg-white/10 px-4 py-2 rounded-xl text-[10px] font-black uppercase mt-1">Купить</button>
+                            <p class="text-xl font-black gold-text mb-2">${Number(i.price).toLocaleString()} ₽</p>
+                            <button onclick="openForm('${i.num}', '${i.price}')" class="bg-white text-black px-6 py-2.5 rounded-xl text-[11px] font-black uppercase hover:bg-gold transition-colors shadow-lg shadow-white/5">Купить</button>
                         </div>
                     </div>
                 </div>
@@ -153,35 +239,75 @@
 
         function openForm(num, price) {
             activeItem = { num, price };
+            document.getElementById('orderDetails').innerText = `Номер: +7 ${num} • ${Number(price).toLocaleString()} ₽`;
             document.getElementById('orderModal').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
         }
 
-        function closeModal() { document.getElementById('orderModal').style.display = 'none'; }
+        function closeModal() { 
+            document.getElementById('orderModal').style.display = 'none'; 
+            document.body.style.overflow = 'auto';
+        }
 
         async function sendOrder() {
             const name = document.getElementById('cName').value;
             const phone = document.getElementById('cPhone').value;
-            if(!name || !phone) return;
+            
+            if(!name || !phone) {
+                alert('Пожалуйста, заполните все поля');
+                return;
+            }
+
+            const btn = event.target;
+            const originalText = btn.innerText;
+            btn.innerText = 'ОТПРАВКА...';
+            btn.disabled = true;
 
             const msg = `👑 НОВЫЙ ЗАКАЗ!\n\n👤 Имя: ${name}\n📞 Тел: ${phone}\n💎 Номер: +7 ${activeItem.num}\n💰 Цена: ${activeItem.price} ₽`;
 
-            await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({chat_id: CHAT_ID, text: msg})
-            });
+            try {
+                await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({chat_id: CHAT_ID, text: msg} )
+                });
 
-            await db.ref('orders').push({ name, phone, item: activeItem.num, date: new Date().toLocaleString() });
+                await db.ref('orders').push({ 
+                    name, 
+                    phone, 
+                    item: activeItem.num, 
+                    price: activeItem.price,
+                    date: new Date().toLocaleString() 
+                });
 
-            closeModal();
+                closeModal();
+                showToast();
+                document.getElementById('cName').value = '';
+                document.getElementById('cPhone').value = '';
+            } catch (e) {
+                alert('Ошибка при отправке. Попробуйте позже.');
+            } finally {
+                btn.innerText = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        function showToast() {
             const t = document.getElementById('statusToast');
             t.style.display = 'block';
-            setTimeout(() => t.style.display = 'none', 4000);
+            setTimeout(() => {
+                t.classList.replace('animate__fadeInUp', 'animate__fadeOutDown');
+                setTimeout(() => {
+                    t.style.display = 'none';
+                    t.classList.replace('animate__fadeOutDown', 'animate__fadeInUp');
+                }, 1000);
+            }, 4000);
         }
 
         document.getElementById('search').oninput = (e) => {
-            const v = e.target.value.toLowerCase();
-            draw(numbers.filter(n => n.num.includes(v)));
+            const v = e.target.value.replace(/\D/g, '');
+            const filtered = numbers.filter(n => n.num.replace(/\D/g, '').includes(v));
+            draw(filtered);
         };
     </script>
 </body>
