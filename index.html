@@ -9,7 +9,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200;400;600;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200;400;600;800&display=swap' );
         
         :root {
             --gold: #d4af37;
@@ -19,340 +19,262 @@
         }
 
         body { 
-            background: linear-gradient(135deg, var(--bg) 0%, #0a0a0a 100%);
+            background-color: var(--bg); 
             color: #fff; 
             font-family: 'Manrope', sans-serif;
             overflow-x: hidden;
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* УЛУЧШЕННЫЙ ПРЕЛОАДЕР */
+        /* ПРЕЛОАДЕР (РЕГЕНЕРАЦИЯ) */
         #preloader {
             position: fixed; inset: 0; z-index: 9999;
-            background: radial-gradient(circle at center, #000 0%, var(--bg) 100%);
-            display: flex; flex-direction: column;
+            background: #000; display: flex; flex-direction: column;
             align-items: center; justify-content: center;
-            transition: opacity 1s ease, visibility 1s;
+            transition: opacity 0.8s ease, visibility 0.8s;
         }
 
         .loader-logo {
-            font-size: clamp(32px, 8vw, 48px); 
-            font-weight: 900; 
-            letter-spacing: -2px;
-            background: linear-gradient(135deg, #fff, var(--gold), #fff);
-            -webkit-background-clip: text; 
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 30px; 
-            animation: pulseGlow 2s infinite;
+            font-size: 40px; font-weight: 900; letter-spacing: -2px;
+            background: linear-gradient(135deg, #fff, #d4af37);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            margin-bottom: 20px; animation: pulse 2s infinite;
         }
 
         .loader-bar {
-            width: clamp(200px, 40vw, 300px); 
-            height: 3px; 
-            background: rgba(212, 175, 55, 0.1);
-            border-radius: 10px; 
-            overflow: hidden; 
-            position: relative;
-            box-shadow: 0 0 20px rgba(212, 175, 55, 0.1);
+            width: 200px; height: 2px; background: rgba(212, 175, 55, 0.1);
+            border-radius: 10px; overflow: hidden; position: relative;
         }
 
         .loader-progress {
             position: absolute; left: 0; top: 0; height: 100%;
-            width: 0%; 
-            background: linear-gradient(90deg, var(--gold), var(--gold-light));
-            box-shadow: 0 0 20px var(--gold);
-            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            border-radius: 10px;
+            width: 0%; background: var(--gold);
+            box-shadow: 0 0 15px var(--gold);
+            transition: width 0.4s ease;
         }
 
-        @keyframes pulseGlow {
-            0%, 100% { 
-                opacity: 1; 
-                transform: scale(1); 
-                filter: drop-shadow(0 0 10px var(--gold));
-            }
-            50% { 
-                opacity: 0.8; 
-                transform: scale(1.02); 
-                filter: drop-shadow(0 0 30px var(--gold));
-            }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.98); }
         }
 
-        /* УЛУЧШЕННЫЙ ДИЗАЙН */
+        /* ДИЗАЙН */
         .gold-text { 
             background: linear-gradient(135deg, var(--gold), var(--gold-light), var(--gold)); 
-            -webkit-background-clip: text; 
-            -webkit-text-fill-color: transparent;
-            background-size: 200% auto; 
-            animation: shine 4s linear infinite;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-size: 200% auto; animation: shine 4s linear infinite;
         }
 
         @keyframes shine { to { background-position: 200% center; } }
 
         .glass-card {
             background: var(--card-bg);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 32px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 28px;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            position: relative;
-            overflow: hidden;
         }
-
-        .glass-card::before {
-            content: '';
-            position: absolute;
-            top: 0; left: -100%;
-            width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-            transition: left 0.5s;
-        }
-
-        .glass-card:hover::before { left: 100%; }
 
         .glass-card:hover {
-            transform: translateY(-12px) scale(1.02);
-            border-color: rgba(212, 175, 55, 0.4);
-            box-shadow: 0 30px 60px rgba(0,0,0,0.5), 0 0 40px rgba(212, 175, 55, 0.2);
+            transform: translateY(-8px);
+            border-color: rgba(212, 175, 55, 0.3);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 20px rgba(212, 175, 55, 0.1);
         }
 
-        .btn-buy, .btn-regen {
-            background: linear-gradient(135deg, #fff, #f0f0f0);
-            color: #000;
-            padding: 12px 28px; 
-            border-radius: 20px;
-            font-weight: 800; 
-            font-size: 11px; 
-            text-transform: uppercase;
-            letter-spacing: 1px;
+        .btn-buy {
+            background: #fff; color: #000;
+            padding: 10px 24px; border-radius: 16px;
+            font-weight: 800; font-size: 12px; text-transform: uppercase;
             transition: all 0.3s ease;
-            border: none;
-            position: relative;
-            overflow: hidden;
         }
 
-        .btn-buy:hover, .btn-regen:hover { 
-            background: linear-gradient(135deg, var(--gold), var(--gold-light)); 
-            transform: scale(1.08) translateY(-2px);
-            color: #000;
-            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.4);
-        }
+        .btn-buy:hover { background: var(--gold); transform: scale(1.05); }
 
         /* МОДАЛКА */
         .modal-overlay {
-            display: none; 
-            position: fixed; 
-            inset: 0; 
-            z-index: 1000;
-            background: rgba(0,0,0,0.95); 
-            backdrop-filter: blur(30px);
-            align-items: center; 
-            justify-content: center; 
-            padding: 20px;
-            animation: modalFadeIn 0.3s ease;
-        }
-
-        @keyframes modalFadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            display: none; position: fixed; inset: 0; z-index: 1000;
+            background: rgba(0,0,0,0.9); backdrop-filter: blur(20px);
+            align-items: center; justify-content: center; padding: 20px;
         }
 
         input {
-            background: rgba(255,255,255,0.06); 
-            border: 1px solid rgba(255,255,255,0.15);
-            border-radius: 20px; 
-            padding: 18px 20px; 
-            width: 100%; 
-            color: #fff;
-            outline: none; 
-            transition: all 0.3s;
-            font-size: 16px;
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 18px; padding: 16px; width: 100%; color: #fff;
+            outline: none; transition: all 0.3s;
         }
 
-        input:focus { 
-            border-color: var(--gold); 
-            background: rgba(255,255,255,0.12); 
-            box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
-            transform: scale(1.02);
-        }
-
-        input::placeholder { color: rgba(255,255,255,0.4); }
+        input:focus { border-color: var(--gold); background: rgba(255,255,255,0.08); }
 
         #toast {
-            position: fixed; 
-            top: 30px; 
-            left: 50%; 
-            transform: translateX(-50%);
-            background: linear-gradient(135deg, var(--gold), var(--gold-light));
-            color: #000; 
-            padding: 18px 40px;
-            border-radius: 50px; 
-            font-weight: 800; 
-            z-index: 9999;
-            display: none; 
-            box-shadow: 0 15px 40px rgba(212, 175, 55, 0.4);
-            letter-spacing: 1px;
-        }
-
-        /* ПАНЕЛЬ РЕГЕНЕРАЦИИ */
-        .regen-panel {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, var(--gold), var(--gold-light));
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.4);
-            transition: all 0.3s ease;
-            z-index: 100;
-            font-size: 24px;
-        }
-
-        .regen-panel:hover {
-            transform: scale(1.1) rotate(180deg);
-            box-shadow: 0 20px 50px rgba(212, 175, 55, 0.6);
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 16px;
-            margin: 20px 0;
-        }
-
-        .stat-card {
-            background: rgba(255,255,255,0.03);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 20px;
-            padding: 20px;
-            text-align: center;
-            transition: all 0.3s;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--gold);
-            box-shadow: 0 15px 30px rgba(212, 175, 55, 0.1);
-        }
-
-        .stat-number {
-            font-size: 28px;
-            font-weight: 800;
-            color: var(--gold);
-            display: block;
+            position: fixed; top: 30px; left: 50%; transform: translateX(-50%);
+            background: var(--gold); color: #000; padding: 16px 30px;
+            border-radius: 50px; font-weight: 800; z-index: 9999;
+            display: none; box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
         }
     </style>
 </head>
 <body>
 
-    <!-- УЛУЧШЕННЫЙ ПРЕЛОАДЕР -->
+    <!-- ПРЕЛОАДЕР -->
     <div id="preloader">
         <div class="loader-logo">S-MARKET</div>
-        <div class="loader-bar">
-            <div class="loader-progress" id="progress"></div>
-        </div>
-        <p class="text-[11px] text-gray-500 mt-6 uppercase tracking-[4px] animate-pulse">Генерация премиум номеров...</p>
+        <div class="loader-bar"><div class="loader-progress" id="progress"></div></div>
+        <p class="text-[10px] text-gray-500 mt-4 uppercase tracking-[4px]">Инициализация системы...</p>
     </div>
 
-    <div id="toast" class="animate__animated">✅ ЗАКАЗ ПРИНЯТ! 👑</div>
+    <div id="toast" class="animate__animated">ЗАКАЗ ПРИНЯТ! 👑</div>
 
-    <!-- FAB КНОПКА РЕГЕНЕРАЦИИ -->
-    <div class="regen-panel" onclick="showRegenPanel()" title="Регенерация номеров">
-        🔄
-    </div>
-
-    <!-- ПАНЕЛЬ РЕГЕНЕРАЦИИ -->
-    <div id="regenPanel" class="fixed bottom-24 right-8 glass-card p-6 w-80 max-w-sm opacity-0 invisible translate-x-10 transition-all duration-300 z-[999]" style="display: none;">
-        <h3 class="text-xl font-black gold-text mb-4 flex items-center gap-2">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" class="w-6 h-6">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-            </svg>
-            Регенерация номеров
-        </h3>
-        
-        <div class="stats-grid mb-6">
-            <div class="stat-card">
-                <span class="stat-number" id="totalCount">0</span>
-                <span class="text-xs text-gray-500 uppercase tracking-wider">Всего</span>
-            </div>
-            <div class="stat-card">
-                <span class="stat-number text-green-500" id="availableCount">0</span>
-                <span class="text-xs text-gray-500 uppercase tracking-wider">Доступно</span>
-            </div>
-            <div class="stat-card">
-                <span class="stat-number text-red-500" id="soldCount">0</span>
-                <span class="text-xs text-gray-500 uppercase tracking-wider">Продано</span>
-            </div>
-        </div>
-
-        <div class="flex gap-3">
-            <button onclick="regenNumbers(10)" class="flex-1 btn-regen text-xs py-3">+10 номеров</button>
-            <button onclick="regenNumbers(50)" class="flex-1 btn-regen text-xs py-3">+50 номеров</button>
-        </div>
-        <button onclick="hideRegenPanel()" class="text-gray-500 text-xs mt-4 uppercase font-bold tracking-wider hover:text-white">Закрыть</button>
-    </div>
-
-    <!-- МОДАЛКА ЗАКАЗА -->
+    <!-- МОДАЛКА -->
     <div id="orderModal" class="modal-overlay">
-        <div class="glass-card p-10 w-full max-w-md text-center animate__animated animate__zoomIn">
-            <div class="w-16 h-16 bg-gradient-to-r from-gold/20 to-gold/10 rounded-3xl flex items-center justify-center mx-auto mb-8 border border-gold/20">
-                <svg class="w-8 h-8 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
-                </svg>
+        <div class="bg-[#111] border border-white/5 p-8 rounded-[40px] w-full max-w-sm text-center animate__animated animate__fadeInUp">
+            <div class="w-12 h-12 bg-gold/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg class="w-6 h-6 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
             </div>
-            <h2 class="text-3xl font-black gold-text mb-3">ОФОРМЛЕНИЕ ЗАКАЗА</h2>
-            <p id="orderInfo" class="text-gray-400 text-sm mb-10 uppercase tracking-wider font-medium"></p>
+            <h2 class="text-2xl font-black gold-text mb-2">ОФОРМЛЕНИЕ</h2>
+            <p id="orderInfo" class="text-gray-500 text-xs mb-8 uppercase tracking-widest"></p>
             
-            <div class="space-y-4 mb-8">
-                <input type="text" id="userName" placeholder="👤 Ваше Имя">
-                <input type="tel" id="userPhone" placeholder="📞 Телефон для связи">
-                <input type="text" id="userComment" placeholder="💬 Комментарий (необязательно)">
+            <div class="space-y-4">
+                <input type="text" id="userName" placeholder="Ваше Имя">
+                <input type="tel" id="userPhone" placeholder="Ваш Телефон">
             </div>
 
-            <button onclick="confirmOrder()" class="w-full btn-buy text-lg py-5 mb-4 shadow-2xl">ПОДТВЕРДИТЬ ЗАКАЗ 👑</button>
-            <button onclick="closeModal()" class="text-gray-500 text-sm uppercase font-bold tracking-wider hover:text-gold transition-all">Отмена</button>
+            <button onclick="confirmOrder()" class="w-full bg-white text-black py-4 rounded-2xl font-black mt-8 hover:bg-gold transition-all shadow-xl shadow-white/5">ПОДТВЕРДИТЬ</button>
+            <button onclick="closeModal()" class="text-gray-600 text-[10px] mt-6 uppercase font-bold tracking-widest hover:text-white">Закрыть</button>
         </div>
     </div>
 
     <header class="p-8">
-        <div class="flex justify-between items-center mb-12">
+        <div class="flex justify-between items-center mb-10">
             <div>
-                <h1 class="text-4xl md:text-5xl font-black gold-text italic tracking-tighter leading-none">S-MARKET</h1>
-                <p class="text-[10px] text-gray-500 font-bold uppercase tracking-[0.4em] mt-2">Elite Digital Assets • 24/7</p>
+                <h1 class="text-3xl font-black gold-text italic tracking-tighter leading-none">S-MARKET</h1>
+                <p class="text-[9px] text-gray-600 font-bold uppercase tracking-[0.3em] mt-1">Elite Digital Assets</p>
             </div>
-            <div class="bg-gradient-to-r from-green-500/20 to-green-600/20 px-5 py-3 rounded-2xl border border-green-500/30 flex items-center gap-3 backdrop-blur-sm">
-                <div class="w-2 h-2 bg-green-500 rounded-full animate-ping"></div>
-                <span class="text-[11px] font-black uppercase tracking-widest">Онлайн</span>
+            <div class="bg-white/5 px-4 py-2 rounded-full border border-white/10 flex items-center gap-2">
+                <div class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
+                <span class="text-[10px] font-black uppercase tracking-widest">Live</span>
             </div>
         </div>
 
-        <!-- УЛУЧШЕННЫЙ БАННЕР -->
-        <div class="relative overflow-hidden rounded-[40px] p-12 mb-12 bg-gradient-to-br from-[#1a1a1a] via-[#111] to-[#050505] border border-white/10 glass-card">
-            <div class="absolute inset-0 bg-gradient-to-r from-gold/5 via-transparent to-gold/5"></div>
+        <!-- БАННЕР -->
+        <div class="relative overflow-hidden rounded-[35px] p-10 mb-10 bg-gradient-to-br from-[#111] to-[#050505] border border-white/5">
             <div class="relative z-10">
-                <h2 id="bTitle" class="text-4xl md:text-5xl font-black mb-4 leading-tight gold-text">Загрузка...</h2>
-                <p id="bSub" class="text-gray-400 text-lg font-medium max-w-md"></p>
+                <h2 id="bTitle" class="text-3xl font-black mb-2 leading-tight">Загрузка...</h2>
+                <p id="bSub" class="text-gray-500 text-sm font-medium"></p>
             </div>
-            <div class="absolute -right-24 -bottom-24 w-80 h-80 bg-gold/3 rounded-full blur-[120px]"></div>
-            <div class="absolute -left-20 top-20 w-60 h-60 bg-purple-500/5 rounded-full blur-[80px]"></div>
+            <div class="absolute -right-20 -bottom-20 w-64 h-64 bg-gold/5 rounded-full blur-[100px]"></div>
         </div>
 
-        <div class="relative mb-8">
-            <input type="text" id="search" placeholder="🔍 Поиск эксклюзивного номера..." 
-                   class="pl-16 py-6 bg-white/8 border border-white/20 rounded-3xl text-lg w-full focus:border-gold focus:bg-white/12">
-            <svg class="absolute left-6 top-1/2 -translate-y-1/2 w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-            </svg>
+        <div class="relative">
+            <input type="text" id="search" placeholder="Поиск эксклюзивного номера..." class="pl-14 py-5 bg-white/5 border-none rounded-2xl text-sm">
+            <svg class="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
         </div>
     </header>
 
-    <main id="list" class="px-8 space-y-6 pb-32"></main>
+    <main id="list" class="px-8 space-y-6 pb-20"></main>
 
     <script>
-        const TG_TOKEN = '8624578892:AAEr7CLID8dkEM0zCPAoIOkn6anZff
+        const TG_TOKEN = '8624578892:AAEr7CLID8dkEM0zCPAoIOkn6anZff8w2pE';
+        const CHAT_ID = '8768514374';
+
+        firebase.initializeApp({
+            apiKey: "AIzaSyCRjRJkH4dPxvyYD-37emejFvK11g6hZ44",
+            databaseURL: "https://nnnmb-a0b52-default-rtdb.firebaseio.com"
+        } );
+        const db = firebase.database();
+
+        let numbers = [];
+        let selected = null;
+
+        // ПРЕЛОАДЕР ЛОГИКА
+        window.addEventListener('load', () => {
+            const progress = document.getElementById('progress');
+            let width = 0;
+            const interval = setInterval(() => {
+                width += Math.random() * 30;
+                if (width >= 100) {
+                    width = 100;
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        document.getElementById('preloader').style.opacity = '0';
+                        setTimeout(() => document.getElementById('preloader').style.visibility = 'hidden', 800);
+                    }, 500);
+                }
+                progress.style.width = width + '%';
+            }, 200);
+        });
+
+        // ДАННЫЕ
+        db.ref('settings/banner').on('value', s => {
+            const d = s.val() || { title: "S-MARKET LUXURY", sub: "Лучшие номера для лучших людей" };
+            document.getElementById('bTitle').innerText = d.title;
+            document.getElementById('bSub').innerText = d.sub;
+        });
+
+        db.ref('inventory').on('value', s => {
+            numbers = [];
+            s.forEach(c => { numbers.push(c.val()); });
+            render(numbers);
+        });
+
+        function render(data) {
+            const container = document.getElementById('list');
+            if(data.length === 0) {
+                container.innerHTML = `<div class="text-center py-20 text-gray-700 font-bold uppercase tracking-[0.3em]">Пусто</div>`;
+                return;
+            }
+            container.innerHTML = data.map((i, idx) => `
+                <div class="glass-card p-6 flex justify-between items-center animate__animated animate__fadeInUp" style="animation-delay: ${idx * 0.05}s">
+                    <div>
+                        <p class="text-[9px] text-gold font-black uppercase tracking-widest mb-1">${i.op}</p>
+                        <h3 class="text-2xl font-black tracking-tighter">+7 ${i.num}</h3>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-lg font-black mb-2">${Number(i.price).toLocaleString()} ₽</p>
+                        <button onclick="openOrder('${i.num}', '${i.price}')" class="btn-buy">Купить</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function openOrder(num, price) {
+            selected = { num, price };
+            document.getElementById('orderInfo').innerText = `+7 ${num} • ${price} ₽`;
+            document.getElementById('orderModal').style.display = 'flex';
+        }
+
+        function closeModal() { document.getElementById('orderModal').style.display = 'none'; }
+
+        async function confirmOrder() {
+            const name = document.getElementById('userName').value;
+            const phone = document.getElementById('userPhone').value;
+            if(!name || !phone) return alert('Заполните данные');
+
+            const msg = `👑 НОВЫЙ ЗАКАЗ!\n\n👤 Имя: ${name}\n📞 Тел: ${phone}\n💎 Номер: +7 ${selected.num}\n💰 Цена: ${selected.price} ₽`;
+
+            try {
+                await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({chat_id: CHAT_ID, text: msg} )
+                });
+                await db.ref('orders').push({ name, phone, item: selected.num, date: new Date().toLocaleString() });
+                
+                closeModal();
+                const t = document.getElementById('toast');
+                t.style.display = 'block';
+                t.classList.add('animate__fadeInDown');
+                setTimeout(() => {
+                    t.classList.replace('animate__fadeInDown', 'animate__fadeOutUp');
+                    setTimeout(() => { t.style.display = 'none'; t.classList.remove('animate__fadeOutUp'); }, 1000);
+                }, 3000);
+            } catch (e) { alert('Ошибка'); }
+        }
+
+        document.getElementById('search').oninput = (e) => {
+            const v = e.target.value.toLowerCase();
+            render(numbers.filter(n => n.num.includes(v)));
+        };
+    </script>
+</body>
+</html>
+                  
