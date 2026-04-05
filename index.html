@@ -1,9 +1,12 @@
+Вот обновлённый код с добавленной переливающейся анимированной рамкой для карточек номеров:
+
+```html
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>S-MARKET | LUXURY ELITE — Регистрация и Покупка</title>
+    <title>S-MARKET | LUXURY ELITE — Премиум номера</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
@@ -14,8 +17,15 @@
         :root {
             --gold: #d4af37;
             --gold-light: #f1d279;
+            --gold-dark: #b8921e;
             --bg: #050505;
             --card-bg: rgba(255, 255, 255, 0.03);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         body { 
@@ -24,6 +34,34 @@
             font-family: 'Manrope', sans-serif;
             overflow-x: hidden;
             -webkit-tap-highlight-color: transparent;
+            position: relative;
+        }
+
+        /* Динамический фон */
+        .dynamic-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            background: radial-gradient(ellipse at 30% 40%, #0a0a0f, #020202);
+        }
+        
+        .dynamic-bg::before {
+            content: '';
+            position: absolute;
+            width: 150%;
+            height: 150%;
+            top: -25%;
+            left: -25%;
+            background: radial-gradient(circle, rgba(212,175,55,0.06) 0%, rgba(0,0,0,0) 70%);
+            animation: rotateBg 40s linear infinite;
+        }
+        
+        @keyframes rotateBg {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         /* Прелоадер */
@@ -34,53 +72,139 @@
             transition: opacity 0.8s ease, visibility 0.8s;
         }
         .loader-logo {
-            font-size: 40px; font-weight: 900; letter-spacing: -2px;
+            font-size: 48px; font-weight: 900; letter-spacing: -2px;
             background: linear-gradient(135deg, #fff, #d4af37);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             margin-bottom: 20px; animation: pulse 2s infinite;
         }
         .loader-bar {
-            width: 200px; height: 2px; background: rgba(212, 175, 55, 0.1);
+            width: 220px; height: 2px; background: rgba(212, 175, 55, 0.2);
             border-radius: 10px; overflow: hidden; position: relative;
         }
         .loader-progress {
             position: absolute; left: 0; top: 0; height: 100%;
-            width: 0%; background: var(--gold);
+            width: 0%; background: linear-gradient(90deg, var(--gold), var(--gold-light));
             box-shadow: 0 0 15px var(--gold);
             transition: width 0.4s ease;
         }
         @keyframes pulse {
             0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(0.98); }
+            50% { opacity: 0.6; transform: scale(0.98); }
         }
 
-        /* Стили */
+        /* Золотой текст */
         .gold-text { 
-            background: linear-gradient(135deg, var(--gold), var(--gold-light), var(--gold)); 
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            background-size: 200% auto; animation: shine 4s linear infinite;
+            background: linear-gradient(135deg, var(--gold), var(--gold-light), var(--gold-dark), var(--gold)); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent;
+            background-size: 300% auto;
+            animation: shine 3s linear infinite;
         }
-        @keyframes shine { to { background-position: 200% center; } }
+        @keyframes shine { 
+            to { background-position: 300% center; } 
+        }
 
+        /* ========== ГЛАВНОЕ: ПЕРЕЛИВАЮЩАЯСЯ РАМКА ДЛЯ КАРТОЧЕК ========== */
         .glass-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+            background: rgba(10, 10, 15, 0.7);
+            backdrop-filter: blur(12px);
             border-radius: 28px;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            overflow: hidden;
         }
+        
+        /* Анимированная градиентная рамка */
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 28px;
+            padding: 2px;
+            background: linear-gradient(
+                90deg,
+                #d4af37,
+                #f3e5ab,
+                #b8921e,
+                #d4af37,
+                #ffd700,
+                #d4af37
+            );
+            background-size: 300% 100%;
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            animation: borderShine 3s linear infinite;
+            opacity: 0.6;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+        
+        /* Эффект при наведении — рамка становится ярче */
+        .glass-card:hover::before {
+            opacity: 1;
+            animation: borderShine 1.5s linear infinite;
+        }
+        
+        /* Внутренний контент с отступом, чтобы рамка не перекрывала */
+        .glass-card > div {
+            position: relative;
+            z-index: 2;
+        }
+        
+        /* Дополнительное свечение снаружи при наведении */
         .glass-card:hover {
-            transform: translateY(-8px);
-            border-color: rgba(212, 175, 55, 0.3);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 20px rgba(212, 175, 55, 0.1);
+            transform: translateY(-6px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5), 0 0 30px rgba(212, 175, 55, 0.3);
         }
+        
+        @keyframes borderShine {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+        
+        /* Альтернативный вариант рамки для карточек (дополнительный glow) */
+        .glass-card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 28px;
+            background: radial-gradient(circle at 30% 20%, rgba(212,175,55,0.08), transparent 70%);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+        
+        .glass-card:hover::after {
+            opacity: 1;
+        }
+
         .btn-buy {
-            background: #fff; color: #000;
-            padding: 10px 24px; border-radius: 16px;
-            font-weight: 800; font-size: 12px; text-transform: uppercase;
+            background: linear-gradient(135deg, #fff, #f0f0f0);
+            color: #000;
+            padding: 10px 28px;
+            border-radius: 40px;
+            font-weight: 800;
+            font-size: 12px;
+            text-transform: uppercase;
             transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            cursor: pointer;
+            border: none;
         }
-        .btn-buy:hover { background: var(--gold); transform: scale(1.05); }
+        .btn-buy:hover { 
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(212,175,55,0.5);
+        }
 
         /* Модалки */
         .modal-overlay {
@@ -88,30 +212,42 @@
             background: rgba(0,0,0,0.95); backdrop-filter: blur(20px);
             align-items: center; justify-content: center; padding: 20px;
         }
+        .modal-content {
+            background: rgba(12, 12, 18, 0.98);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 48px;
+            box-shadow: 0 30px 50px rgba(0,0,0,0.6);
+        }
         input {
-            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 18px; padding: 16px; width: 100%; color: #fff;
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 28px; padding: 16px 20px; width: 100%; color: #fff;
             outline: none; transition: all 0.3s;
         }
-        input:focus { border-color: var(--gold); background: rgba(255,255,255,0.08); }
+        input:focus { border-color: var(--gold); background: rgba(255,255,255,0.1); box-shadow: 0 0 12px rgba(212,175,55,0.2); }
+        
         #toast {
-            position: fixed; top: 30px; left: 50%; transform: translateX(-50%);
-            background: var(--gold); color: #000; padding: 16px 30px;
-            border-radius: 50px; font-weight: 800; z-index: 9999;
-            display: none; box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+            background: linear-gradient(135deg, #d4af37, #b8921e);
+            color: #000; padding: 14px 28px; border-radius: 60px;
+            font-weight: 800; z-index: 9999; display: none;
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.4);
+            white-space: nowrap;
         }
-        /* Профиль пользователя */
-        .user-profile-badge {
-            background: rgba(212, 175, 55, 0.15);
+        
+        /* Профиль */
+        .user-badge {
+            background: rgba(212, 175, 55, 0.12);
             border-radius: 60px;
-            padding: 8px 18px;
+            padding: 8px 20px;
             backdrop-filter: blur(4px);
-            border: 1px solid rgba(212, 175, 55, 0.3);
+            border: 1px solid rgba(212, 175, 55, 0.25);
             cursor: pointer;
             transition: all 0.2s;
         }
-        .user-profile-badge:hover {
-            background: rgba(212, 175, 55, 0.3);
+        .user-badge:hover {
+            background: rgba(212, 175, 55, 0.25);
+            border-color: #d4af37;
         }
         .tab-active {
             border-bottom: 2px solid var(--gold);
@@ -122,408 +258,356 @@
             padding-left: 12px;
             margin-bottom: 12px;
         }
+        
+        /* Поле поиска */
+        .search-input {
+            background: rgba(15, 15, 20, 0.8);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 60px;
+            transition: all 0.3s;
+        }
+        .search-input:focus {
+            border-color: #d4af37;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.15);
+        }
     </style>
 </head>
 <body>
 
-    <!-- ПРЕЛОАДЕР -->
-    <div id="preloader">
-        <div class="loader-logo">S-MARKET</div>
-        <div class="loader-bar"><div class="loader-progress" id="progress"></div></div>
-        <p class="text-[10px] text-gray-500 mt-4 uppercase tracking-[4px]">Загрузка элитной системы...</p>
+<div class="dynamic-bg"></div>
+
+<!-- ПРЕЛОАДЕР -->
+<div id="preloader">
+    <div class="loader-logo">✦ S-MARKET ✦</div>
+    <div class="loader-bar"><div class="loader-progress" id="progress"></div></div>
+    <p class="text-[10px] text-gray-500 mt-4 uppercase tracking-[4px]">LUXURY COLLECTION</p>
+</div>
+
+<div id="toast" class="animate__animated"></div>
+
+<!-- МОДАЛКА ОФОРМЛЕНИЯ ЗАКАЗА -->
+<div id="orderModal" class="modal-overlay">
+    <div class="modal-content p-7 w-full max-w-sm text-center animate__animated animate__fadeInUp">
+        <div class="w-14 h-14 bg-gold/10 rounded-full flex items-center justify-center mx-auto mb-5">
+            <svg class="w-7 h-7 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+        </div>
+        <h2 class="text-2xl font-black gold-text mb-1">ОФОРМЛЕНИЕ</h2>
+        <p id="orderInfo" class="text-gray-400 text-xs mb-6 tracking-wide"></p>
+        <div class="space-y-3">
+            <input type="text" id="userName" placeholder="Ваше имя">
+            <input type="tel" id="userPhone" placeholder="Телефон">
+        </div>
+        <button onclick="confirmOrder()" class="w-full bg-white text-black py-4 rounded-2xl font-extrabold mt-6 hover:bg-gold transition-all shadow-xl">ПОДТВЕРДИТЬ</button>
+        <button onclick="closeModal('orderModal')" class="text-gray-500 text-[10px] mt-5 uppercase tracking-widest hover:text-white">Отмена</button>
+    </div>
+</div>
+
+<!-- МОДАЛКА РЕГИСТРАЦИИ / ВХОДА -->
+<div id="authModal" class="modal-overlay">
+    <div class="modal-content p-7 w-full max-w-md animate__animated animate__zoomIn">
+        <div class="flex justify-between items-center mb-5">
+            <h2 class="text-2xl font-black gold-text">ДОБРО ПОЖАЛОВАТЬ</h2>
+            <button onclick="closeModal('authModal')" class="text-gray-400 text-2xl hover:text-white">&times;</button>
+        </div>
+        <div class="flex gap-5 mb-6 border-b border-white/10">
+            <button id="tabRegister" class="pb-2 px-1 font-bold text-sm uppercase tracking-wide tab-active">Регистрация</button>
+            <button id="tabLogin" class="pb-2 px-1 font-bold text-sm uppercase tracking-wide text-gray-400">Вход</button>
+        </div>
+        <div id="registerForm">
+            <input type="text" id="regName" placeholder="Имя и фамилия" class="mb-3">
+            <input type="email" id="regEmail" placeholder="Email" class="mb-3">
+            <input type="tel" id="regPhone" placeholder="Телефон" class="mb-3">
+            <input type="password" id="regPassword" placeholder="Пароль" class="mb-5">
+            <button onclick="registerUser()" class="w-full bg-gradient-to-r from-gold to-yellow-600 text-black py-4 rounded-2xl font-black">СОЗДАТЬ АККАУНТ</button>
+        </div>
+        <div id="loginForm" style="display: none;">
+            <input type="email" id="loginEmail" placeholder="Email" class="mb-3">
+            <input type="password" id="loginPassword" placeholder="Пароль" class="mb-5">
+            <button onclick="loginUser()" class="w-full bg-white/10 border border-white/20 text-white py-4 rounded-2xl font-black">ВОЙТИ</button>
+        </div>
+        <p class="text-[10px] text-center text-gray-500 mt-5">Эксклюзивный доступ к премиум номерам</p>
+    </div>
+</div>
+
+<!-- МОДАЛКА ЛИЧНОГО КАБИНЕТА -->
+<div id="profileModal" class="modal-overlay">
+    <div class="modal-content p-6 w-full max-w-md animate__animated animate__fadeInUp">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-xl font-black gold-text">👑 МОЙ ПРОФИЛЬ</h3>
+            <button onclick="closeModal('profileModal')" class="text-gray-400 text-2xl">&times;</button>
+        </div>
+        <div id="profileInfo" class="mb-5 space-y-2 text-sm">
+            <p class="text-gold font-bold">Имя: <span id="profileName" class="text-white">—</span></p>
+            <p>📧 <span id="profileEmail">—</span></p>
+            <p>📞 <span id="profilePhone">—</span></p>
+            <p class="text-gold text-[10px] mt-1">⭐ Премиум статус</p>
+        </div>
+        <div class="border-t border-white/10 pt-4">
+            <p class="font-bold text-sm mb-3">📜 ИСТОРИЯ ЗАКАЗОВ</p>
+            <div id="orderHistoryList" class="max-h-60 overflow-y-auto space-y-2 text-xs pr-1">
+                <div class="text-gray-500 italic">Загрузка...</div>
+            </div>
+        </div>
+        <button onclick="logoutUser()" class="w-full mt-5 bg-red-900/40 text-red-300 py-3 rounded-2xl text-sm font-bold hover:bg-red-800/50">ВЫЙТИ</button>
+    </div>
+</div>
+
+<!-- ШАПКА -->
+<header class="pt-6 px-5 md:px-8 relative z-10">
+    <div class="flex justify-between items-center">
+        <div class="flex items-center gap-2">
+            <div class="w-8 h-8 rounded-full bg-gold/20 flex items-center justify-center">
+                <span class="text-gold text-xl">✦</span>
+            </div>
+            <h1 class="text-2xl md:text-3xl font-black gold-text tracking-tighter">S-MARKET</h1>
+        </div>
+        <div class="flex gap-3 items-center">
+            <div id="authButton" onclick="openAuthModal()" class="user-badge flex items-center gap-2">
+                <svg class="w-4 h-4 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                <span id="authLabel" class="text-[11px] font-black uppercase tracking-wide">ВОЙТИ</span>
+            </div>
+            <div class="bg-white/5 px-3 py-1.5 rounded-full border border-white/10 flex items-center gap-1.5">
+                <div class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></div>
+                <span class="text-[9px] font-black uppercase tracking-wider">LIVE</span>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- ОСНОВНОЙ КОНТЕНТ -->
+<main class="px-5 md:px-8 pb-24 relative z-10">
+    <!-- БАННЕР -->
+    <div class="relative overflow-hidden rounded-3xl mt-6 mb-8 p-8 bg-gradient-to-br from-black/60 via-black/40 to-black/60 border border-gold/20 backdrop-blur-sm">
+        <div class="relative z-10">
+            <div class="text-[11px] text-gold font-bold mb-2 tracking-[0.2em]">✦ EXCLUSIVE</div>
+            <h2 id="bTitle" class="text-2xl md:text-3xl font-black mb-1 leading-tight gold-text">Загрузка...</h2>
+            <p id="bSub" class="text-gray-400 text-sm"></p>
+        </div>
+        <div class="absolute -right-16 -bottom-16 w-48 h-48 bg-gold/10 rounded-full blur-[80px]"></div>
     </div>
 
-    <div id="toast" class="animate__animated"></div>
-
-    <!-- МОДАЛКА ОФОРМЛЕНИЯ ЗАКАЗА -->
-    <div id="orderModal" class="modal-overlay">
-        <div class="bg-[#111] border border-white/5 p-8 rounded-[40px] w-full max-w-sm text-center animate__animated animate__fadeInUp">
-            <div class="w-12 h-12 bg-gold/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                <svg class="w-6 h-6 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
-            </div>
-            <h2 class="text-2xl font-black gold-text mb-2">ОФОРМЛЕНИЕ</h2>
-            <p id="orderInfo" class="text-gray-500 text-xs mb-8 uppercase tracking-widest"></p>
-            <div class="space-y-4">
-                <input type="text" id="userName" placeholder="Ваше Имя">
-                <input type="tel" id="userPhone" placeholder="Ваш Телефон">
-            </div>
-            <button onclick="confirmOrder()" class="w-full bg-white text-black py-4 rounded-2xl font-black mt-8 hover:bg-gold transition-all shadow-xl shadow-white/5">ПОДТВЕРДИТЬ</button>
-            <button onclick="closeModal('orderModal')" class="text-gray-600 text-[10px] mt-6 uppercase font-bold tracking-widest hover:text-white">Закрыть</button>
-        </div>
+    <!-- Поиск -->
+    <div class="relative mb-8">
+        <input type="text" id="search" placeholder="Поиск номера..." class="search-input w-full pl-14 py-4 pr-5 text-white placeholder:text-gray-500">
+        <svg class="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gold/70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
     </div>
 
-    <!-- МОДАЛКА РЕГИСТРАЦИИ / ВХОДА (НОВЫЙ КЛЮЧЕВОЙ БЛОК) -->
-    <div id="authModal" class="modal-overlay">
-        <div class="bg-[#0a0a0a] border border-white/10 p-8 rounded-[40px] w-full max-w-md animate__animated animate__zoomIn">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-2xl font-black gold-text" id="authTitle">РЕГИСТРАЦИЯ</h2>
-                <button onclick="closeModal('authModal')" class="text-gray-500 hover:text-white text-2xl">&times;</button>
-            </div>
-            <div class="flex gap-4 mb-6 border-b border-white/10">
-                <button id="tabRegister" class="pb-2 px-2 font-bold text-sm uppercase tracking-wide transition-colors tab-active">Регистрация</button>
-                <button id="tabLogin" class="pb-2 px-2 font-bold text-sm uppercase tracking-wide text-gray-400 transition-colors">Вход</button>
-            </div>
-            <!-- Форма регистрации -->
-            <div id="registerForm">
-                <input type="text" id="regName" placeholder="Имя и фамилия" class="mb-4">
-                <input type="email" id="regEmail" placeholder="Email" class="mb-4">
-                <input type="tel" id="regPhone" placeholder="Телефон" class="mb-4">
-                <input type="password" id="regPassword" placeholder="Пароль" class="mb-6">
-                <button onclick="registerUser()" class="w-full bg-gradient-to-r from-gold to-yellow-600 text-black py-4 rounded-2xl font-black tracking-wide hover:shadow-gold/30 shadow-lg transition-all">СОЗДАТЬ АККАУНТ</button>
-            </div>
-            <!-- Форма входа -->
-            <div id="loginForm" style="display: none;">
-                <input type="email" id="loginEmail" placeholder="Email" class="mb-4">
-                <input type="password" id="loginPassword" placeholder="Пароль" class="mb-6">
-                <button onclick="loginUser()" class="w-full bg-white/10 border border-white/20 text-white py-4 rounded-2xl font-black tracking-wide hover:bg-white/20 transition-all">ВОЙТИ</button>
-            </div>
-            <p class="text-[10px] text-center text-gray-500 mt-6">После регистрации вы сможете отслеживать заказы и получать персональные скидки</p>
-        </div>
-    </div>
+    <!-- Список товаров с переливающимися карточками -->
+    <div id="list" class="space-y-4"></div>
+</main>
 
-    <!-- МОДАЛКА ЛИЧНОГО КАБИНЕТА (история заказов) -->
-    <div id="profileModal" class="modal-overlay">
-        <div class="bg-[#0a0a0a] border border-white/10 p-6 rounded-[40px] w-full max-w-md animate__animated animate__fadeInUp">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-xl font-black gold-text">👤 МОЙ ПРОФИЛЬ</h3>
-                <button onclick="closeModal('profileModal')" class="text-gray-500 text-2xl">&times;</button>
-            </div>
-            <div id="profileInfo" class="mb-6 text-sm space-y-2">
-                <p class="text-gold font-bold">Имя: <span id="profileName">—</span></p>
-                <p>📧 <span id="profileEmail">—</span></p>
-                <p>📞 <span id="profilePhone">—</span></p>
-                <p class="text-gold text-xs mt-2">⭐ Статус: Премиум-клиент</p>
-            </div>
-            <div class="border-t border-white/10 pt-4">
-                <p class="font-bold text-sm mb-3">📜 ИСТОРИЯ ПОКУПОК</p>
-                <div id="orderHistoryList" class="max-h-64 overflow-y-auto text-xs space-y-2">
-                    <div class="text-gray-500 italic">Загрузка...</div>
-                </div>
-            </div>
-            <button onclick="logoutUser()" class="w-full mt-6 bg-red-900/40 text-red-400 py-3 rounded-2xl text-sm font-bold hover:bg-red-800/50 transition-all">ВЫЙТИ</button>
-        </div>
-    </div>
+<script>
+    const TG_TOKEN = '8624578892:AAEr7CLID8dkEM0zCPAoIOkn6anZff8w2pE';
+    const CHAT_ID = '8768514374';
 
-    <header class="p-5 md:p-8">
-        <div class="flex justify-between items-center mb-6 flex-wrap gap-3">
-            <div>
-                <h1 class="text-3xl font-black gold-text italic tracking-tighter leading-none">S-MARKET</h1>
-                <p class="text-[9px] text-gray-600 font-bold uppercase tracking-[0.3em] mt-1">Elite Digital Assets</p>
-            </div>
-            <div class="flex gap-3 items-center">
-                <!-- Кнопка входа/профиля -->
-                <div id="authButton" onclick="openAuthModal()" class="bg-white/5 px-5 py-2 rounded-full border border-white/10 flex items-center gap-2 cursor-pointer hover:border-gold/50 transition-all">
-                    <svg class="w-4 h-4 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                    <span id="authLabel" class="text-[10px] font-black uppercase tracking-widest">Вход / Рег</span>
-                </div>
-                <div class="bg-white/5 px-4 py-2 rounded-full border border-white/10 flex items-center gap-2">
-                    <div class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
-                    <span class="text-[10px] font-black uppercase tracking-widest">Live</span>
-                </div>
-            </div>
-        </div>
+    firebase.initializeApp({
+        apiKey: "AIzaSyCRjRJkH4dPxvyYD-37emejFvK11g6hZ44",
+        databaseURL: "https://nnnmb-a0b52-default-rtdb.firebaseio.com"
+    });
+    const db = firebase.database();
 
-        <!-- БАННЕР -->
-        <div class="relative overflow-hidden rounded-[35px] p-6 md:p-10 mb-8 bg-gradient-to-br from-[#111] to-[#050505] border border-white/5">
-            <div class="relative z-10">
-                <h2 id="bTitle" class="text-2xl md:text-3xl font-black mb-2 leading-tight">Загрузка...</h2>
-                <p id="bSub" class="text-gray-500 text-sm font-medium"></p>
-            </div>
-            <div class="absolute -right-20 -bottom-20 w-64 h-64 bg-gold/5 rounded-full blur-[100px]"></div>
-        </div>
+    let numbers = [];
+    let selected = null;
+    let currentUser = null;
 
-        <div class="relative">
-            <input type="text" id="search" placeholder="Поиск эксклюзивного номера..." class="pl-14 py-5 bg-white/5 border-none rounded-2xl text-sm w-full">
-            <svg class="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-        </div>
-    </header>
-
-    <main id="list" class="px-5 md:px-8 space-y-6 pb-20"></main>
-
-    <script>
-        const TG_TOKEN = '8624578892:AAEr7CLID8dkEM0zCPAoIOkn6anZff8w2pE';
-        const CHAT_ID = '8768514374';
-
-        // Firebase конфиг
-        firebase.initializeApp({
-            apiKey: "AIzaSyCRjRJkH4dPxvyYD-37emejFvK11g6hZ44",
-            databaseURL: "https://nnnmb-a0b52-default-rtdb.firebaseio.com"
-        });
-        const db = firebase.database();
-
-        let numbers = [];
-        let selected = null;
-        let currentUser = null;   // { email, name, phone, uid }
-
-        // --- СИСТЕМА РЕГИСТРАЦИИ / АВТОРИЗАЦИИ (используем localStorage + база users) ---
-        async function initAuthSystem() {
-            // Проверяем localStorage
-            const savedUser = localStorage.getItem('smarket_user');
-            if(savedUser) {
-                try {
-                    const userData = JSON.parse(savedUser);
-                    const snapshot = await db.ref(`users/${userData.uid}`).once('value');
-                    if(snapshot.exists()) {
-                        currentUser = snapshot.val();
-                        currentUser.uid = userData.uid;
-                        updateUIBasedOnAuth();
-                    } else {
-                        localStorage.removeItem('smarket_user');
-                    }
-                } catch(e) { localStorage.removeItem('smarket_user'); }
+    // Прелоадер
+    window.addEventListener('load', () => {
+        const progress = document.getElementById('progress');
+        let width = 0;
+        const interval = setInterval(() => {
+            width += Math.random() * 30;
+            if (width >= 100) {
+                width = 100;
+                clearInterval(interval);
+                setTimeout(() => {
+                    document.getElementById('preloader').style.opacity = '0';
+                    setTimeout(() => document.getElementById('preloader').style.display = 'none', 800);
+                }, 400);
             }
-            updateUIBasedOnAuth();
-        }
+            progress.style.width = width + '%';
+        }, 180);
+        initAuthSystem();
+    });
 
-        function updateUIBasedOnAuth() {
-            const authLabelSpan = document.getElementById('authLabel');
-            const authDiv = document.getElementById('authButton');
-            if(currentUser) {
-                authLabelSpan.innerText = `${currentUser.name.split(' ')[0]} ⚡`;
-                authDiv.setAttribute('onclick', 'openProfileModal()');
-            } else {
-                authLabelSpan.innerText = 'Вход / Рег';
-                authDiv.setAttribute('onclick', 'openAuthModal()');
-            }
-        }
-
-        async function registerUser() {
-            const name = document.getElementById('regName').value.trim();
-            const email = document.getElementById('regEmail').value.trim();
-            const phone = document.getElementById('regPhone').value.trim();
-            const password = document.getElementById('regPassword').value;
-            if(!name || !email || !phone || !password) {
-                showToast('Заполните все поля!', false);
-                return;
-            }
-            if(password.length < 4) { showToast('Пароль минимум 4 символа', false); return; }
-            // Генерация простого UID на основе email
-            const uid = btoa(email).replace(/[^a-zA-Z0-9]/g, '').slice(0, 20);
-            const userRef = db.ref(`users/${uid}`);
-            const snap = await userRef.once('value');
-            if(snap.exists()) {
-                showToast('Пользователь с таким email уже существует!', false);
-                return;
-            }
-            const userData = { name, email, phone, registeredAt: new Date().toISOString(), orders: [] };
-            await userRef.set(userData);
-            currentUser = { ...userData, uid };
-            localStorage.setItem('smarket_user', JSON.stringify({ uid, email }));
-            showToast(`Добро пожаловать, ${name}! 🎉`, true);
-            closeModal('authModal');
-            updateUIBasedOnAuth();
-        }
-
-        async function loginUser() {
-            const email = document.getElementById('loginEmail').value.trim();
-            const password = document.getElementById('loginPassword').value;
-            if(!email || !password) { showToast('Введите email и пароль', false); return; }
-            // Поиск пользователя по email
-            const usersSnapshot = await db.ref('users').orderByChild('email').equalTo(email).once('value');
-            let foundUser = null;
-            let foundUid = null;
-            usersSnapshot.forEach((snap) => {
-                foundUser = snap.val();
-                foundUid = snap.key;
-            });
-            if(!foundUser) {
-                showToast('Неверный email или пароль', false);
-                return;
-            }
-            // Простая проверка пароля (для демо храним пароль в отдельном поле? расширим)
-            // В реальном проекте нужно хэшировать, но здесь добавим поле password в базу при регистрации.
-            // Обновим регистрацию: добавим пароль.
-            const pwdCheck = await db.ref(`users/${foundUid}/password`).once('value');
-            if(pwdCheck.val() !== password) {
-                showToast('Неверный пароль', false);
-                return;
-            }
-            currentUser = { ...foundUser, uid: foundUid };
-            localStorage.setItem('smarket_user', JSON.stringify({ uid: foundUid, email }));
-            showToast(`С возвращением, ${currentUser.name}! ✨`, true);
-            closeModal('authModal');
-            updateUIBasedOnAuth();
-        }
-
-        // Модифицируем регистрацию, чтобы сохранялся пароль
-        const originalRegister = registerUser;
-        window.registerUser = async function() {
-            const name = document.getElementById('regName').value.trim();
-            const email = document.getElementById('regEmail').value.trim();
-            const phone = document.getElementById('regPhone').value.trim();
-            const password = document.getElementById('regPassword').value;
-            if(!name || !email || !phone || !password) {
-                showToast('Заполните все поля!', false);
-                return;
-            }
-            if(password.length < 4) { showToast('Пароль минимум 4 символа', false); return; }
-            const uid = btoa(email).replace(/[^a-zA-Z0-9]/g, '').slice(0, 20);
-            const userRef = db.ref(`users/${uid}`);
-            const snap = await userRef.once('value');
-            if(snap.exists()) {
-                showToast('Пользователь с таким email уже существует!', false);
-                return;
-            }
-            const userData = { name, email, phone, password: password, registeredAt: new Date().toISOString(), orders: [] };
-            await userRef.set(userData);
-            currentUser = { ...userData, uid };
-            localStorage.setItem('smarket_user', JSON.stringify({ uid, email }));
-            showToast(`Добро пожаловать, ${name}! 🎉`, true);
-            closeModal('authModal');
-            updateUIBasedOnAuth();
-        };
-
-        window.loginUser = async function() {
-            const email = document.getElementById('loginEmail').value.trim();
-            const password = document.getElementById('loginPassword').value;
-            if(!email || !password) { showToast('Введите email и пароль', false); return; }
-            const usersSnapshot = await db.ref('users').orderByChild('email').equalTo(email).once('value');
-            let foundUser = null;
-            let foundUid = null;
-            usersSnapshot.forEach((snap) => {
-                foundUser = snap.val();
-                foundUid = snap.key;
-            });
-            if(!foundUser) { showToast('Неверный email', false); return; }
-            if(foundUser.password !== password) { showToast('Неверный пароль', false); return; }
-            currentUser = { ...foundUser, uid: foundUid };
-            localStorage.setItem('smarket_user', JSON.stringify({ uid: foundUid, email }));
-            showToast(`С возвращением, ${currentUser.name}! ✨`, true);
-            closeModal('authModal');
-            updateUIBasedOnAuth();
-        };
-
-        function logoutUser() {
-            currentUser = null;
-            localStorage.removeItem('smarket_user');
-            closeModal('profileModal');
-            updateUIBasedOnAuth();
-            showToast('Вы вышли из аккаунта', true);
-        }
-
-        async function openProfileModal() {
-            if(!currentUser) { openAuthModal(); return; }
-            document.getElementById('profileName').innerText = currentUser.name;
-            document.getElementById('profileEmail').innerText = currentUser.email;
-            document.getElementById('profilePhone').innerText = currentUser.phone;
-            // загрузить историю заказов текущего пользователя из orders, связанных с email/phone
-            const ordersSnap = await db.ref('orders').orderByChild('clientEmail').equalTo(currentUser.email).once('value');
-            const historyDiv = document.getElementById('orderHistoryList');
-            if(!ordersSnap.exists()) {
-                historyDiv.innerHTML = '<div class="text-gray-500 italic">Пока нет покупок</div>';
-            } else {
-                let html = '';
-                ordersSnap.forEach(o => {
-                    const order = o.val();
-                    html += `<div class="history-item text-xs"><span class="text-gold">📅 ${order.date || 'недавно'}</span><br/>🎁 Номер: +7 ${order.item}<br/>💰 ${order.price} ₽</div>`;
-                });
-                historyDiv.innerHTML = html || '<div class="text-gray-500">Нет заказов</div>';
-            }
-            document.getElementById('profileModal').style.display = 'flex';
-        }
-
-        // --- Остальные функции (модалки, заказы) ---
-        function openAuthModal() {
-            document.getElementById('registerForm').style.display = 'block';
-            document.getElementById('loginForm').style.display = 'none';
-            document.getElementById('tabRegister').classList.add('tab-active');
-            document.getElementById('tabLogin').classList.remove('tab-active');
-            document.getElementById('authModal').style.display = 'flex';
-        }
-        // Переключение табов
-        document.getElementById('tabRegister')?.addEventListener('click', () => {
-            document.getElementById('registerForm').style.display = 'block';
-            document.getElementById('loginForm').style.display = 'none';
-            document.getElementById('tabRegister').classList.add('tab-active');
-            document.getElementById('tabLogin').classList.remove('tab-active');
-        });
-        document.getElementById('tabLogin')?.addEventListener('click', () => {
-            document.getElementById('registerForm').style.display = 'none';
-            document.getElementById('loginForm').style.display = 'block';
-            document.getElementById('tabLogin').classList.add('tab-active');
-            document.getElementById('tabRegister').classList.remove('tab-active');
-        });
-
-        function closeModal(modalId) {
-            document.getElementById(modalId).style.display = 'none';
-        }
-        function showToast(msg, isSuccess = true) {
-            const toast = document.getElementById('toast');
-            toast.innerText = msg;
-            toast.style.background = isSuccess ? '#d4af37' : '#aa2e2e';
-            toast.style.color = '#000';
-            toast.style.display = 'block';
-            toast.classList.add('animate__fadeInDown');
-            setTimeout(() => {
-                toast.classList.replace('animate__fadeInDown', 'animate__fadeOutUp');
-                setTimeout(() => { toast.style.display = 'none'; toast.classList.remove('animate__fadeOutUp'); }, 1000);
-            }, 3000);
-        }
-
-        // Preloader
-        window.addEventListener('load', () => {
-            const progress = document.getElementById('progress');
-            let width = 0;
-            const interval = setInterval(() => {
-                width += Math.random() * 30;
-                if (width >= 100) {
-                    width = 100;
-                    clearInterval(interval);
-                    setTimeout(() => {
-                        document.getElementById('preloader').style.opacity = '0';
-                        setTimeout(() => document.getElementById('preloader').style.visibility = 'hidden', 800);
-                    }, 500);
-                }
-                progress.style.width = width + '%';
-            }, 200);
-            initAuthSystem();
-        });
-
-        db.ref('settings/banner').on('value', s => {
-            const d = s.val() || { title: "S-MARKET LUXURY", sub: "Элитные номера для избранных" };
-            document.getElementById('bTitle').innerText = d.title;
-            document.getElementById('bSub').innerText = d.sub;
-        });
-        db.ref('inventory').on('value', s => {
-            numbers = [];
-            s.forEach(c => { numbers.push(c.val()); });
-            render(numbers);
-        });
-        function render(data) {
-            const container = document.getElementById('list');
-            if(data.length === 0) { container.innerHTML = `<div class="text-center py-20 text-gray-700 font-bold uppercase tracking-[0.3em]">Нет номеров</div>`; return; }
-            container.innerHTML = data.map((i, idx) => `
-                <div class="glass-card p-6 flex justify-between items-center animate__animated animate__fadeInUp" style="animation-delay: ${idx * 0.05}s">
-                    <div><p class="text-[9px] text-gold font-black uppercase tracking-widest mb-1">${i.op || 'ELITE'}</p><h3 class="text-2xl font-black tracking-tighter">+7 ${i.num}</h3></div>
-                    <div class="text-right"><p class="text-lg font-black mb-2">${Number(i.price).toLocaleString()} ₽</p><button onclick="openOrder('${i.num}', '${i.price}')" class="btn-buy">Купить</button></div>
-                </div>
-            `).join('');
-        }
-        function openOrder(num, price) {
-            if(!currentUser) { showToast('Сначала зарегистрируйтесь или войдите!', false); openAuthModal(); return; }
-            selected = { num, price };
-            document.getElementById('orderInfo').innerText = `+7 ${num} • ${price} ₽`;
-            document.getElementById('orderModal').style.display = 'flex';
-        }
-        async function confirmOrder() {
-            const name = document.getElementById('userName').value;
-            const phone = document.getElementById('userPhone').value;
-            if(!name || !phone) return showToast('Заполните имя и телефон', false);
-            const msg = `👑 НОВЫЙ ЗАКАЗ от ${currentUser?.email || name}!\n👤 Имя: ${name}\n📞 Тел: ${phone}\n💎 Номер: +7 ${selected.num}\n💰 Цена: ${selected.price} ₽`;
+    // АВТОРИЗАЦИЯ
+    async function initAuthSystem() {
+        const saved = localStorage.getItem('smarket_user');
+        if(saved) {
             try {
-                await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
-                    method: 'POST', headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({chat_id: CHAT_ID, text: msg})
-                });
-                await db.ref('orders').push({ name, phone, item: selected.num, price: selected.price, clientEmail: currentUser.email, date: new Date().toLocaleString() });
-                closeModal('orderModal');
-                showToast('Заказ оформлен! С вами свяжутся', true);
-                document.getElementById('userName').value = '';
-                document.getElementById('userPhone').value = '';
-            } catch(e) { showToast('Ошибка оформления', false); }
+                const data = JSON.parse(saved);
+                const snap = await db.ref(`users/${data.uid}`).once('value');
+                if(snap.exists()) {
+                    currentUser = snap.val();
+                    currentUser.uid = data.uid;
+                    updateUI();
+                } else localStorage.removeItem('smarket_user');
+            } catch(e) { localStorage.removeItem('smarket_user'); }
         }
-        document.getElementById('search').oninput = (e) => { const v = e.target.value.toLowerCase(); render(numbers.filter(n => n.num.includes(v))); };
-        window.openOrder = openOrder; window.confirmOrder = confirmOrder; window.closeModal = closeModal; window.openAuthModal = openAuthModal; window.openProfileModal = openProfileModal; window.logoutUser = logoutUser;
-    </script>
+        updateUI();
+    }
+
+    function updateUI() {
+        const label = document.getElementById('authLabel');
+        if(currentUser) {
+            label.innerText = currentUser.name.split(' ')[0] + ' ✦';
+            document.getElementById('authButton').setAttribute('onclick', 'openProfileModal()');
+        } else {
+            label.innerText = 'ВОЙТИ';
+            document.getElementById('authButton').setAttribute('onclick', 'openAuthModal()');
+        }
+    }
+
+    window.registerUser = async function() {
+        const name = document.getElementById('regName').value.trim();
+        const email = document.getElementById('regEmail').value.trim();
+        const phone = document.getElementById('regPhone').value.trim();
+        const pwd = document.getElementById('regPassword').value;
+        if(!name || !email || !phone || !pwd) return showToast('Заполните все поля!', false);
+        if(pwd.length < 4) return showToast('Пароль от 4 символов', false);
+        const uid = btoa(email).replace(/[^a-z0-9]/gi, '').slice(0, 22);
+        const check = await db.ref(`users/${uid}`).once('value');
+        if(check.exists()) return showToast('Email уже используется', false);
+        const userData = { name, email, phone, password: pwd, registeredAt: new Date().toISOString(), orders: [] };
+        await db.ref(`users/${uid}`).set(userData);
+        currentUser = { ...userData, uid };
+        localStorage.setItem('smarket_user', JSON.stringify({ uid, email }));
+        showToast(`✨ Добро пожаловать, ${name}!`, true);
+        closeModal('authModal');
+        updateUI();
+    };
+
+    window.loginUser = async function() {
+        const email = document.getElementById('loginEmail').value.trim();
+        const pwd = document.getElementById('loginPassword').value;
+        if(!email || !pwd) return showToast('Введите email и пароль', false);
+        const snapshot = await db.ref('users').orderByChild('email').equalTo(email).once('value');
+        let found = null, uid = null;
+        snapshot.forEach(snap => { found = snap.val(); uid = snap.key; });
+        if(!found || found.password !== pwd) return showToast('Неверный email или пароль', false);
+        currentUser = { ...found, uid };
+        localStorage.setItem('smarket_user', JSON.stringify({ uid, email }));
+        showToast(`С возвращением, ${found.name}!`, true);
+        closeModal('authModal');
+        updateUI();
+    };
+
+    window.logoutUser = function() {
+        currentUser = null;
+        localStorage.removeItem('smarket_user');
+        closeModal('profileModal');
+        updateUI();
+        showToast('Вы вышли из аккаунта', true);
+    };
+
+    window.openProfileModal = async function() {
+        if(!currentUser) { openAuthModal(); return; }
+        document.getElementById('profileName').innerText = currentUser.name;
+        document.getElementById('profileEmail').innerText = currentUser.email;
+        document.getElementById('profilePhone').innerText = currentUser.phone;
+        const ordersSnap = await db.ref('orders').orderByChild('clientEmail').equalTo(currentUser.email).once('value');
+        const histDiv = document.getElementById('orderHistoryList');
+        if(!ordersSnap.exists()) histDiv.innerHTML = '<div class="text-gray-400 italic">У вас пока нет покупок</div>';
+        else {
+            let html = '';
+            ordersSnap.forEach(o => {
+                const ord = o.val();
+                html += `<div class="history-item"><span class="text-gold text-[10px]">${ord.date || 'Новый заказ'}</span><br/>📱 +7 ${ord.item}<br/>💰 ${ord.price} ₽</div>`;
+            });
+            histDiv.innerHTML = html;
+        }
+        document.getElementById('profileModal').style.display = 'flex';
+    };
+
+    window.openAuthModal = () => {
+        document.getElementById('registerForm').style.display = 'block';
+        document.getElementById('loginForm').style.display = 'none';
+        document.getElementById('tabRegister').classList.add('tab-active');
+        document.getElementById('tabLogin').classList.remove('tab-active');
+        document.getElementById('authModal').style.display = 'flex';
+    };
+
+    document.getElementById('tabRegister')?.addEventListener('click', () => {
+        document.getElementById('registerForm').style.display = 'block';
+        document.getElementById('loginForm').style.display = 'none';
+        document.getElementById('tabRegister').classList.add('tab-active');
+        document.getElementById('tabLogin').classList.remove('tab-active');
+    });
+    document.getElementById('tabLogin')?.addEventListener('click', () => {
+        document.getElementById('registerForm').style.display = 'none';
+        document.getElementById('loginForm').style.display = 'block';
+        document.getElementById('tabLogin').classList.add('tab-active');
+        document.getElementById('tabRegister').classList.remove('tab-active');
+    });
+
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+    function showToast(msg, ok = true) {
+        const t = document.getElementById('toast');
+        t.innerText = msg;
+        t.style.background = ok ? 'linear-gradient(135deg, #d4af37, #b8921e)' : '#aa2e2e';
+        t.style.display = 'block';
+        setTimeout(() => { t.style.opacity = '0'; setTimeout(() => { t.style.display = 'none'; t.style.opacity = '1'; }, 400); }, 2700);
+    }
+
+    // Данные из Firebase
+    db.ref('settings/banner').on('value', s => {
+        const d = s.val() || { title: "Элитные номера", sub: "Только для избранных" };
+        document.getElementById('bTitle').innerText = d.title;
+        document.getElementById('bSub').innerText = d.sub;
+    });
+    db.ref('inventory').on('value', s => {
+        numbers = [];
+        s.forEach(c => numbers.push(c.val()));
+        render(numbers);
+    });
+
+    function render(data) {
+        const container = document.getElementById('list');
+        if(!data.length) { container.innerHTML = `<div class="text-center py-16 text-gray-500 text-sm">Нет доступных номеров</div>`; return; }
+        container.innerHTML = data.map((item, idx) => `
+            <div class="glass-card p-5 flex justify-between items-center animate__animated animate__fadeInUp" style="animation-delay: ${idx*0.05}s">
+                <div>
+                    <span class="text-[9px] text-gold font-black tracking-wider uppercase">${item.op || 'PREMIUM'}</span>
+                    <h3 class="text-xl md:text-2xl font-black tracking-tight mt-1">+7 ${item.num}</h3>
+                </div>
+                <div class="text-right">
+                    <p class="text-xl font-black gold-text">${Number(item.price).toLocaleString()} ₽</p>
+                    <button onclick="openOrder('${item.num}', '${item.price}')" class="btn-buy mt-2">КУПИТЬ</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    window.openOrder = function(num, price) {
+        if(!currentUser) { showToast('Сначала войдите в аккаунт', false); openAuthModal(); return; }
+        selected = { num, price };
+        document.getElementById('orderInfo').innerHTML = `+7 ${num} &nbsp;•&nbsp; ${Number(price).toLocaleString()} ₽`;
+        document.getElementById('orderModal').style.display = 'flex';
+    };
+
+    window.confirmOrder = async function() {
+        const name = document.getElementById('userName').value.trim();
+        const phone = document.getElementById('userPhone').value.trim();
+        if(!name || !phone) return showToast('Заполните имя и телефон', false);
+        const msg = `👑 НОВЫЙ ЗАКАЗ\nКлиент: ${currentUser.email}\nИмя: ${name}\nТел: ${phone}\nНомер: +7 ${selected.num}\nСумма: ${selected.price} ₽`;
+        await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
+            method: 'POST', headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({chat_id: CHAT_ID, text: msg})
+        });
+        await db.ref('orders').push({ name, phone, item: selected.num, price: selected.price, clientEmail: currentUser.email, date: new Date().toLocaleString() });
+        closeModal('orderModal');
+        showToast('Заказ оформлен! Свяжемся скоро', true);
+        document.getElementById('userName').value = '';
+        document.getElementById('userPhone').value = '';
+    };
+
+    document.getElementById('search').addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase();
+        render(numbers.filter(n => n.num.includes(query)));
+    });
+    
+    window.closeModal = closeModal;
+</script>
 </body>
 </html>
+```
