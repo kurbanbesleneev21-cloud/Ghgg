@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>S-MARKET | LUXURY ELITE — Премиум номера</title>
+    <title>S-MARKET | LUXURY ELITE</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
@@ -14,15 +14,8 @@
         :root {
             --gold: #d4af37;
             --gold-light: #f1d279;
-            --gold-dark: #b8921e;
             --bg: #050505;
             --card-bg: rgba(255, 255, 255, 0.03);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
         }
 
         body { 
@@ -30,387 +23,217 @@
             color: #fff; 
             font-family: 'Manrope', sans-serif;
             overflow-x: hidden;
-            -webkit-tap-highlight-color: transparent;
-            position: relative;
         }
 
-        /* Динамический фон */
-        .dynamic-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -2;
-            background: radial-gradient(ellipse at 30% 40%, #0a0a0f, #020202);
-        }
-        
-        .dynamic-bg::before {
-            content: '';
-            position: absolute;
-            width: 150%;
-            height: 150%;
-            top: -25%;
-            left: -25%;
-            background: radial-gradient(circle, rgba(212,175,55,0.06) 0%, rgba(0,0,0,0) 70%);
-            animation: rotateBg 40s linear infinite;
-        }
-        
-        @keyframes rotateBg {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Прелоадер */
-        #preloader {
-            position: fixed; inset: 0; z-index: 9999;
-            background: #000; display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
-            transition: opacity 0.8s ease, visibility 0.8s;
-        }
-        .loader-logo {
-            font-size: 48px; font-weight: 900; letter-spacing: -2px;
-            background: linear-gradient(135deg, #fff, #d4af37);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            margin-bottom: 20px; animation: pulse 2s infinite;
-        }
-        .loader-bar {
-            width: 220px; height: 2px; background: rgba(212, 175, 55, 0.2);
-            border-radius: 10px; overflow: hidden; position: relative;
-        }
-        .loader-progress {
-            position: absolute; left: 0; top: 0; height: 100%;
-            width: 0%; background: linear-gradient(90deg, var(--gold), var(--gold-light));
-            box-shadow: 0 0 15px var(--gold);
-            transition: width 0.4s ease;
-        }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.6; transform: scale(0.98); }
-        }
-
-        /* Золотой текст */
         .gold-text { 
-            background: linear-gradient(135deg, var(--gold), var(--gold-light), var(--gold-dark), var(--gold)); 
+            background: linear-gradient(135deg, var(--gold), var(--gold-light), var(--gold)); 
             -webkit-background-clip: text; 
             -webkit-text-fill-color: transparent;
-            background-size: 300% auto;
+            background-size: 200% auto;
             animation: shine 3s linear infinite;
         }
-        @keyframes shine { 
-            to { background-position: 300% center; } 
-        }
 
-        /* ========== ГЛАВНОЕ: ПЕРЕЛИВАЮЩАЯСЯ РАМКА ДЛЯ КАРТОЧЕК ========== */
+        @keyframes shine { to { background-position: 200% center; } }
+
         .glass-card {
-            position: relative;
-            background: rgba(10, 10, 15, 0.7);
-            backdrop-filter: blur(12px);
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
             border-radius: 28px;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            overflow: hidden;
+            transition: all 0.4s;
         }
-        
-        /* Анимированная градиентная рамка */
-        .glass-card::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: 28px;
-            padding: 2px;
-            background: linear-gradient(
-                90deg,
-                #d4af37,
-                #f3e5ab,
-                #b8921e,
-                #d4af37,
-                #ffd700,
-                #d4af37
-            );
-            background-size: 300% 100%;
-            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            -webkit-mask-composite: xor;
-            mask-composite: exclude;
-            animation: borderShine 3s linear infinite;
-            opacity: 0.6;
-            transition: opacity 0.3s ease;
-            pointer-events: none;
-        }
-        
-        /* Эффект при наведении — рамка становится ярче */
-        .glass-card:hover::before {
-            opacity: 1;
-            animation: borderShine 1.5s linear infinite;
-        }
-        
-        /* Внутренний контент с отступом, чтобы рамка не перекрывала */
-        .glass-card > div {
-            position: relative;
-            z-index: 2;
-        }
-        
-        /* Дополнительное свечение снаружи при наведении */
         .glass-card:hover {
             transform: translateY(-6px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5), 0 0 30px rgba(212, 175, 55, 0.3);
+            border-color: rgba(212, 175, 55, 0.3);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 20px rgba(212, 175, 55, 0.1);
         }
         
-        @keyframes borderShine {
-            0% {
-                background-position: 0% 50%;
-            }
-            50% {
-                background-position: 100% 50%;
-            }
-            100% {
-                background-position: 0% 50%;
-            }
-        }
-        
-        /* Альтернативный вариант рамки для карточек (дополнительный glow) */
-        .glass-card::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: 28px;
-            background: radial-gradient(circle at 30% 20%, rgba(212,175,55,0.08), transparent 70%);
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.4s;
-        }
-        
-        .glass-card:hover::after {
-            opacity: 1;
-        }
-
         .btn-buy {
-            background: linear-gradient(135deg, #fff, #f0f0f0);
-            color: #000;
-            padding: 10px 28px;
-            border-radius: 40px;
-            font-weight: 800;
-            font-size: 12px;
-            text-transform: uppercase;
+            background: #fff; color: #000;
+            padding: 10px 24px; border-radius: 16px;
+            font-weight: 800; font-size: 12px;
             transition: all 0.3s ease;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
             cursor: pointer;
-            border: none;
         }
-        .btn-buy:hover { 
-            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
-            transform: scale(1.05);
-            box-shadow: 0 0 20px rgba(212,175,55,0.5);
-        }
+        .btn-buy:hover { background: var(--gold); transform: scale(1.05); }
 
-        /* Модалки */
         .modal-overlay {
             display: none; position: fixed; inset: 0; z-index: 1000;
             background: rgba(0,0,0,0.95); backdrop-filter: blur(20px);
             align-items: center; justify-content: center; padding: 20px;
         }
-        .modal-content {
-            background: rgba(12, 12, 18, 0.98);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(212, 175, 55, 0.3);
-            border-radius: 48px;
-            box-shadow: 0 30px 50px rgba(0,0,0,0.6);
-        }
+        
         input {
-            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 28px; padding: 16px 20px; width: 100%; color: #fff;
-            outline: none; transition: all 0.3s;
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 18px; padding: 16px; width: 100%; color: #fff;
+            outline: none;
         }
-        input:focus { border-color: var(--gold); background: rgba(255,255,255,0.1); box-shadow: 0 0 12px rgba(212,175,55,0.2); }
+        input:focus { border-color: var(--gold); }
         
         #toast {
             position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
-            background: linear-gradient(135deg, #d4af37, #b8921e);
-            color: #000; padding: 14px 28px; border-radius: 60px;
-            font-weight: 800; z-index: 9999; display: none;
-            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.4);
-            white-space: nowrap;
+            background: var(--gold); color: #000; padding: 14px 28px;
+            border-radius: 50px; font-weight: 800; z-index: 9999;
+            display: none;
         }
         
-        /* Профиль */
         .user-badge {
-            background: rgba(212, 175, 55, 0.12);
+            background: rgba(212, 175, 55, 0.15);
             border-radius: 60px;
-            padding: 8px 20px;
-            backdrop-filter: blur(4px);
-            border: 1px solid rgba(212, 175, 55, 0.25);
+            padding: 8px 18px;
+            border: 1px solid rgba(212, 175, 55, 0.3);
             cursor: pointer;
-            transition: all 0.2s;
         }
-        .user-badge:hover {
-            background: rgba(212, 175, 55, 0.25);
-            border-color: #d4af37;
-        }
+        
         .tab-active {
             border-bottom: 2px solid var(--gold);
             color: var(--gold);
         }
-        .history-item {
-            border-left: 2px solid rgba(212,175,55,0.5);
-            padding-left: 12px;
-            margin-bottom: 12px;
-        }
         
-        /* Поле поиска */
         .search-input {
             background: rgba(15, 15, 20, 0.8);
-            backdrop-filter: blur(8px);
             border: 1px solid rgba(212, 175, 55, 0.2);
             border-radius: 60px;
-            transition: all 0.3s;
         }
         .search-input:focus {
             border-color: #d4af37;
-            box-shadow: 0 0 20px rgba(212, 175, 55, 0.15);
+        }
+        
+        /* Прелоадер */
+        #preloader {
+            position: fixed; inset: 0; z-index: 9999;
+            background: #000; display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            transition: opacity 0.8s;
+        }
+        .loader-logo {
+            font-size: 40px; font-weight: 900;
+            background: linear-gradient(135deg, #fff, #d4af37);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+        }
+        .loader-bar {
+            width: 200px; height: 2px; background: rgba(212, 175, 55, 0.2);
+            border-radius: 10px; overflow: hidden;
+        }
+        .loader-progress {
+            width: 0%; height: 100%;
+            background: var(--gold);
+            transition: width 0.4s;
         }
     </style>
 </head>
 <body>
 
-<div class="dynamic-bg"></div>
-
-<!-- ПРЕЛОАДЕР -->
 <div id="preloader">
-    <div class="loader-logo"> S-MARKET </div>
+    <div class="loader-logo">S-MARKET</div>
     <div class="loader-bar"><div class="loader-progress" id="progress"></div></div>
-    <p class="text-[10px] text-gray-500 mt-4 uppercase tracking-[4px]">LUXURY COLLECTION</p>
+    <p class="text-[10px] text-gray-500 mt-4">Загрузка...</p>
 </div>
 
-<div id="toast" class="animate__animated"></div>
+<div id="toast"></div>
 
-<!-- МОДАЛКА ОФОРМЛЕНИЯ ЗАКАЗА -->
+<!-- Модалка заказа -->
 <div id="orderModal" class="modal-overlay">
-    <div class="modal-content p-7 w-full max-w-sm text-center animate__animated animate__fadeInUp">
-        <div class="w-14 h-14 bg-gold/10 rounded-full flex items-center justify-center mx-auto mb-5">
-            <svg class="w-7 h-7 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+    <div class="bg-[#111] border border-white/5 p-8 rounded-[40px] w-full max-w-sm text-center">
+        <div class="w-12 h-12 bg-gold/10 rounded-full flex items-center justify-center mx-auto mb-6">
+            <svg class="w-6 h-6 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
         </div>
-        <h2 class="text-2xl font-black gold-text mb-1">ОФОРМЛЕНИЕ</h2>
-        <p id="orderInfo" class="text-gray-400 text-xs mb-6 tracking-wide"></p>
-        <div class="space-y-3">
-            <input type="text" id="userName" placeholder="Ваше имя">
-            <input type="tel" id="userPhone" placeholder="Телефон">
+        <h2 class="text-2xl font-black gold-text mb-2">ОФОРМЛЕНИЕ</h2>
+        <p id="orderInfo" class="text-gray-500 text-xs mb-8"></p>
+        <div class="space-y-4">
+            <input type="text" id="userName" placeholder="Ваше Имя">
+            <input type="tel" id="userPhone" placeholder="Ваш Телефон">
         </div>
-        <button onclick="confirmOrder()" class="w-full bg-white text-black py-4 rounded-2xl font-extrabold mt-6 hover:bg-gold transition-all shadow-xl">ПОДТВЕРДИТЬ</button>
-        <button onclick="closeModal('orderModal')" class="text-gray-500 text-[10px] mt-5 uppercase tracking-widest hover:text-white">Отмена</button>
+        <button onclick="confirmOrder()" class="w-full bg-white text-black py-4 rounded-2xl font-black mt-8">ПОДТВЕРДИТЬ</button>
+        <button onclick="closeModal('orderModal')" class="text-gray-600 text-[10px] mt-6">Закрыть</button>
     </div>
 </div>
 
-<!-- МОДАЛКА РЕГИСТРАЦИИ / ВХОДА -->
+<!-- Модалка регистрации -->
 <div id="authModal" class="modal-overlay">
-    <div class="modal-content p-7 w-full max-w-md animate__animated animate__zoomIn">
-        <div class="flex justify-between items-center mb-5">
-            <h2 class="text-2xl font-black gold-text">ДОБРО ПОЖАЛОВАТЬ</h2>
-            <button onclick="closeModal('authModal')" class="text-gray-400 text-2xl hover:text-white">&times;</button>
+    <div class="bg-[#0a0a0a] border border-white/10 p-8 rounded-[40px] w-full max-w-md">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-black gold-text">РЕГИСТРАЦИЯ</h2>
+            <button onclick="closeModal('authModal')" class="text-gray-500 text-2xl">&times;</button>
         </div>
-        <div class="flex gap-5 mb-6 border-b border-white/10">
-            <button id="tabRegister" class="pb-2 px-1 font-bold text-sm uppercase tracking-wide tab-active">Регистрация</button>
-            <button id="tabLogin" class="pb-2 px-1 font-bold text-sm uppercase tracking-wide text-gray-400">Вход</button>
+        <div class="flex gap-4 mb-6 border-b border-white/10">
+            <button id="tabRegister" class="pb-2 px-2 font-bold text-sm tab-active">Регистрация</button>
+            <button id="tabLogin" class="pb-2 px-2 font-bold text-sm text-gray-400">Вход</button>
         </div>
         <div id="registerForm">
-            <input type="text" id="regName" placeholder="Имя и фамилия" class="mb-3">
-            <input type="email" id="regEmail" placeholder="Email" class="mb-3">
-            <input type="tel" id="regPhone" placeholder="Телефон" class="mb-3">
-            <input type="password" id="regPassword" placeholder="Пароль" class="mb-5">
+            <input type="text" id="regName" placeholder="Имя" class="mb-4">
+            <input type="email" id="regEmail" placeholder="Email" class="mb-4">
+            <input type="tel" id="regPhone" placeholder="Телефон" class="mb-4">
+            <input type="password" id="regPassword" placeholder="Пароль" class="mb-6">
             <button onclick="registerUser()" class="w-full bg-gradient-to-r from-gold to-yellow-600 text-black py-4 rounded-2xl font-black">СОЗДАТЬ АККАУНТ</button>
         </div>
         <div id="loginForm" style="display: none;">
-            <input type="email" id="loginEmail" placeholder="Email" class="mb-3">
-            <input type="password" id="loginPassword" placeholder="Пароль" class="mb-5">
+            <input type="email" id="loginEmail" placeholder="Email" class="mb-4">
+            <input type="password" id="loginPassword" placeholder="Пароль" class="mb-6">
             <button onclick="loginUser()" class="w-full bg-white/10 border border-white/20 text-white py-4 rounded-2xl font-black">ВОЙТИ</button>
         </div>
-        <p class="text-[10px] text-center text-gray-500 mt-5">Эксклюзивный доступ к премиум номерам</p>
-    </div>
-</div>
-
-<!-- МОДАЛКА ЛИЧНОГО КАБИНЕТА -->
-<div id="profileModal" class="modal-overlay">
-    <div class="modal-content p-6 w-full max-w-md animate__animated animate__fadeInUp">
-        <div class="flex justify-between items-center mb-4">
-            <h3 class="text-xl font-black gold-text" МОЙ ПРОФИЛЬ</h3>
-            <button onclick="closeModal('profileModal')" class="text-gray-400 text-2xl">&times;</button>
-        </div>
-        <div id="profileInfo" class="mb-5 space-y-2 text-sm">
-            <p class="text-gold font-bold">Имя: <span id="profileName" class="text-white">—</span></p>
-            <p>📧 <span id="profileEmail">—</span></p>
-            <p>📞 <span id="profilePhone">—</span></p>
-            <p class="text-gold text-[10px] mt-1">⭐ Премиум статус</p>
-        </div>
-        <div class="border-t border-white/10 pt-4">
-            <p class="font-bold text-sm mb-3">📜 ИСТОРИЯ ЗАКАЗОВ</p>
-            <div id="orderHistoryList" class="max-h-60 overflow-y-auto space-y-2 text-xs pr-1">
-                <div class="text-gray-500 italic">Загрузка...</div>
-            </div>
-        </div>
-        <button onclick="logoutUser()" class="w-full mt-5 bg-red-900/40 text-red-300 py-3 rounded-2xl text-sm font-bold hover:bg-red-800/50">ВЫЙТИ</button>
     </div>
 </div>
 
 <!-- ШАПКА -->
-<header class="pt-6 px-5 md:px-8 relative z-10">
-    <div class="flex justify-between items-center">
-        <div class="flex items-center gap-2">
-            <div class="w-8 h-8 rounded-full bg-gold/20 flex items-center justify-center">
-                <span class="text-gold text-xl">✦</span>
-            </div>
-            <h1 class="text-2xl md:text-3xl font-black gold-text tracking-tighter">S-MARKET</h1>
+<header class="p-5 md:p-8">
+    <div class="flex justify-between items-center mb-6 flex-wrap gap-3">
+        <div>
+            <h1 class="text-3xl font-black gold-text italic">S-MARKET</h1>
+            <p class="text-[9px] text-gray-600 font-bold uppercase tracking-[0.3em] mt-1">Elite Digital Assets</p>
         </div>
         <div class="flex gap-3 items-center">
             <div id="authButton" onclick="openAuthModal()" class="user-badge flex items-center gap-2">
                 <svg class="w-4 h-4 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                <span id="authLabel" class="text-[11px] font-black uppercase tracking-wide">ВОЙТИ</span>
+                <span id="authLabel" class="text-[10px] font-black uppercase">Вход</span>
             </div>
-            <div class="bg-white/5 px-3 py-1.5 rounded-full border border-white/10 flex items-center gap-1.5">
-                <div class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></div>
-                <span class="text-[9px] font-black uppercase tracking-wider">LIVE</span>
+            <div class="bg-white/5 px-4 py-2 rounded-full border border-white/10 flex items-center gap-2">
+                <div class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
+                <span class="text-[10px] font-black uppercase">Live</span>
             </div>
         </div>
+    </div>
+
+    <!-- БАННЕР -->
+    <div class="relative overflow-hidden rounded-[35px] p-6 md:p-10 mb-8 bg-gradient-to-br from-[#111] to-[#050505] border border-white/5">
+        <h2 id="bTitle" class="text-2xl md:text-3xl font-black mb-2 gold-text">S-MARKET LUXURY</h2>
+        <p id="bSub" class="text-gray-500 text-sm">Элитные номера для избранных</p>
+    </div>
+
+    <!-- ПОИСК -->
+    <div class="relative">
+        <input type="text" id="search" placeholder="Поиск номера..." class="search-input w-full pl-14 py-5 bg-white/5 rounded-2xl">
+        <svg class="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
     </div>
 </header>
 
-<!-- ОСНОВНОЙ КОНТЕНТ -->
-<main class="px-5 md:px-8 pb-24 relative z-10">
-    <!-- БАННЕР -->
-    <div class="relative overflow-hidden rounded-3xl mt-6 mb-8 p-8 bg-gradient-to-br from-black/60 via-black/40 to-black/60 border border-gold/20 backdrop-blur-sm">
-        <div class="relative z-10">
-            <div class="text-[11px] text-gold font-bold mb-2 tracking-[0.2em]">✦ EXCLUSIVE</div>
-            <h2 id="bTitle" class="text-2xl md:text-3xl font-black mb-1 leading-tight gold-text">Загрузка...</h2>
-            <p id="bSub" class="text-gray-400 text-sm"></p>
-        </div>
-        <div class="absolute -right-16 -bottom-16 w-48 h-48 bg-gold/10 rounded-full blur-[80px]"></div>
-    </div>
-
-    <!-- Поиск -->
-    <div class="relative mb-8">
-        <input type="text" id="search" placeholder="Поиск номера..." class="search-input w-full pl-14 py-4 pr-5 text-white placeholder:text-gray-500">
-        <svg class="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gold/70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-    </div>
-
-    <!-- Список товаров с переливающимися карточками -->
-    <div id="list" class="space-y-4"></div>
-</main>
+<!-- СПИСОК НОМЕРОВ -->
+<main id="list" class="px-5 md:px-8 space-y-6 pb-20"></main>
 
 <script>
-    const TG_TOKEN = '8624578892:AAEr7CLID8dkEM0zCPAoIOkn6anZff8w2pE';
-    const CHAT_ID = '8768514374';
-
+    // Firebase
     firebase.initializeApp({
         apiKey: "AIzaSyCRjRJkH4dPxvyYD-37emejFvK11g6hZ44",
         databaseURL: "https://nnnmb-a0b52-default-rtdb.firebaseio.com"
     });
     const db = firebase.database();
-
+    
     let numbers = [];
     let selected = null;
     let currentUser = null;
-
+    
+    // ============ ТЕСТОВЫЕ НОМЕРА (НА ВСЯКИЙ СЛУЧАЙ) ============
+    const defaultNumbers = [
+        { num: "964-274-80-80", price: 800, op: "БИЛАЙН", category: "Золотой" },
+        { num: "999-999-43-40", price: 3000, op: "МЕГАФОН", category: "Платиновый" },
+        { num: "925-123-45-67", price: 1500, op: "МТС", category: "VIP" },
+        { num: "903-888-77-66", price: 2500, op: "TELE2", category: "Золотой" },
+        { num: "916-555-33-22", price: 5000, op: "МЕГАФОН", category: "VIP" }
+    ];
+    
     // Прелоадер
     window.addEventListener('load', () => {
-        const progress = document.getElementById('progress');
         let width = 0;
         const interval = setInterval(() => {
             width += Math.random() * 30;
@@ -419,15 +242,99 @@
                 clearInterval(interval);
                 setTimeout(() => {
                     document.getElementById('preloader').style.opacity = '0';
-                    setTimeout(() => document.getElementById('preloader').style.display = 'none', 800);
+                    setTimeout(() => document.getElementById('preloader').style.display = 'none', 500);
                 }, 400);
             }
-            progress.style.width = width + '%';
+            document.getElementById('progress').style.width = width + '%';
         }, 180);
         initAuthSystem();
     });
-
-    // АВТОРИЗАЦИЯ
+    
+    // ============ ЗАГРУЗКА НОМЕРОВ (С АВТО-ЗАПОЛНЕНИЕМ) ============
+    function loadNumbers() {
+        db.ref('inventory').once('value', (snapshot) => {
+            if(snapshot.exists()) {
+                // Если в Firebase есть номера — используем их
+                numbers = [];
+                snapshot.forEach(child => {
+                    numbers.push(child.val());
+                });
+                console.log('✅ Загружено номеров из Firebase:', numbers.length);
+            } else {
+                // Если в Firebase пусто — создаем тестовые номера
+                console.log('⚠️ В Firebase нет номеров, создаем тестовые...');
+                numbers = [...defaultNumbers];
+                
+                // Сохраняем тестовые номера в Firebase
+                numbers.forEach((item, index) => {
+                    db.ref('inventory').push({
+                        num: item.num,
+                        price: item.price,
+                        op: item.op,
+                        category: item.category,
+                        status: 'active'
+                    });
+                });
+                console.log('✅ Создано тестовых номеров:', numbers.length);
+            }
+            render(numbers);
+        }).catch(error => {
+            console.error('❌ Ошибка загрузки номеров:', error);
+            // При ошибке используем локальные номера
+            numbers = [...defaultNumbers];
+            render(numbers);
+        });
+    }
+    
+    // Реальное время — слушаем изменения
+    db.ref('inventory').on('child_added', (snapshot) => {
+        const newNumber = snapshot.val();
+        if(newNumber) {
+            numbers.push(newNumber);
+            render(numbers);
+        }
+    });
+    
+    db.ref('inventory').on('child_changed', () => {
+        db.ref('inventory').once('value', s => {
+            numbers = [];
+            s.forEach(c => numbers.push(c.val()));
+            render(numbers);
+        });
+    });
+    
+    db.ref('inventory').on('child_removed', () => {
+        db.ref('inventory').once('value', s => {
+            numbers = [];
+            s.forEach(c => numbers.push(c.val()));
+            render(numbers);
+        });
+    });
+    
+    function render(data) {
+        const container = document.getElementById('list');
+        if(!container) return;
+        
+        if(!data || data.length === 0) {
+            container.innerHTML = `<div class="text-center py-20 text-gray-500">📭 Нет доступных номеров</div>`;
+            return;
+        }
+        
+        container.innerHTML = data.map((item, idx) => `
+            <div class="glass-card p-5 flex justify-between items-center animate__animated animate__fadeInUp" style="animation-delay: ${idx * 0.05}s">
+                <div>
+                    <p class="text-[9px] text-gold font-black uppercase tracking-widest mb-1">${item.op || 'PREMIUM'}</p>
+                    <h3 class="text-xl md:text-2xl font-black tracking-tighter">+7 ${item.num}</h3>
+                </div>
+                <div class="text-right">
+                    <p class="text-lg font-black mb-2 gold-text">${Number(item.price).toLocaleString()} ₽</p>
+                    <button onclick="openOrder('${item.num}', '${item.price}')" class="btn-buy">Купить</button>
+                </div>
+            </div>
+        `).join('');
+    }
+    
+    // ============ АВТОРИЗАЦИЯ ============
     async function initAuthSystem() {
         const saved = localStorage.getItem('smarket_user');
         if(saved) {
@@ -438,92 +345,102 @@
                     currentUser = snap.val();
                     currentUser.uid = data.uid;
                     updateUI();
-                } else localStorage.removeItem('smarket_user');
-            } catch(e) { localStorage.removeItem('smarket_user'); }
+                }
+            } catch(e) {}
         }
         updateUI();
+        loadNumbers(); // Загружаем номера после авторизации
+        loadBanner();
     }
-
+    
     function updateUI() {
         const label = document.getElementById('authLabel');
         if(currentUser) {
-            label.innerText = currentUser.name.split(' ')[0] + ' ✦';
-            document.getElementById('authButton').setAttribute('onclick', 'openProfileModal()');
+            label.innerText = currentUser.name?.split(' ')[0] + ' ⚡';
         } else {
-            label.innerText = 'ВОЙТИ';
-            document.getElementById('authButton').setAttribute('onclick', 'openAuthModal()');
+            label.innerText = 'Вход';
         }
     }
-
+    
+    // ============ БАННЕР ============
+    function loadBanner() {
+        db.ref('settings/banner').on('value', s => {
+            const banner = s.val();
+            if(banner && banner.title) {
+                document.getElementById('bTitle').innerText = banner.title;
+                document.getElementById('bSub').innerText = banner.sub || 'Элитные номера';
+            } else {
+                document.getElementById('bTitle').innerText = 'S-MARKET LUXURY';
+                document.getElementById('bSub').innerText = 'Элитные номера для избранных';
+            }
+        });
+    }
+    
+    // ============ РЕГИСТРАЦИЯ ============
     window.registerUser = async function() {
         const name = document.getElementById('regName').value.trim();
         const email = document.getElementById('regEmail').value.trim();
         const phone = document.getElementById('regPhone').value.trim();
         const pwd = document.getElementById('regPassword').value;
-        if(!name || !email || !phone || !pwd) return showToast('Заполните все поля!', false);
-        if(pwd.length < 4) return showToast('Пароль от 4 символов', false);
+        
+        if(!name || !email || !phone || !pwd) {
+            showToast('Заполните все поля!', false);
+            return;
+        }
+        if(pwd.length < 4) {
+            showToast('Пароль минимум 4 символа', false);
+            return;
+        }
+        
         const uid = btoa(email).replace(/[^a-z0-9]/gi, '').slice(0, 22);
         const check = await db.ref(`users/${uid}`).once('value');
-        if(check.exists()) return showToast('Email уже используется', false);
-        const userData = { name, email, phone, password: pwd, registeredAt: new Date().toISOString(), orders: [] };
+        if(check.exists()) {
+            showToast('Email уже используется', false);
+            return;
+        }
+        
+        const userData = { name, email, phone, password: pwd, registeredAt: new Date().toLocaleString() };
         await db.ref(`users/${uid}`).set(userData);
         currentUser = { ...userData, uid };
         localStorage.setItem('smarket_user', JSON.stringify({ uid, email }));
-        showToast(`✨ Добро пожаловать, ${name}!`, true);
+        showToast(`Добро пожаловать, ${name}!`, true);
         closeModal('authModal');
         updateUI();
     };
-
+    
     window.loginUser = async function() {
         const email = document.getElementById('loginEmail').value.trim();
         const pwd = document.getElementById('loginPassword').value;
-        if(!email || !pwd) return showToast('Введите email и пароль', false);
+        if(!email || !pwd) {
+            showToast('Введите email и пароль', false);
+            return;
+        }
+        
         const snapshot = await db.ref('users').orderByChild('email').equalTo(email).once('value');
         let found = null, uid = null;
         snapshot.forEach(snap => { found = snap.val(); uid = snap.key; });
-        if(!found || found.password !== pwd) return showToast('Неверный email или пароль', false);
+        
+        if(!found || found.password !== pwd) {
+            showToast('Неверный email или пароль', false);
+            return;
+        }
+        
         currentUser = { ...found, uid };
         localStorage.setItem('smarket_user', JSON.stringify({ uid, email }));
         showToast(`С возвращением, ${found.name}!`, true);
         closeModal('authModal');
         updateUI();
     };
-
-    window.logoutUser = function() {
-        currentUser = null;
-        localStorage.removeItem('smarket_user');
-        closeModal('profileModal');
-        updateUI();
-        showToast('Вы вышли из аккаунта', true);
-    };
-
-    window.openProfileModal = async function() {
-        if(!currentUser) { openAuthModal(); return; }
-        document.getElementById('profileName').innerText = currentUser.name;
-        document.getElementById('profileEmail').innerText = currentUser.email;
-        document.getElementById('profilePhone').innerText = currentUser.phone;
-        const ordersSnap = await db.ref('orders').orderByChild('clientEmail').equalTo(currentUser.email).once('value');
-        const histDiv = document.getElementById('orderHistoryList');
-        if(!ordersSnap.exists()) histDiv.innerHTML = '<div class="text-gray-400 italic">У вас пока нет покупок</div>';
-        else {
-            let html = '';
-            ordersSnap.forEach(o => {
-                const ord = o.val();
-                html += `<div class="history-item"><span class="text-gold text-[10px]">${ord.date || 'Новый заказ'}</span><br/>📱 +7 ${ord.item}<br/>💰 ${ord.price} ₽</div>`;
-            });
-            histDiv.innerHTML = html;
-        }
-        document.getElementById('profileModal').style.display = 'flex';
-    };
-
-    window.openAuthModal = () => {
+    
+    window.openAuthModal = function() {
         document.getElementById('registerForm').style.display = 'block';
         document.getElementById('loginForm').style.display = 'none';
         document.getElementById('tabRegister').classList.add('tab-active');
         document.getElementById('tabLogin').classList.remove('tab-active');
         document.getElementById('authModal').style.display = 'flex';
     };
-
+    
+    // Переключение табов
     document.getElementById('tabRegister')?.addEventListener('click', () => {
         document.getElementById('registerForm').style.display = 'block';
         document.getElementById('loginForm').style.display = 'none';
@@ -536,75 +453,77 @@
         document.getElementById('tabLogin').classList.add('tab-active');
         document.getElementById('tabRegister').classList.remove('tab-active');
     });
-
-    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-    function showToast(msg, ok = true) {
-        const t = document.getElementById('toast');
-        t.innerText = msg;
-        t.style.background = ok ? 'linear-gradient(135deg, #d4af37, #b8921e)' : '#aa2e2e';
-        t.style.display = 'block';
-        setTimeout(() => { t.style.opacity = '0'; setTimeout(() => { t.style.display = 'none'; t.style.opacity = '1'; }, 400); }, 2700);
-    }
-
-    // Данные из Firebase
-    db.ref('settings/banner').on('value', s => {
-        const d = s.val() || { title: "Элитные номера", sub: "Только для избранных" };
-        document.getElementById('bTitle').innerText = d.title;
-        document.getElementById('bSub').innerText = d.sub;
-    });
-    db.ref('inventory').on('value', s => {
-        numbers = [];
-        s.forEach(c => numbers.push(c.val()));
-        render(numbers);
-    });
-
-    function render(data) {
-        const container = document.getElementById('list');
-        if(!data.length) { container.innerHTML = `<div class="text-center py-16 text-gray-500 text-sm">Нет доступных номеров</div>`; return; }
-        container.innerHTML = data.map((item, idx) => `
-            <div class="glass-card p-5 flex justify-between items-center animate__animated animate__fadeInUp" style="animation-delay: ${idx*0.05}s">
-                <div>
-                    <span class="text-[9px] text-gold font-black tracking-wider uppercase">${item.op || 'PREMIUM'}</span>
-                    <h3 class="text-xl md:text-2xl font-black tracking-tight mt-1">+7 ${item.num}</h3>
-                </div>
-                <div class="text-right">
-                    <p class="text-xl font-black gold-text">${Number(item.price).toLocaleString()} ₽</p>
-                    <button onclick="openOrder('${item.num}', '${item.price}')" class="btn-buy mt-2">КУПИТЬ</button>
-                </div>
-            </div>
-        `).join('');
-    }
-
+    
+    // ============ ЗАКАЗЫ ============
     window.openOrder = function(num, price) {
-        if(!currentUser) { showToast('Сначала войдите в аккаунт', false); openAuthModal(); return; }
+        if(!currentUser) {
+            showToast('Сначала войдите в аккаунт', false);
+            openAuthModal();
+            return;
+        }
         selected = { num, price };
-        document.getElementById('orderInfo').innerHTML = `+7 ${num} &nbsp;•&nbsp; ${Number(price).toLocaleString()} ₽`;
+        document.getElementById('orderInfo').innerHTML = `+7 ${num}<br>${Number(price).toLocaleString()} ₽`;
         document.getElementById('orderModal').style.display = 'flex';
     };
-
+    
     window.confirmOrder = async function() {
         const name = document.getElementById('userName').value.trim();
         const phone = document.getElementById('userPhone').value.trim();
-        if(!name || !phone) return showToast('Заполните имя и телефон', false);
-        const msg = `👑 НОВЫЙ ЗАКАЗ\nКлиент: ${currentUser.email}\nИмя: ${name}\nТел: ${phone}\nНомер: +7 ${selected.num}\nСумма: ${selected.price} ₽`;
-        await fetch(`https://api.telegram.org/bot${TG_TOKEN}/sendMessage`, {
-            method: 'POST', headers: {'Content-Type':'application/json'},
-            body: JSON.stringify({chat_id: CHAT_ID, text: msg})
-        });
-        await db.ref('orders').push({ name, phone, item: selected.num, price: selected.price, clientEmail: currentUser.email, date: new Date().toLocaleString() });
-        closeModal('orderModal');
-        showToast('Заказ оформлен! Свяжемся скоро', true);
-        document.getElementById('userName').value = '';
-        document.getElementById('userPhone').value = '';
+        if(!name || !phone) {
+            showToast('Заполните имя и телефон', false);
+            return;
+        }
+        
+        const msg = `🆕 НОВЫЙ ЗАКАЗ!\n👤 ${name}\n📞 ${phone}\n💎 +7 ${selected.num}\n💰 ${selected.price} ₽`;
+        
+        try {
+            await fetch(`https://api.telegram.org/bot8624578892:AAEr7CLID8dkEM0zCPAoIOkn6anZff8w2pE/sendMessage`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ chat_id: '8768514374', text: msg })
+            });
+            
+            await db.ref('orders').push({
+                name, phone, item: selected.num, price: selected.price,
+                clientEmail: currentUser.email, date: new Date().toLocaleString(), status: 'new'
+            });
+            
+            closeModal('orderModal');
+            showToast('✅ Заказ оформлен!', true);
+            document.getElementById('userName').value = '';
+            document.getElementById('userPhone').value = '';
+        } catch(e) {
+            showToast('❌ Ошибка оформления', false);
+        }
     };
-
+    
+    function closeModal(modalId) {
+        document.getElementById(modalId).style.display = 'none';
+    }
+    
+    function showToast(msg, isSuccess = true) {
+        const toast = document.getElementById('toast');
+        toast.innerText = msg;
+        toast.style.background = isSuccess ? '#d4af37' : '#dc2626';
+        toast.style.color = '#000';
+        toast.style.display = 'block';
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            setTimeout(() => {
+                toast.style.display = 'none';
+                toast.style.opacity = '1';
+            }, 400);
+        }, 2700);
+    }
+    
+    // Поиск
     document.getElementById('search').addEventListener('input', (e) => {
         const query = e.target.value.toLowerCase();
-        render(numbers.filter(n => n.num.includes(query)));
+        const filtered = numbers.filter(n => n.num?.toLowerCase().includes(query));
+        render(filtered);
     });
     
     window.closeModal = closeModal;
 </script>
 </body>
 </html>
-
