@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>ElectroMarket — Магазин электроники</title>
-    <!-- Google Fonts & simple reset -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <title>SimMarket — лучшая электроника за свою цену</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -14,650 +16,494 @@
         }
 
         body {
-            font-family: 'Inter', sans-serif;
-            background: #f4f6fa;
-            color: #1e293b;
-            line-height: 1.4;
+            font-family: 'Roboto', sans-serif;
+            background: #F8FAFC;
+            color: #0F172A;
         }
 
-        /* header */
+        h1, h2, h3, .logo, .nav-links a, .product-title {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* ===== Header ===== */
         .header {
-            background: #0f172a;
+            background: #0F172A;
             color: white;
-            padding: 1.5rem 2rem;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
             position: sticky;
             top: 0;
-            z-index: 10;
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
         }
-        .header h1 {
-            font-size: 1.9rem;
-            font-weight: 700;
-            letter-spacing: -0.5px;
+        .header-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            padding: 1rem 2rem;
+            gap: 1rem;
+            max-width: 1400px;
+            margin: 0 auto;
         }
-        .header p {
-            font-size: 0.95rem;
-            opacity: 0.8;
-            margin-top: 0.3rem;
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            letter-spacing: -1px;
         }
+        .logo span {
+            color: #3B82F6;
+        }
+        .search-bar {
+            flex: 1;
+            max-width: 400px;
+            display: flex;
+        }
+        .search-bar input {
+            width: 100%;
+            padding: 0.7rem 1rem;
+            border: none;
+            border-radius: 2rem 0 0 2rem;
+            outline: none;
+            font-size: 0.9rem;
+        }
+        .search-bar button {
+            background: #3B82F6;
+            border: none;
+            padding: 0.7rem 1.2rem;
+            border-radius: 0 2rem 2rem 0;
+            color: white;
+            cursor: pointer;
+        }
+        .header-icons {
+            display: flex;
+            gap: 1.5rem;
+        }
+        .header-icons i {
+            font-size: 1.3rem;
+            cursor: pointer;
+            transition: color 0.2s;
+            position: relative;
+        }
+        .header-icons i:hover {
+            color: #3B82F6;
+        }
+        .cart-count, .fav-count {
+            background: #F59E0B;
+            color: #0F172A;
+            font-size: 0.7rem;
+            border-radius: 50%;
+            padding: 0.1rem 0.4rem;
+            position: absolute;
+            top: -8px;
+            right: -12px;
+            font-weight: bold;
+        }
+        .categories {
+            background: #1E293B;
+            padding: 0.7rem 2rem;
+            display: flex;
+            gap: 1.8rem;
+            overflow-x: auto;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .categories a {
+            color: #CBD5E1;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+        .categories a:hover, .categories a.active {
+            color: #3B82F6;
+        }
+
+        /* ===== Container ===== */
         .container {
             max-width: 1400px;
-            margin: 2rem auto;
-            padding: 0 1.5rem;
+            margin: 0 auto;
+            padding: 1.5rem 2rem;
         }
 
-        /* карточки товаров — грид */
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-top: 1rem;
-        }
-
-        /* карточка товара */
-        .product-card {
-            background: white;
+        /* Banner */
+        .banner {
+            background: linear-gradient(135deg, #0F172A 0%, #1E3A5F 100%);
             border-radius: 1.5rem;
-            overflow: hidden;
-            transition: transform 0.25s ease, box-shadow 0.25s ease;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            color: white;
             display: flex;
-            flex-direction: column;
-        }
-        .product-card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 20px 30px -12px rgba(0,0,0,0.15);
-        }
-
-        /* блок с фото */
-        .product-img {
-            background: #f1f5f9;
-            display: flex;
+            justify-content: space-between;
             align-items: center;
-            justify-content: center;
-            padding: 2rem 1rem;
-            min-height: 240px;
-            border-bottom: 1px solid #e9eef3;
+            flex-wrap: wrap;
         }
-        .product-img img {
-            max-width: 100%;
-            max-height: 180px;
-            object-fit: contain;
-            transition: transform 0.2s;
-        }
-        .product-card:hover .product-img img {
-            transform: scale(1.02);
-        }
-
-        /* информация о товаре */
-        .product-info {
-            padding: 1.5rem;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-        .product-title {
-            font-size: 1.35rem;
-            font-weight: 700;
+        .banner h2 {
+            font-size: 2rem;
             margin-bottom: 0.5rem;
-            color: #0f172a;
         }
-        .product-price {
-            font-size: 1.6rem;
-            font-weight: 800;
-            color: #2563eb;
-            margin: 0.5rem 0;
+        .banner .discount {
+            color: #F59E0B;
+            font-size: 1.2rem;
         }
-        .price-old {
-            font-size: 0.9rem;
-            color: #94a3b8;
-            text-decoration: line-through;
-            margin-left: 0.5rem;
-            font-weight: 400;
-        }
-
-        /* характеристики — список */
-        .specs-list {
-            margin: 1rem 0 1.2rem;
-            list-style: none;
-        }
-        .specs-list li {
-            font-size: 0.85rem;
-            padding: 0.4rem 0;
-            border-bottom: 1px dashed #e2e8f0;
-            display: flex;
-            align-items: baseline;
-            gap: 0.5rem;
-        }
-        .specs-list li strong {
-            font-weight: 600;
-            min-width: 90px;
-            color: #334155;
-        }
-        .specs-list li span {
-            color: #475569;
-        }
-
-        .btn-buy {
-            background: #2563eb;
-            border: none;
-            color: white;
-            font-weight: 600;
-            padding: 0.8rem 0;
-            border-radius: 2rem;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: background 0.2s, transform 0.1s;
-            margin-top: auto;
-            font-family: inherit;
-            width: 100%;
-        }
-        .btn-buy:hover {
-            background: #1e40af;
-        }
-        .btn-buy:active {
-            transform: scale(0.97);
-        }
-
-        /* секция добавления нового товара (админ-панель) */
-        .admin-panel {
-            background: white;
-            border-radius: 1.5rem;
-            padding: 1.8rem;
-            margin-bottom: 2.5rem;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.03);
-            border: 1px solid #e2edff;
-        }
-        .admin-panel h2 {
-            font-size: 1.4rem;
-            margin-bottom: 1.2rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        .form-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            margin-bottom: 1.2rem;
-        }
-        .form-group {
-            flex: 1;
-            min-width: 180px;
-        }
-        .form-group label {
-            display: block;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            color: #475569;
-            margin-bottom: 0.3rem;
-        }
-        .form-group input, .form-group textarea {
-            width: 100%;
-            padding: 0.7rem 0.9rem;
-            border: 1px solid #cbd5e1;
-            border-radius: 1rem;
-            font-family: inherit;
-            font-size: 0.9rem;
-            transition: 0.2s;
-        }
-        .form-group input:focus, .form-group textarea:focus {
-            outline: none;
-            border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37,99,235,0.2);
-        }
-        .spec-group {
-            display: flex;
-            gap: 0.8rem;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-        .spec-item {
-            display: flex;
-            gap: 0.5rem;
-            align-items: center;
-            background: #f8fafc;
-            padding: 0.3rem 0.6rem;
-            border-radius: 2rem;
-        }
-        .btn-add-spec {
-            background: #eef2ff;
-            border: none;
-            padding: 0.4rem 1rem;
-            border-radius: 2rem;
-            font-weight: 500;
-            cursor: pointer;
-            font-size: 0.8rem;
-        }
-        .btn-submit {
-            background: #0f172a;
-            color: white;
+        .banner-btn {
+            background: #F59E0B;
             border: none;
             padding: 0.8rem 1.8rem;
             border-radius: 2rem;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 0.5rem;
-            transition: 0.2s;
-        }
-        .btn-submit:hover {
-            background: #1e293b;
-        }
-        .inline-help {
-            font-size: 0.75rem;
-            color: #64748b;
-            margin-top: 0.25rem;
-        }
-        hr {
-            margin: 1rem 0;
-            border: none;
-            border-top: 1px solid #e2e8f0;
-        }
-        .delete-btn {
-            background: #fee2e2;
-            color: #b91c1c;
-            border: none;
-            font-size: 0.7rem;
-            padding: 0.2rem 0.6rem;
-            border-radius: 1rem;
-            margin-left: 0.5rem;
+            font-weight: bold;
             cursor: pointer;
         }
-        .specs-preview {
-            font-size: 0.8rem;
-            background: #f1f5f9;
-            padding: 0.6rem;
-            border-radius: 1rem;
+
+        /* Section title */
+        .section-title {
+            font-size: 1.8rem;
+            margin: 2rem 0 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
         }
-        @media (max-width: 680px) {
-            .container {
-                padding: 0 1rem;
-            }
-            .product-title {
-                font-size: 1.2rem;
-            }
+
+        /* Product Grid */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 1.8rem;
         }
-        .empty-message {
-            text-align: center;
-            padding: 3rem;
+        .product-card {
             background: white;
-            border-radius: 2rem;
-            color: #64748b;
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+            position: relative;
         }
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.1);
+        }
+        .product-img {
+            background: #F1F5F9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1.5rem;
+            height: 200px;
+        }
+        .product-img img {
+            max-width: 100%;
+            max-height: 150px;
+            object-fit: contain;
+        }
+        .product-info {
+            padding: 1rem;
+        }
+        .product-title {
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+        .product-price {
+            font-weight: 800;
+            font-size: 1.3rem;
+            color: #3B82F6;
+        }
+        .old-price {
+            font-size: 0.8rem;
+            color: #94A3B8;
+            text-decoration: line-through;
+            margin-left: 0.5rem;
+        }
+        .product-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.8rem;
+        }
+        .btn-cart, .btn-fav {
+            flex: 1;
+            padding: 0.5rem;
+            border: none;
+            border-radius: 2rem;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .btn-cart {
+            background: #3B82F6;
+            color: white;
+        }
+        .btn-fav {
+            background: #F1F5F9;
+            color: #0F172A;
+        }
+        .btn-fav.active {
+            background: #FEE2E2;
+            color: #DC2626;
+        }
+        .badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: #F59E0B;
+            padding: 0.2rem 0.6rem;
+            border-radius: 2rem;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+
+        /* Filters Sidebar (для категорий) */
+        .category-layout {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+        .filters-sidebar {
+            width: 260px;
+            background: white;
+            padding: 1.2rem;
+            border-radius: 1rem;
+            height: fit-content;
+        }
+        .filter-group {
+            margin-bottom: 1.2rem;
+        }
+        .filter-group h4 {
+            margin-bottom: 0.5rem;
+        }
+        .filter-group input, .filter-group select {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #CBD5E1;
+            border-radius: 0.5rem;
+        }
+        .products-area {
+            flex: 1;
+        }
+
+        /* Modal (корзина/сравнение/избранное) */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: white;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            overflow-y: auto;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+        .cart-item, .compare-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid #E2E8F0;
+        }
+        .total {
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-top: 1rem;
+        }
+        .checkout-form input {
+            width: 100%;
+            padding: 0.7rem;
+            margin: 0.5rem 0;
+            border-radius: 0.5rem;
+            border: 1px solid #CBD5E1;
+        }
+
+        @media (max-width: 768px) {
+            .header-top { flex-direction: column; }
+            .search-bar { max-width: 100%; }
+            .filters-sidebar { width: 100%; }
+        }
+        button { cursor: pointer; }
+        .rating { color: #F59E0B; margin: 0.3rem 0; }
     </style>
 </head>
 <body>
 
 <div class="header">
-    <h1>⚡ ElectroMarket</h1>
-    <p>Современная электроника — гарантия качества и лучшие цены</p>
+    <div class="header-top">
+        <div class="logo">Sim<span>Market</span></div>
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Поиск смартфонов, наушников...">
+            <button id="searchBtn"><i class="fas fa-search"></i></button>
+        </div>
+        <div class="header-icons">
+            <i class="far fa-heart" id="favIconBtn"><span class="fav-count" id="favCount">0</span></i>
+            <i class="fas fa-balance-scale" id="compareIconBtn"></i>
+            <i class="fas fa-shopping-cart" id="cartIconBtn"><span class="cart-count" id="cartCount">0</span></i>
+        </div>
+    </div>
+    <div class="categories" id="categoriesNav">
+        <a href="#" data-cat="all" class="active">Все товары</a>
+        <a href="#" data-cat="Смартфоны">📱 Смартфоны</a>
+        <a href="#" data-cat="Наушники">🎧 Наушники</a>
+        <a href="#" data-cat="Зарядки">🔋 Зарядки и кабели</a>
+        <a href="#" data-cat="Power Bank">🔌 Power Bank</a>
+        <a href="#" data-cat="Гаджеты">⌚ Гаджеты</a>
+    </div>
 </div>
 
 <div class="container">
-    <!-- Админ панель: добавление товара с фото и характеристиками -->
-    <div class="admin-panel">
-        <h2>➕ Добавить товар (фото + характеристики)</h2>
-        <div class="form-row">
-            <div class="form-group">
-                <label>Название товара *</label>
-                <input type="text" id="prodName" placeholder="Например: iPhone 15 Pro" autocomplete="off">
-            </div>
-            <div class="form-group">
-                <label>Цена (₽) *</label>
-                <input type="number" id="prodPrice" placeholder="79990" autocomplete="off">
-            </div>
-            <div class="form-group">
-                <label>Старая цена (опционально)</label>
-                <input type="number" id="prodOldPrice" placeholder="89990" autocomplete="off">
-            </div>
+    <div class="banner">
+        <div>
+            <h2>Смартфоны 2026</h2>
+            <p class="discount">🔥 Скидка до 30% на топовые модели</p>
+            <p>Быстрая доставка • Гарантия • Проверка товара</p>
         </div>
-        <div class="form-row">
-            <div class="form-group">
-                <label>URL изображения (фото)</label>
-                <input type="text" id="prodImage" placeholder="https://example.com/phone.jpg или ссылка на фото" autocomplete="off">
-                <div class="inline-help">Вставьте прямую ссылку на фото товара (можно использовать бесплатные фотохостинги). Пример: https://picsum.photos/id/0/300/200</div>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label>📋 Характеристики (ключ: значение)</label>
-            <div id="specsContainer">
-                <!-- динамические поля характеристик -->
-                <div class="spec-group" id="specGroup0">
-                    <div class="spec-item">
-                        <input type="text" placeholder="Характеристика" class="spec-key" style="width:130px">
-                        <input type="text" placeholder="Значение" class="spec-value" style="width:150px">
-                        <button type="button" class="delete-spec" style="background:none; border:none; cursor:pointer; font-size:1.2rem;" title="Удалить">✖</button>
-                    </div>
-                </div>
-            </div>
-            <button type="button" id="addSpecBtn" class="btn-add-spec" style="margin-top:8px;">+ Добавить характеристику</button>
-            <div class="inline-help">Например: "Процессор", "A17 Pro" или "Экран", "6.1″ Super Retina"</div>
-        </div>
-
-        <button id="submitProductBtn" class="btn-submit">✨ Опубликовать товар</button>
-        <p class="inline-help" style="margin-top:12px;">* Товар добавится в каталог сразу с фото и списком характеристик. Можно редактировать любое количество товаров.</p>
+        <button class="banner-btn" id="bannerShopBtn">Купить сейчас →</button>
     </div>
 
-    <!-- Каталог товаров -->
-    <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap:wrap; margin-bottom: 1rem;">
-        <h2 style="font-weight: 600;">📱 Наши новинки</h2>
-        <button id="resetDemoBtn" style="background:#eef2ff; border:none; padding:0.4rem 1rem; border-radius:2rem; cursor:pointer; font-size:0.8rem;">Сбросить демо-товары</button>
-    </div>
-    <div id="productsContainer" class="products-grid">
-        <!-- Товары будут рендериться через JS -->
-        <div class="empty-message">Загрузка каталога...</div>
+    <div class="category-layout" id="mainLayout">
+        <div class="filters-sidebar">
+            <h3><i class="fas fa-filter"></i> Фильтры</h3>
+            <div class="filter-group">
+                <h4>Цена (₽)</h4>
+                <input type="number" id="minPrice" placeholder="от" value="0">
+                <input type="number" id="maxPrice" placeholder="до" value="200000">
+            </div>
+            <div class="filter-group">
+                <h4>Бренд</h4>
+                <select id="brandFilter">
+                    <option value="">Все бренды</option>
+                    <option>Xiaomi</option>
+                    <option>Samsung</option>
+                    <option>Apple</option>
+                    <option>Sony</option>
+                    <option>JBL</option>
+                    <option>Xiaomi</option>
+                </select>
+            </div>
+            <button id="applyFilters" style="background:#3B82F6; color:white; border:none; padding:0.5rem; width:100%; border-radius:2rem;">Применить</button>
+        </div>
+        <div class="products-area">
+            <div class="section-title">
+                <h2>Популярные товары</h2>
+                <span id="resultsCount"></span>
+            </div>
+            <div id="productsContainer" class="products-grid"></div>
+        </div>
     </div>
 </div>
 
+<!-- Модальные окна -->
+<div id="cartModal" class="modal"><div class="modal-content"><div class="modal-header"><h2>🛒 Корзина</h2><span class="close">&times;</span></div><div id="cartItems"></div><div id="cartTotal" class="total"></div><button id="checkoutBtn" style="background:#3B82F6; color:white; border:none; padding:0.8rem; width:100%; border-radius:2rem; margin-top:1rem;">Оформить заказ</button></div></div>
+<div id="favModal" class="modal"><div class="modal-content"><div class="modal-header"><h2>❤️ Избранное</h2><span class="close">&times;</span></div><div id="favItems"></div></div></div>
+<div id="compareModal" class="modal"><div class="modal-content"><div class="modal-header"><h2>⚖️ Сравнение товаров</h2><span class="close">&times;</span></div><div id="compareItems"></div></div></div>
+<div id="orderModal" class="modal"><div class="modal-content"><div class="modal-header"><h2>📦 Оформление заказа</h2><span class="close">&times;</span></div><form id="orderForm"><input type="text" placeholder="Имя" required id="orderName"><input type="tel" placeholder="Телефон" required id="orderPhone"><input type="text" placeholder="Адрес" required id="orderAddress"><select id="orderPayment"><option>Картой онлайн</option><option>Наличными при получении</option></select><button type="submit" style="background:#F59E0B; padding:0.8rem; border:none; border-radius:2rem; margin-top:1rem;">Подтвердить заказ</button></form></div></div>
+
 <script>
-    // ---------- Управление товарами ----------
-    // Сохраняем товары в localStorage, чтобы фото и характеристики не терялись
-    let products = [];
+    // ---------- ДАННЫЕ (имитация БД) ----------
+    let products = [
+        { id: 1, name: "Xiaomi Redmi Note 13", price: 18990, oldPrice: 24990, category: "Смартфоны", brand: "Xiaomi", image: "https://images.pexels.com/photos/404280/pexels-photo-404280.jpeg?w=200&h=150&fit=crop", rating: 4.5, specs: "6.67\", 8/256GB" },
+        { id: 2, name: "Apple iPhone 15", price: 79990, oldPrice: 89990, category: "Смартфоны", brand: "Apple", image: "https://images.pexels.com/photos/699122/pexels-photo-699122.jpeg?w=200&h=150&fit=crop", rating: 4.8 },
+        { id: 3, name: "Samsung Galaxy A54", price: 27990, oldPrice: null, category: "Смартфоны", brand: "Samsung", image: "https://images.pexels.com/photos/47261/pexels-photo-47261.jpeg?w=200&h=150&fit=crop", rating: 4.6 },
+        { id: 4, name: "JBL Tune 510BT", price: 3990, oldPrice: 5990, category: "Наушники", brand: "JBL", image: "https://images.pexels.com/photos/3394659/pexels-photo-3394659.jpeg?w=200&h=150&fit=crop", rating: 4.4 },
+        { id: 5, name: "Xiaomi Power Bank 20000mAh", price: 2490, oldPrice: null, category: "Power Bank", brand: "Xiaomi", image: "https://images.pexels.com/photos/40940/charger-power-bank-phone-charge-40940.jpeg?w=200&h=150&fit=crop", rating: 4.7 },
+        { id: 6, name: "Samsung Buds2 Pro", price: 11990, oldPrice: 14990, category: "Наушники", brand: "Samsung", image: "https://images.pexels.com/photos/3780681/pexels-photo-3780681.jpeg?w=200&h=150&fit=crop", rating: 4.9 },
+        { id: 7, name: "Зарядное устройство 65W GaN", price: 1890, oldPrice: 2990, category: "Зарядки", brand: "Xiaomi", image: "https://images.pexels.com/photos/40940/charger-power-bank-phone-charge-40940.jpeg?w=200&h=150&fit=crop", rating: 4.3 },
+        { id: 8, name: "Smart Watch Kieslect", price: 5490, oldPrice: 7990, category: "Гаджеты", brand: "Xiaomi", image: "https://images.pexels.com/photos/437037/pexels-photo-437037.jpeg?w=200&h=150&fit=crop", rating: 4.2 }
+    ];
 
-    // Функция сохранения в localStorage
-    function saveProductsToStorage() {
-        localStorage.setItem('electro_products', JSON.stringify(products));
+    let cart = JSON.parse(localStorage.getItem('sim_cart')) || [];
+    let favorites = JSON.parse(localStorage.getItem('sim_fav')) || [];
+    let compareList = JSON.parse(localStorage.getItem('sim_compare')) || [];
+
+    function saveData() {
+        localStorage.setItem('sim_cart', JSON.stringify(cart));
+        localStorage.setItem('sim_fav', JSON.stringify(favorites));
+        localStorage.setItem('sim_compare', JSON.stringify(compareList));
+        updateCounters();
     }
 
-    // Загрузка из localStorage или демо-набор
-    function loadProductsFromStorage() {
-        const stored = localStorage.getItem('electro_products');
-        if (stored) {
-            products = JSON.parse(stored);
-        } else {
-            // Демо-товары с фото и характеристиками (примеры для наглядности)
-            products = [
-                {
-                    id: Date.now() + 1,
-                    name: "Apple iPhone 15 Pro",
-                    price: 99990,
-                    oldPrice: 109990,
-                    imageUrl: "https://images.pexels.com/photos/699122/pexels-photo-699122.jpeg?auto=compress&cs=tinysrgb&w=300&h=200&fit=crop",
-                    specs: [
-                        { key: "Экран", value: "6.1″ Super Retina XDR" },
-                        { key: "Процессор", value: "A17 Pro" },
-                        { key: "Память", value: "256 ГБ" },
-                        { key: "Камера", value: "48 МП + 12 МП" }
-                    ]
-                },
-                {
-                    id: Date.now() + 2,
-                    name: "Samsung Galaxy S24 Ultra",
-                    price: 114990,
-                    oldPrice: null,
-                    imageUrl: "https://images.pexels.com/photos/404280/pexels-photo-404280.jpeg?auto=compress&cs=tinysrgb&w=300&h=200&fit=crop",
-                    specs: [
-                        { key: "Экран", value: "6.8″ Dynamic AMOLED 2X" },
-                        { key: "Процессор", value: "Snapdragon 8 Gen 3" },
-                        { key: "Память", value: "512 ГБ" },
-                        { key: "S Pen", value: "В комплекте" }
-                    ]
-                },
-                {
-                    id: Date.now() + 3,
-                    name: "MacBook Air M3",
-                    price: 139990,
-                    oldPrice: 159990,
-                    imageUrl: "https://images.pexels.com/photos/18105/pexels-photo.jpg?auto=compress&cs=tinysrgb&w=300&h=200&fit=crop",
-                    specs: [
-                        { key: "Чип", value: "Apple M3" },
-                        { key: "ОЗУ", value: "16 ГБ" },
-                        { key: "SSD", value: "512 ГБ" },
-                        { key: "Экран", value: "13.6″ Liquid Retina" }
-                    ]
-                }
-            ];
-            saveProductsToStorage();
-        }
-        renderProducts();
+    function updateCounters() {
+        document.getElementById('cartCount').innerText = cart.reduce((s, i) => s + i.qty, 0);
+        document.getElementById('favCount').innerText = favorites.length;
     }
 
-    // Рендер всех товаров в грид
-    function renderProducts() {
+    function renderProducts(filteredProducts) {
         const container = document.getElementById('productsContainer');
-        if (!products.length) {
-            container.innerHTML = `<div class="empty-message">📭 Пока нет товаров. Добавьте первый товар через форму выше с фото и характеристиками!</div>`;
-            return;
-        }
-
-        container.innerHTML = products.map(product => {
-            // Формируем список характеристик
-            let specsHtml = '';
-            if (product.specs && product.specs.length) {
-                specsHtml = `<ul class="specs-list">` + product.specs.map(spec => `
-                    <li><strong>${escapeHtml(spec.key)}:</strong> <span>${escapeHtml(spec.value)}</span></li>
-                `).join('') + `</ul>`;
-            } else {
-                specsHtml = `<div class="specs-list" style="color:#94a3b8; font-size:0.8rem; padding:0.4rem 0;">Характеристики не указаны</div>`;
-            }
-
-            const oldPriceHtml = product.oldPrice ? `<span class="price-old">${formatPrice(product.oldPrice)} ₽</span>` : '';
-            const imageSrc = product.imageUrl && product.imageUrl.trim() !== "" ? product.imageUrl : "https://placehold.co/400x300?text=No+Image&font=montserrat";
-
-            return `
-                <div class="product-card" data-id="${product.id}">
-                    <div class="product-img">
-                        <img src="${escapeHtml(imageSrc)}" alt="${escapeHtml(product.name)}" onerror="this.onerror=null; this.src='https://placehold.co/400x300?text=Фото+не+загружено'">
-                    </div>
-                    <div class="product-info">
-                        <div class="product-title">${escapeHtml(product.name)}</div>
-                        <div class="product-price">${formatPrice(product.price)} ₽ ${oldPriceHtml}</div>
-                        ${specsHtml}
-                        <button class="btn-buy" data-id="${product.id}">Купить сейчас</button>
+        document.getElementById('resultsCount').innerText = `Найдено: ${filteredProducts.length}`;
+        if(filteredProducts.length === 0) { container.innerHTML = '<div style="text-align:center">Товары не найдены</div>'; return; }
+        container.innerHTML = filteredProducts.map(p => `
+            <div class="product-card" data-id="${p.id}">
+                ${p.oldPrice ? '<div class="badge">Акция</div>' : ''}
+                <div class="product-img"><img src="${p.image}" onerror="this.src='https://placehold.co/200x150?text=No+Image'"></div>
+                <div class="product-info">
+                    <div class="product-title">${p.name}</div>
+                    <div class="rating">${'★'.repeat(Math.floor(p.rating))}${p.rating % 1 ? '½' : ''} (${p.rating})</div>
+                    <div class="product-price">${p.price.toLocaleString()} ₽ ${p.oldPrice ? `<span class="old-price">${p.oldPrice.toLocaleString()} ₽</span>` : ''}</div>
+                    <div class="product-actions">
+                        <button class="btn-cart" data-id="${p.id}"><i class="fas fa-cart-plus"></i> В корзину</button>
+                        <button class="btn-fav ${favorites.includes(p.id) ? 'active' : ''}" data-id="${p.id}"><i class="far fa-heart"></i></button>
                     </div>
                 </div>
-            `;
-        }).join('');
-
-        // Добавляем обработчики на кнопки "Купить"
-        document.querySelectorAll('.btn-buy').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const card = btn.closest('.product-card');
-                const id = parseInt(card.dataset.id);
-                const product = products.find(p => p.id === id);
-                if(product) {
-                    alert(`✅ Товар "${product.name}" добавлен в корзину (демо-режим).\nЦена: ${formatPrice(product.price)} ₽`);
-                } else {
-                    alert("Товар временно недоступен");
-                }
-            });
-        });
-    }
-
-    // вспомогательная функция экранирования
-    function escapeHtml(str) {
-        if (!str) return '';
-        return str.replace(/[&<>]/g, function(m) {
-            if(m === '&') return '&amp;';
-            if(m === '<') return '&lt;';
-            if(m === '>') return '&gt;';
-            return m;
-        }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
-            return c;
-        });
-    }
-
-    function formatPrice(price) {
-        return new Intl.NumberFormat('ru-RU').format(price);
-    }
-
-    // ----- Управление динамическими характеристиками в форме -----
-    let specCounter = 1; // для идентификации групп
-    const specsContainer = document.getElementById('specsContainer');
-
-    function addSpecRow() {
-        const groupDiv = document.createElement('div');
-        groupDiv.className = 'spec-group';
-        const idx = specCounter++;
-        groupDiv.id = `specGroup${idx}`;
-        groupDiv.innerHTML = `
-            <div class="spec-item">
-                <input type="text" placeholder="Характеристика" class="spec-key" style="width:130px">
-                <input type="text" placeholder="Значение" class="spec-value" style="width:150px">
-                <button type="button" class="delete-spec" style="background:none; border:none; cursor:pointer; font-size:1.2rem;" title="Удалить">✖</button>
             </div>
-        `;
-        specsContainer.appendChild(groupDiv);
-        attachDeleteEvent(groupDiv);
+        `).join('');
+        // обработчики
+        document.querySelectorAll('.btn-cart').forEach(btn => btn.addEventListener('click', (e) => { e.stopPropagation(); addToCart(parseInt(btn.dataset.id)); }));
+        document.querySelectorAll('.btn-fav').forEach(btn => btn.addEventListener('click', (e) => { e.stopPropagation(); toggleFav(parseInt(btn.dataset.id)); }));
+        document.querySelectorAll('.product-card').forEach(card => card.addEventListener('click', () => showProductModal(parseInt(card.dataset.id))));
     }
 
-    function attachDeleteEvent(groupElem) {
-        const delBtn = groupElem.querySelector('.delete-spec');
-        if(delBtn) {
-            delBtn.addEventListener('click', () => {
-                groupElem.remove();
-            });
-        }
+    function addToCart(id) { let item = cart.find(i => i.id === id); if(item) item.qty++; else cart.push({ id, qty:1 }); saveData(); renderProducts(getFilteredProducts()); alert('Товар добавлен в корзину'); }
+    function toggleFav(id) { if(favorites.includes(id)) favorites = favorites.filter(i => i !== id); else favorites.push(id); saveData(); renderProducts(getFilteredProducts()); }
+    function addToCompare(id) { if(!compareList.includes(id) && compareList.length < 4) compareList.push(id); else if(compareList.length>=4) alert('Можно сравнить не более 4 товаров'); saveData(); renderProducts(getFilteredProducts()); alert('Добавлено в сравнение'); }
+
+    function getFilteredProducts() {
+        let filtered = [...products];
+        let cat = document.querySelector('.categories a.active')?.dataset.cat;
+        if(cat && cat !== 'all') filtered = filtered.filter(p => p.category === cat);
+        let search = document.getElementById('searchInput').value.toLowerCase();
+        if(search) filtered = filtered.filter(p => p.name.toLowerCase().includes(search));
+        let min = parseInt(document.getElementById('minPrice').value) || 0;
+        let max = parseInt(document.getElementById('maxPrice').value) || 999999;
+        filtered = filtered.filter(p => p.price >= min && p.price <= max);
+        let brand = document.getElementById('brandFilter').value;
+        if(brand) filtered = filtered.filter(p => p.brand === brand);
+        return filtered;
     }
 
-    // Собираем характеристики из формы
-    function collectSpecsFromForm() {
-        const specGroups = document.querySelectorAll('#specsContainer .spec-group');
-        const specsArray = [];
-        for(let group of specGroups) {
-            const keyInput = group.querySelector('.spec-key');
-            const valueInput = group.querySelector('.spec-value');
-            if(keyInput && valueInput) {
-                const key = keyInput.value.trim();
-                const value = valueInput.value.trim();
-                if(key !== "" && value !== "") {
-                    specsArray.push({ key: key, value: value });
-                }
-            }
-        }
-        return specsArray;
+    function showProductModal(id) {
+        let p = products.find(pr => pr.id === id);
+        alert(`${p.name}\nЦена: ${p.price.toLocaleString()} ₽\nХарактеристики: ${p.specs || 'Нет данных'}\nРейтинг: ${p.rating}\n\n💡 Чтобы добавить отзыв, перейдите в корзину/избранное - демо-функционал`);
     }
 
-    // Очистить форму после добавления (оставляем одну пустую строку характеристик)
-    function resetForm() {
-        document.getElementById('prodName').value = '';
-        document.getElementById('prodPrice').value = '';
-        document.getElementById('prodOldPrice').value = '';
-        document.getElementById('prodImage').value = '';
-        // очищаем все группы характеристик, кроме одной пустой
-        const allGroups = document.querySelectorAll('#specsContainer .spec-group');
-        for(let i = 1; i < allGroups.length; i++) {
-            allGroups[i].remove();
-        }
-        // первую группу очищаем
-        const firstGroup = document.querySelector('#specsContainer .spec-group');
-        if(firstGroup) {
-            const keyInp = firstGroup.querySelector('.spec-key');
-            const valInp = firstGroup.querySelector('.spec-value');
-            if(keyInp) keyInp.value = '';
-            if(valInp) valInp.value = '';
-        }
-        specCounter = 1;
-        // обновим id первой группы на specGroup0, чтобы не было конфликтов
-        if(firstGroup) firstGroup.id = 'specGroup0';
-    }
+    // Modal functions
+    function openModal(modalId, contentFunc) { let modal = document.getElementById(modalId); modal.style.display = 'flex'; contentFunc(); modal.querySelector('.close').onclick = () => modal.style.display = 'none'; window.onclick = (e) => { if(e.target === modal) modal.style.display = 'none'; }; }
+    function showCart() { openModal('cartModal', () => { let itemsDiv = document.getElementById('cartItems'); if(cart.length===0) itemsDiv.innerHTML='<p>Корзина пуста</p>'; else itemsDiv.innerHTML = cart.map(item => { let p = products.find(pr => pr.id === item.id); return `<div class="cart-item"><span>${p.name} x${item.qty}</span><span>${(p.price*item.qty).toLocaleString()} ₽ <button class="remove-cart-item" data-id="${item.id}">❌</button></span></div>`; }).join(''); document.getElementById('cartTotal').innerHTML = `Итого: ${cart.reduce((s,i)=> s + (products.find(p=>p.id===i.id).price * i.qty),0).toLocaleString()} ₽`; document.querySelectorAll('.remove-cart-item').forEach(btn => btn.onclick = () => { cart = cart.filter(i => i.id !== parseInt(btn.dataset.id)); saveData(); showCart(); renderProducts(getFilteredProducts()); }); }); }
+    function showFav() { openModal('favModal', () => { let div = document.getElementById('favItems'); if(favorites.length===0) div.innerHTML='Нет избранных'; else div.innerHTML = favorites.map(id => { let p = products.find(pr => pr.id === id); return `<div>${p.name} - ${p.price.toLocaleString()} ₽ <button onclick="toggleFav(${p.id}); location.reload();">Удалить</button></div>`; }).join(''); }); }
+    function showCompare() { openModal('compareModal', () => { let div = document.getElementById('compareItems'); if(compareList.length===0) div.innerHTML='Нет товаров для сравнения'; else div.innerHTML = compareList.map(id => { let p = products.find(pr => pr.id === id); return `<div class="compare-item"><strong>${p.name}</strong><br>Цена: ${p.price} ₽<br>Рейтинг: ${p.rating}<br><button onclick="removeFromCompare(${id})">Убрать</button></div>`; }).join(''); }); }
+    function removeFromCompare(id) { compareList = compareList.filter(i => i !== id); saveData(); showCompare(); renderProducts(getFilteredProducts()); }
 
-    // Добавление нового товара
-    function addNewProduct() {
-        const name = document.getElementById('prodName').value.trim();
-        const priceRaw = document.getElementById('prodPrice').value.trim();
-        const oldPriceRaw = document.getElementById('prodOldPrice').value.trim();
-        const imageUrl = document.getElementById('prodImage').value.trim();
+    document.getElementById('cartIconBtn').onclick = showCart;
+    document.getElementById('favIconBtn').onclick = showFav;
+    document.getElementById('compareIconBtn').onclick = showCompare;
+    document.getElementById('applyFilters').onclick = () => renderProducts(getFilteredProducts());
+    document.getElementById('searchBtn').onclick = () => renderProducts(getFilteredProducts());
+    document.getElementById('searchInput').addEventListener('keyup', (e) => { if(e.key === 'Enter') renderProducts(getFilteredProducts()); });
+    document.querySelectorAll('#categoriesNav a').forEach(link => { link.onclick = (e) => { e.preventDefault(); document.querySelectorAll('#categoriesNav a').forEach(l => l.classList.remove('active')); link.classList.add('active'); renderProducts(getFilteredProducts()); }; });
+    document.getElementById('bannerShopBtn').onclick = () => { document.querySelector('#categoriesNav a[data-cat="Смартфоны"]').click(); };
+    document.getElementById('checkoutBtn').onclick = () => { if(cart.length===0){alert('Корзина пуста'); return;} openModal('orderModal', () => {}); };
+    document.getElementById('orderForm').onsubmit = (e) => { e.preventDefault(); alert(`Заказ оформлен! Спасибо, ${document.getElementById('orderName').value}. Наш менеджер свяжется с вами.`); cart = []; saveData(); renderProducts(getFilteredProducts()); document.getElementById('orderModal').style.display='none'; };
 
-        if(!name) {
-            alert("Пожалуйста, укажите название товара");
-            return;
-        }
-        if(!priceRaw || isNaN(parseFloat(priceRaw))) {
-            alert("Укажите корректную цену");
-            return;
-        }
-        const price = parseFloat(priceRaw);
-        const oldPrice = oldPriceRaw !== "" ? parseFloat(oldPriceRaw) : null;
-
-        const specs = collectSpecsFromForm();
-
-        const newProduct = {
-            id: Date.now(),
-            name: name,
-            price: price,
-            oldPrice: oldPrice,
-            imageUrl: imageUrl,
-            specs: specs
-        };
-
-        products.unshift(newProduct); // новый товар в начало каталога
-        saveProductsToStorage();
-        renderProducts();
-        resetForm();
-        alert(`✅ Товар "${name}" успешно добавлен с фото и ${specs.length} характеристиками!`);
-    }
-
-    // Сброс до начальных демо (удалить все кастомные и показать 3 примера)
-    function resetToDemo() {
-        if(confirm("Сбросить все товары и вернуть демонстрационные (iPhone, Samsung, MacBook)? Внимание: все добавленные вами товары будут удалены.")) {
-            products = [
-                {
-                    id: Date.now() + 101,
-                    name: "Apple iPhone 15 Pro",
-                    price: 99990,
-                    oldPrice: 109990,
-                    imageUrl: "https://images.pexels.com/photos/699122/pexels-photo-699122.jpeg?auto=compress&cs=tinysrgb&w=300&h=200&fit=crop",
-                    specs: [
-                        { key: "Экран", value: "6.1″ Super Retina XDR" },
-                        { key: "Процессор", value: "A17 Pro" },
-                        { key: "Память", value: "256 ГБ" },
-                        { key: "Камера", value: "48 МП + 12 МП" }
-                    ]
-                },
-                {
-                    id: Date.now() + 102,
-                    name: "Samsung Galaxy S24 Ultra",
-                    price: 114990,
-                    oldPrice: null,
-                    imageUrl: "https://images.pexels.com/photos/404280/pexels-photo-404280.jpeg?auto=compress&cs=tinysrgb&w=300&h=200&fit=crop",
-                    specs: [
-                        { key: "Экран", value: "6.8″ Dynamic AMOLED 2X" },
-                        { key: "Процессор", value: "Snapdragon 8 Gen 3" },
-                        { key: "Память", value: "512 ГБ" },
-                        { key: "S Pen", value: "В комплекте" }
-                    ]
-                },
-                {
-                    id: Date.now() + 103,
-                    name: "MacBook Air M3",
-                    price: 139990,
-                    oldPrice: 159990,
-                    imageUrl: "https://images.pexels.com/photos/18105/pexels-photo.jpg?auto=compress&cs=tinysrgb&w=300&h=200&fit=crop",
-                    specs: [
-                        { key: "Чип", value: "Apple M3" },
-                        { key: "ОЗУ", value: "16 ГБ" },
-                        { key: "SSD", value: "512 ГБ" },
-                        { key: "Экран", value: "13.6″ Liquid Retina" }
-                    ]
-                }
-            ];
-            saveProductsToStorage();
-            renderProducts();
-        }
-    }
-
-    // Прикрепляем обработчики
-    document.getElementById('submitProductBtn').addEventListener('click', addNewProduct);
-    document.getElementById('addSpecBtn').addEventListener('click', addSpecRow);
-    document.getElementById('resetDemoBtn').addEventListener('click', resetToDemo);
-    
-    // инициализация: удаляем возможные лишние события на удаление для первой строки
-    function initFirstSpecDelete() {
-        const firstGroup = document.querySelector('#specsContainer .spec-group');
-        if(firstGroup) attachDeleteEvent(firstGroup);
-    }
-
-    // Старт
-    loadProductsFromStorage();
-    initFirstSpecDelete();
-    // Если в форме нет ни одной группы (страховка)
-    if(document.querySelectorAll('#specsContainer .spec-group').length === 0) {
-        addSpecRow();
-        initFirstSpecDelete();
-    }
+    // Инициализация
+    renderProducts(products);
+    updateCounters();
 </script>
 </body>
 </html>
