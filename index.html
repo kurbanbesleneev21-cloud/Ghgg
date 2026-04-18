@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
     <meta name="theme-color" content="#0F172A">
-    <title>SimMarket — премиальная электроника</title>
+    <title>SimMarket — интернет-магазин электроники</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
@@ -23,11 +23,6 @@
             padding-bottom: 70px;
         }
 
-        /* Smooth scroll */
-        html {
-            scroll-behavior: smooth;
-        }
-
         /* Bottom Navigation */
         .bottom-nav {
             position: fixed;
@@ -38,35 +33,23 @@
             backdrop-filter: blur(10px);
             display: flex;
             justify-content: space-around;
-            padding: 12px 20px 20px;
+            padding: 10px 20px 20px;
             border-top: 1px solid #E2E8F0;
             z-index: 100;
-            box-shadow: 0 -4px 20px rgba(0,0,0,0.05);
         }
         .nav-item {
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 4px;
-            font-size: 12px;
+            font-size: 11px;
             color: #64748B;
-            transition: all 0.2s;
             cursor: pointer;
             background: none;
             border: none;
-            font-family: inherit;
         }
-        .nav-item i {
-            font-size: 22px;
-        }
-        .nav-item.active {
-            color: #3B82F6;
-            transform: translateY(-2px);
-        }
-        .nav-item span {
-            font-size: 11px;
-            font-weight: 500;
-        }
+        .nav-item i { font-size: 22px; }
+        .nav-item.active { color: #3B82F6; }
 
         /* Header */
         .header {
@@ -82,12 +65,7 @@
             justify-content: space-between;
             gap: 12px;
         }
-        .logo {
-            font-size: 22px;
-            font-weight: 800;
-            color: white;
-            white-space: nowrap;
-        }
+        .logo { font-size: 22px; font-weight: 800; color: white; }
         .logo span { color: #3B82F6; }
         .search-wrapper {
             flex: 1;
@@ -135,13 +113,12 @@
             text-align: center;
         }
 
-        /* Categories Scroll */
+        /* Categories */
         .categories-wrapper {
             overflow-x: auto;
             padding: 12px 16px;
             background: white;
             border-bottom: 1px solid #E2E8F0;
-            -webkit-overflow-scrolling: touch;
         }
         .categories {
             display: flex;
@@ -155,12 +132,8 @@
             font-size: 14px;
             font-weight: 500;
             white-space: nowrap;
-            transition: all 0.2s;
         }
-        .cat-btn.active {
-            background: #3B82F6;
-            color: white;
-        }
+        .cat-btn.active { background: #3B82F6; color: white; }
 
         /* Banner */
         .banner {
@@ -171,7 +144,7 @@
             color: white;
         }
         .banner h2 { font-size: 22px; margin-bottom: 8px; }
-        .banner .discount { color: #F59E0B; font-weight: 600; margin-bottom: 8px; }
+        .banner .discount { color: #F59E0B; font-weight: 600; }
         .banner-btn {
             background: #F59E0B;
             border: none;
@@ -193,8 +166,8 @@
             border-radius: 16px;
             overflow: hidden;
             box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            cursor: pointer;
             transition: transform 0.2s;
-            position: relative;
         }
         .product-card:active { transform: scale(0.98); }
         .product-img {
@@ -237,21 +210,6 @@
             color: #94A3B8;
             margin-left: 6px;
         }
-        .product-actions {
-            display: flex;
-            gap: 8px;
-            margin-top: 10px;
-        }
-        .btn-cart, .btn-fav {
-            flex: 1;
-            padding: 8px;
-            border: none;
-            border-radius: 30px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-        .btn-cart { background: #3B82F6; color: white; }
-        .btn-fav { background: #F1F5F9; color: #DC2626; }
         .badge-sale {
             position: absolute;
             top: 8px;
@@ -261,6 +219,114 @@
             border-radius: 20px;
             font-size: 10px;
             font-weight: bold;
+        }
+        .product-card { position: relative; }
+
+        /* Product Page */
+        .product-page {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            z-index: 200;
+            overflow-y: auto;
+            display: none;
+        }
+        .product-page-header {
+            position: sticky;
+            top: 0;
+            background: white;
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid #E2E8F0;
+            z-index: 10;
+        }
+        .product-page-content { padding: 16px; }
+        .product-main-img {
+            width: 100%;
+            text-align: center;
+            padding: 20px;
+            background: #F8FAFC;
+            border-radius: 20px;
+        }
+        .product-main-img img { max-width: 100%; max-height: 300px; object-fit: contain; }
+        .product-price-large {
+            font-size: 28px;
+            font-weight: 800;
+            color: #3B82F6;
+            margin: 16px 0;
+        }
+        .specs-list {
+            background: #F8FAFC;
+            padding: 16px;
+            border-radius: 16px;
+            margin: 16px 0;
+        }
+        .spec-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #E2E8F0;
+        }
+
+        /* Reviews */
+        .reviews-section {
+            margin-top: 24px;
+        }
+        .review-card {
+            background: #F8FAFC;
+            padding: 16px;
+            border-radius: 16px;
+            margin-bottom: 12px;
+        }
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        .review-name { font-weight: 600; }
+        .review-rating { color: #F59E0B; }
+        .review-text { margin: 8px 0; font-size: 14px; }
+        .review-photos {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+            overflow-x: auto;
+        }
+        .review-photos img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 12px;
+        }
+        .add-review {
+            background: white;
+            border: 1px dashed #3B82F6;
+            padding: 16px;
+            border-radius: 16px;
+            margin-top: 16px;
+        }
+        .add-review textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #CBD5E1;
+            border-radius: 12px;
+            margin: 8px 0;
+        }
+        .photo-preview {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin: 8px 0;
+        }
+        .photo-preview img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 8px;
         }
 
         /* Modal */
@@ -272,13 +338,8 @@
             width: 100%;
             height: 100%;
             background: rgba(0,0,0,0.6);
-            z-index: 1000;
+            z-index: 300;
             align-items: flex-end;
-            animation: fadeIn 0.2s;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
         }
         .modal-content {
             background: white;
@@ -287,39 +348,19 @@
             border-radius: 24px 24px 0 0;
             overflow-y: auto;
             padding: 20px;
-            animation: slideUp 0.3s;
-        }
-        @keyframes slideUp {
-            from { transform: translateY(100%); }
-            to { transform: translateY(0); }
         }
         .modal-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
             margin-bottom: 20px;
             font-size: 20px;
             font-weight: bold;
         }
-        .cart-item, .fav-item, .compare-item {
+        .cart-item {
             display: flex;
             justify-content: space-between;
-            align-items: center;
             padding: 12px 0;
             border-bottom: 1px solid #E2E8F0;
-        }
-        .total {
-            font-size: 18px;
-            font-weight: bold;
-            margin: 16px 0;
-        }
-        .checkout-form input, .checkout-form select {
-            width: 100%;
-            padding: 12px;
-            margin: 8px 0;
-            border: 1px solid #CBD5E1;
-            border-radius: 12px;
-            font-size: 14px;
         }
         .btn-primary {
             background: #3B82F6;
@@ -331,47 +372,15 @@
             width: 100%;
             margin-top: 12px;
         }
-
-        /* Filters Sidebar (mobile drawer) */
-        .filters-drawer {
-            position: fixed;
-            left: -100%;
-            top: 0;
-            width: 80%;
-            height: 100%;
-            background: white;
-            z-index: 1001;
-            transition: left 0.3s;
-            padding: 20px;
-            overflow-y: auto;
-            box-shadow: 2px 0 20px rgba(0,0,0,0.1);
-        }
-        .filters-drawer.open {
-            left: 0;
-        }
-        .filter-group {
-            margin-bottom: 20px;
-        }
-        .filter-group label {
+        .btn-secondary {
+            background: #F1F5F9;
+            color: #0F172A;
+            border: none;
+            padding: 14px;
+            border-radius: 30px;
             font-weight: 600;
-            display: block;
-            margin-bottom: 8px;
-        }
-        .filter-group input, .filter-group select {
             width: 100%;
-            padding: 10px;
-            border: 1px solid #CBD5E1;
-            border-radius: 12px;
-        }
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 1000;
-            display: none;
+            margin-top: 8px;
         }
         .filter-btn {
             position: fixed;
@@ -390,14 +399,55 @@
             cursor: pointer;
             border: none;
         }
-        .results-count {
-            padding: 0 16px 8px;
-            font-size: 13px;
-            color: #64748B;
+        .filters-drawer {
+            position: fixed;
+            left: -100%;
+            top: 0;
+            width: 80%;
+            height: 100%;
+            background: white;
+            z-index: 301;
+            transition: left 0.3s;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .filters-drawer.open { left: 0; }
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 300;
+            display: none;
+        }
+        .auth-prompt {
+            text-align: center;
+            padding: 20px;
+        }
+        .auth-input {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: 1px solid #CBD5E1;
+            border-radius: 12px;
+        }
+        .toast {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #0F172A;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 40px;
+            z-index: 400;
+            font-size: 14px;
         }
         .empty-state {
             text-align: center;
-            padding: 40px 20px;
+            padding: 40px;
             color: #94A3B8;
         }
     </style>
@@ -412,7 +462,7 @@
             <i class="fas fa-search"></i>
         </div>
         <div class="header-icons">
-            <i class="far fa-heart" id="favHeaderBtn"></i>
+            <i class="far fa-user" id="userIconBtn"></i>
             <i class="fas fa-shopping-cart" id="cartHeaderBtn"><span id="cartBadge" class="badge-count">0</span></i>
         </div>
     </div>
@@ -429,20 +479,16 @@
     <button class="banner-btn" id="bannerBtn">В каталог →</button>
 </div>
 
-<div class="results-count" id="resultsCount"></div>
 <div id="productsContainer" class="products-grid"></div>
 
-<!-- Bottom Navigation -->
 <div class="bottom-nav">
     <button class="nav-item active" data-nav="home"><i class="fas fa-home"></i><span>Главная</span></button>
-    <button class="nav-item" data-nav="favorites"><i class="far fa-heart"></i><span>Избранное</span></button>
-    <button class="nav-item" data-nav="compare"><i class="fas fa-chart-simple"></i><span>Сравнение</span></button>
     <button class="nav-item" data-nav="cart"><i class="fas fa-shopping-cart"></i><span>Корзина</span></button>
+    <button class="nav-item" data-nav="profile"><i class="far fa-user"></i><span>Профиль</span></button>
 </div>
 
 <button class="filter-btn" id="filterBtn"><i class="fas fa-sliders-h"></i></button>
 
-<!-- Filters Drawer -->
 <div class="filters-drawer" id="filtersDrawer">
     <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
         <h3>Фильтры</h3>
@@ -461,50 +507,71 @@
             <option>Samsung</option>
             <option>Apple</option>
             <option>JBL</option>
-            <option>Sony</option>
         </select>
     </div>
     <button id="applyFiltersBtn" class="btn-primary">Применить</button>
 </div>
 <div id="overlay" class="overlay"></div>
 
+<!-- Product Page -->
+<div id="productPage" class="product-page">
+    <div class="product-page-header">
+        <i class="fas fa-arrow-left" id="closeProductPage" style="font-size:24px; cursor:pointer;"></i>
+        <div>
+            <i class="far fa-heart" id="productPageFav" style="font-size:22px; margin-right:16px; cursor:pointer;"></i>
+            <i class="fas fa-shopping-cart" id="productPageCart" style="font-size:22px; cursor:pointer;"></i>
+        </div>
+    </div>
+    <div class="product-page-content" id="productPageContent"></div>
+</div>
+
 <!-- Modals -->
-<div id="cartModal" class="modal"><div class="modal-content"><div class="modal-header"><span>🛒 Корзина</span><span class="closeModal">&times;</span></div><div id="cartItemsList"></div><div id="cartTotal" class="total"></div><button id="checkoutBtn" class="btn-primary">Оформить заказ</button></div></div>
-<div id="favModal" class="modal"><div class="modal-content"><div class="modal-header"><span>❤️ Избранное</span><span class="closeModal">&times;</span></div><div id="favList"></div></div></div>
-<div id="compareModal" class="modal"><div class="modal-content"><div class="modal-header"><span>⚖️ Сравнение</span><span class="closeModal">&times;</span></div><div id="compareList"></div></div></div>
-<div id="orderModal" class="modal"><div class="modal-content"><div class="modal-header"><span>📦 Оформление</span><span class="closeModal">&times;</span></div><form id="orderForm"><input type="text" placeholder="Имя" required id="orderName"><input type="tel" placeholder="Телефон" required id="orderPhone"><input type="text" placeholder="Адрес" required id="orderAddress"><select id="orderPayment"><option>Картой онлайн</option><option>Наличными при получении</option></select><button type="submit" class="btn-primary">Подтвердить заказ</button></form></div></div>
+<div id="cartModal" class="modal"><div class="modal-content"><div class="modal-header"><span>🛒 Корзина</span><span class="closeModal">&times;</span></div><div id="cartItemsList"></div><div id="cartTotal" class="total" style="font-size:18px; font-weight:bold; margin:16px 0;"></div><button id="checkoutBtn" class="btn-primary">Оформить заказ</button></div></div>
+<div id="authModal" class="modal"><div class="modal-content"><div class="modal-header"><span>🔐 Вход / Регистрация</span><span class="closeModal">&times;</span></div><div id="authContent"><div class="auth-prompt"><input type="text" id="authName" placeholder="Имя" class="auth-input"><input type="email" id="authEmail" placeholder="Email" class="auth-input"><input type="password" id="authPassword" placeholder="Пароль" class="auth-input"><button id="loginBtn" class="btn-primary">Войти</button><button id="registerBtn" class="btn-secondary">Зарегистрироваться</button></div></div></div></div>
+<div id="orderModal" class="modal"><div class="modal-content"><div class="modal-header"><span>📦 Оформление заказа</span><span class="closeModal">&times;</span></div><form id="orderForm"><input type="text" placeholder="Полное имя" required id="orderName"><input type="tel" placeholder="Телефон" required id="orderPhone"><input type="text" placeholder="Адрес доставки" required id="orderAddress"><select id="orderPayment"><option>Картой онлайн</option><option>Наличными при получении</option></select><button type="submit" class="btn-primary">Подтвердить заказ</button></form></div></div>
 
 <script>
-    // Products Database
+    // Products
     let products = [
-        { id: 1, name: "Xiaomi Redmi Note 13", price: 18990, oldPrice: 24990, category: "Смартфоны", brand: "Xiaomi", image: "https://images.pexels.com/photos/404280/pexels-photo-404280.jpeg?w=200&h=150&fit=crop", rating: 4.5 },
-        { id: 2, name: "Apple iPhone 15", price: 79990, oldPrice: 89990, category: "Смартфоны", brand: "Apple", image: "https://images.pexels.com/photos/699122/pexels-photo-699122.jpeg?w=200&h=150&fit=crop", rating: 4.8 },
-        { id: 3, name: "Samsung Galaxy A54", price: 27990, oldPrice: null, category: "Смартфоны", brand: "Samsung", image: "https://images.pexels.com/photos/47261/pexels-photo-47261.jpeg?w=200&h=150&fit=crop", rating: 4.6 },
-        { id: 4, name: "JBL Tune 510BT", price: 3990, oldPrice: 5990, category: "Наушники", brand: "JBL", image: "https://images.pexels.com/photos/3394659/pexels-photo-3394659.jpeg?w=200&h=150&fit=crop", rating: 4.4 },
-        { id: 5, name: "Xiaomi Power Bank 20000", price: 2490, oldPrice: null, category: "Power Bank", brand: "Xiaomi", image: "https://images.pexels.com/photos/40940/charger-power-bank-phone-charge-40940.jpeg?w=200&h=150&fit=crop", rating: 4.7 },
-        { id: 6, name: "Samsung Buds2 Pro", price: 11990, oldPrice: 14990, category: "Наушники", brand: "Samsung", image: "https://images.pexels.com/photos/3780681/pexels-photo-3780681.jpeg?w=200&h=150&fit=crop", rating: 4.9 },
-        { id: 7, name: "GaN Зарядка 65W", price: 1890, oldPrice: 2990, category: "Зарядки", brand: "Xiaomi", image: "https://images.pexels.com/photos/40940/charger-power-bank-phone-charge-40940.jpeg?w=200&h=150&fit=crop", rating: 4.3 },
-        { id: 8, name: "Smart Watch Kieslect", price: 5490, oldPrice: 7990, category: "Гаджеты", brand: "Xiaomi", image: "https://images.pexels.com/photos/437037/pexels-photo-437037.jpeg?w=200&h=150&fit=crop", rating: 4.2 }
+        { id: 1, name: "Xiaomi Redmi Note 13", price: 18990, oldPrice: 24990, category: "Смартфоны", brand: "Xiaomi", image: "https://images.pexels.com/photos/404280/pexels-photo-404280.jpeg?w=200&h=150&fit=crop", rating: 4.5, specs: { "Экран": "6.67″ AMOLED", "Память": "8/256GB", "Камера": "108MP" } },
+        { id: 2, name: "Apple iPhone 15", price: 79990, oldPrice: 89990, category: "Смартфоны", brand: "Apple", image: "https://images.pexels.com/photos/699122/pexels-photo-699122.jpeg?w=200&h=150&fit=crop", rating: 4.8, specs: { "Экран": "6.1″ Super Retina", "Память": "128GB", "Камера": "48MP" } },
+        { id: 3, name: "Samsung Galaxy A54", price: 27990, oldPrice: null, category: "Смартфоны", brand: "Samsung", image: "https://images.pexels.com/photos/47261/pexels-photo-47261.jpeg?w=200&h=150&fit=crop", rating: 4.6, specs: { "Экран": "6.4″ Super AMOLED", "Память": "6/128GB", "Камера": "50MP" } },
+        { id: 4, name: "JBL Tune 510BT", price: 3990, oldPrice: 5990, category: "Наушники", brand: "JBL", image: "https://images.pexels.com/photos/3394659/pexels-photo-3394659.jpeg?w=200&h=150&fit=crop", rating: 4.4, specs: { "Тип": "Накладные", "Время работы": "40ч", "Bluetooth": "5.0" } },
+        { id: 5, name: "Xiaomi Power Bank 20000", price: 2490, oldPrice: null, category: "Power Bank", brand: "Xiaomi", image: "https://images.pexels.com/photos/40940/charger-power-bank-phone-charge-40940.jpeg?w=200&h=150&fit=crop", rating: 4.7, specs: { "Ёмкость": "20000mAh", "Порты": "USB-C, USB-A" } },
+        { id: 6, name: "Samsung Buds2 Pro", price: 11990, oldPrice: 14990, category: "Наушники", brand: "Samsung", image: "https://images.pexels.com/photos/3780681/pexels-photo-3780681.jpeg?w=200&h=150&fit=crop", rating: 4.9, specs: { "Тип": "Вкладыши", "Шумоподавление": "Да" } },
+        { id: 7, name: "GaN Зарядка 65W", price: 1890, oldPrice: 2990, category: "Зарядки", brand: "Xiaomi", image: "https://images.pexels.com/photos/40940/charger-power-bank-phone-charge-40940.jpeg?w=200&h=150&fit=crop", rating: 4.3, specs: { "Мощность": "65W", "Порты": "2xUSB-C" } },
+        { id: 8, name: "Smart Watch Kieslect", price: 5490, oldPrice: 7990, category: "Гаджеты", brand: "Xiaomi", image: "https://images.pexels.com/photos/437037/pexels-photo-437037.jpeg?w=200&h=150&fit=crop", rating: 4.2, specs: { "Экран": "1.78″ AMOLED", "Функции": "Шагомер, Пульс" } }
     ];
 
-    let categories = ["Все", "Смартфоны", "Наушники", "Зарядки", "Power Bank", "Гаджеты"];
+    // Reviews storage
+    let reviews = JSON.parse(localStorage.getItem('sim_reviews')) || {};
+
+    // User session
+    let currentUser = JSON.parse(localStorage.getItem('sim_user')) || null;
+
     let cart = JSON.parse(localStorage.getItem('sim_cart')) || [];
-    let favorites = JSON.parse(localStorage.getItem('sim_fav')) || [];
-    let compare = JSON.parse(localStorage.getItem('sim_compare')) || [];
     let currentCategory = "Все";
     let searchQuery = "";
+    let currentProduct = null;
 
     function saveAll() {
         localStorage.setItem('sim_cart', JSON.stringify(cart));
-        localStorage.setItem('sim_fav', JSON.stringify(favorites));
-        localStorage.setItem('sim_compare', JSON.stringify(compare));
+        localStorage.setItem('sim_user', JSON.stringify(currentUser));
+        localStorage.setItem('sim_reviews', JSON.stringify(reviews));
         updateBadges();
     }
 
     function updateBadges() {
         let cartCount = cart.reduce((s,i)=> s + i.qty, 0);
         document.getElementById('cartBadge').innerText = cartCount;
-        document.getElementById('cartBadge').style.display = cartCount ? 'block' : 'none';
+    }
+
+    function isAuthenticated() {
+        if(!currentUser) {
+            showModal('authModal');
+            return false;
+        }
+        return true;
     }
 
     function getFilteredProducts() {
@@ -521,157 +588,211 @@
     function renderProducts() {
         let filtered = getFilteredProducts();
         let container = document.getElementById('productsContainer');
-        document.getElementById('resultsCount').innerHTML = `📱 Найдено ${filtered.length} товаров`;
-        if(filtered.length === 0) {
-            container.innerHTML = '<div class="empty-state"><i class="fas fa-search" style="font-size:48px; margin-bottom:12px;"></i><p>Товары не найдены</p></div>';
-            return;
-        }
+        if(filtered.length === 0) { container.innerHTML = '<div class="empty-state"><i class="fas fa-search" style="font-size:48px;"></i><p>Товары не найдены</p></div>'; return; }
         container.innerHTML = filtered.map(p => `
-            <div class="product-card">
+            <div class="product-card" onclick="openProductPage(${p.id})">
                 ${p.oldPrice ? '<div class="badge-sale">-30%</div>' : ''}
                 <div class="product-img"><img src="${p.image}" onerror="this.src='https://placehold.co/200x150?text=No+Image'"></div>
                 <div class="product-info">
                     <div class="product-title">${p.name}</div>
                     <div class="rating">${'★'.repeat(Math.floor(p.rating))}${p.rating % 1 ? '½' : ''}</div>
                     <div class="price">${p.price.toLocaleString()} ₽${p.oldPrice ? `<span class="old-price">${p.oldPrice.toLocaleString()} ₽</span>` : ''}</div>
-                    <div class="product-actions">
-                        <button class="btn-cart" onclick="addToCart(${p.id})"><i class="fas fa-cart-plus"></i> Купить</button>
-                        <button class="btn-fav" onclick="toggleFavorite(${p.id})"><i class="fa${favorites.includes(p.id) ? 's' : 'r'} fa-heart"></i></button>
-                    </div>
                 </div>
             </div>
         `).join('');
     }
 
-    function addToCart(id) {
+    function openProductPage(id) {
+        currentProduct = products.find(p => p.id === id);
+        if(!currentProduct) return;
+        document.getElementById('productPage').style.display = 'block';
+        document.body.style.overflow = 'hidden';
+        renderProductPage();
+    }
+
+    function renderProductPage() {
+        let productReviews = reviews[currentProduct.id] || [];
+        let avgRating = productReviews.length ? (productReviews.reduce((s,r)=> s + r.rating,0) / productReviews.length).toFixed(1) : currentProduct.rating;
+        
+        let specsHtml = Object.entries(currentProduct.specs).map(([k,v]) => `<div class="spec-item"><span>${k}</span><span style="font-weight:500;">${v}</span></div>`).join('');
+        
+        let reviewsHtml = productReviews.map(r => `
+            <div class="review-card">
+                <div class="review-header">
+                    <span class="review-name">${r.userName}</span>
+                    <span class="review-rating">${'★'.repeat(r.rating)}</span>
+                </div>
+                <div class="review-text">${r.text}</div>
+                ${r.photos && r.photos.length ? `<div class="review-photos">${r.photos.map(ph => `<img src="${ph}" onerror="this.remove()">`).join('')}</div>` : ''}
+                <div style="font-size:11px; color:#94A3B8; margin-top:6px;">${r.date}</div>
+            </div>
+        `).join('');
+        
+        document.getElementById('productPageContent').innerHTML = `
+            <div class="product-main-img"><img src="${currentProduct.image}" onerror="this.src='https://placehold.co/300x300?text=No+Image'"></div>
+            <h2 style="font-size:24px; margin:16px 0 8px;">${currentProduct.name}</h2>
+            <div class="rating" style="font-size:16px;">${'★'.repeat(Math.floor(avgRating))} ${avgRating} ★</div>
+            <div class="product-price-large">${currentProduct.price.toLocaleString()} ₽${currentProduct.oldPrice ? ` <span style="font-size:16px; text-decoration:line-through; color:#94A3B8;">${currentProduct.oldPrice.toLocaleString()} ₽</span>` : ''}</div>
+            <button class="btn-primary" onclick="addToCartAndClose(${currentProduct.id})"><i class="fas fa-cart-plus"></i> Добавить в корзину</button>
+            <div class="specs-list"><h4 style="margin-bottom:12px;">📋 Характеристики</h4>${specsHtml}</div>
+            <div class="reviews-section"><h4 style="margin-bottom:12px;">⭐ Отзывы (${productReviews.length})</h4>${reviewsHtml || '<div class="empty-state">Пока нет отзывов. Будьте первым!</div>'}<div class="add-review"><h4>📝 Оставить отзыв</h4><select id="reviewRating"><option>5</option><option>4</option><option>3</option><option>2</option><option>1</option></select><textarea id="reviewText" rows="3" placeholder="Расскажите о товаре..."></textarea><input type="file" id="reviewPhoto" accept="image/*" multiple><div id="photoPreview" class="photo-preview"></div><button class="btn-secondary" onclick="submitReview(${currentProduct.id})">Отправить отзыв</button></div></div>
+        `;
+        
+        document.getElementById('reviewPhoto').onchange = function(e) {
+            let preview = document.getElementById('photoPreview');
+            preview.innerHTML = '';
+            Array.from(e.target.files).forEach(file => {
+                let reader = new FileReader();
+                reader.onload = (ev) => { preview.innerHTML += `<img src="${ev.target.result}">`; };
+                reader.readAsDataURL(file);
+            });
+        };
+    }
+
+    function submitReview(productId) {
+        if(!isAuthenticated()) return;
+        let rating = parseInt(document.getElementById('reviewRating').value);
+        let text = document.getElementById('reviewText').value;
+        if(!text.trim()) { showToast("Напишите текст отзыва"); return; }
+        let photos = [];
+        let files = document.getElementById('reviewPhoto').files;
+        Array.from(files).forEach(file => {
+            let reader = new FileReader();
+            reader.onload = (e) => { photos.push(e.target.result); if(photos.length === files.length) saveReview(); };
+            reader.readAsDataURL(file);
+        });
+        if(files.length === 0) saveReview();
+        function saveReview() {
+            if(!reviews[productId]) reviews[productId] = [];
+            reviews[productId].push({
+                userName: currentUser.name,
+                rating: rating,
+                text: text,
+                photos: photos,
+                date: new Date().toLocaleDateString('ru-RU')
+            });
+            localStorage.setItem('sim_reviews', JSON.stringify(reviews));
+            showToast("✅ Отзыв добавлен!");
+            document.getElementById('reviewText').value = '';
+            document.getElementById('reviewPhoto').value = '';
+            document.getElementById('photoPreview').innerHTML = '';
+            renderProductPage();
+        }
+    }
+
+    function addToCartAndClose(id) {
+        if(!isAuthenticated()) return;
         let item = cart.find(i => i.id === id);
         if(item) item.qty++;
         else cart.push({ id, qty: 1 });
         saveAll();
-        renderProducts();
         showToast("✅ Товар добавлен в корзину");
     }
 
-    function toggleFavorite(id) {
-        if(favorites.includes(id)) favorites = favorites.filter(i => i !== id);
-        else favorites.push(id);
-        saveAll();
-        renderProducts();
-    }
+    function addToCart(id) { addToCartAndClose(id); }
 
-    function addToCompare(id) {
-        if(!compare.includes(id) && compare.length < 4) compare.push(id);
-        else if(compare.length >= 4) showToast("⚠️ Можно сравнить не более 4 товаров");
-        saveAll();
-        showToast("➕ Добавлено в сравнение");
-    }
-
-    function showModal(modalId, contentGenerator) {
+    function showModal(modalId) {
         let modal = document.getElementById(modalId);
         modal.style.display = 'flex';
-        contentGenerator();
         modal.querySelector('.closeModal').onclick = () => modal.style.display = 'none';
         modal.onclick = (e) => { if(e.target === modal) modal.style.display = 'none'; };
     }
 
     function showCartModal() {
-        showModal('cartModal', () => {
-            let div = document.getElementById('cartItemsList');
-            if(cart.length === 0) div.innerHTML = '<div class="empty-state">Корзина пуста</div>';
-            else {
-                div.innerHTML = cart.map(item => {
-                    let p = products.find(pr => pr.id === item.id);
-                    return `<div class="cart-item"><span><b>${p.name}</b> x${item.qty}</span><span>${(p.price*item.qty).toLocaleString()} ₽ <button onclick="removeFromCart(${item.id})" style="background:none; border:none; color:#DC2626;">🗑️</button></span></div>`;
-                }).join('');
-                let total = cart.reduce((s,i)=> s + (products.find(p=>p.id===i.id).price * i.qty),0);
-                document.getElementById('cartTotal').innerHTML = `Итого: ${total.toLocaleString()} ₽`;
-            }
-        });
+        showModal('cartModal');
+        let div = document.getElementById('cartItemsList');
+        if(cart.length === 0) div.innerHTML = '<div class="empty-state">Корзина пуста</div>';
+        else {
+            div.innerHTML = cart.map(item => {
+                let p = products.find(pr => pr.id === item.id);
+                return `<div class="cart-item"><span><b>${p.name}</b> x${item.qty}</span><span>${(p.price*item.qty).toLocaleString()} ₽ <button onclick="removeFromCart(${item.id})" style="background:none; border:none; color:#DC2626;">🗑️</button></span></div>`;
+            }).join('');
+            let total = cart.reduce((s,i)=> s + (products.find(p=>p.id===i.id).price * i.qty),0);
+            document.getElementById('cartTotal').innerHTML = `Итого: ${total.toLocaleString()} ₽`;
+        }
     }
 
-    function showFavModal() {
-        showModal('favModal', () => {
-            let div = document.getElementById('favList');
-            if(favorites.length === 0) div.innerHTML = '<div class="empty-state">Нет избранных товаров</div>';
-            else {
-                div.innerHTML = favorites.map(id => {
-                    let p = products.find(pr => pr.id === id);
-                    return `<div class="fav-item"><span>${p.name} - ${p.price.toLocaleString()} ₽</span><button onclick="toggleFavorite(${p.id}); location.reload();" style="background:none; border:none; color:#DC2626;">❌</button></div>`;
-                }).join('');
-            }
-        });
-    }
-
-    function showCompareModal() {
-        showModal('compareModal', () => {
-            let div = document.getElementById('compareList');
-            if(compare.length === 0) div.innerHTML = '<div class="empty-state">Нет товаров для сравнения</div>';
-            else {
-                div.innerHTML = compare.map(id => {
-                    let p = products.find(pr => pr.id === id);
-                    return `<div class="compare-item"><div><b>${p.name}</b><br>💰 ${p.price.toLocaleString()} ₽<br>⭐ ${p.rating}</div><button onclick="removeFromCompare(${p.id})" style="background:#FEE2E2; border:none; padding:6px 12px; border-radius:20px;">Удалить</button></div>`;
-                }).join('');
-            }
-        });
-    }
-
-    function removeFromCart(id) { cart = cart.filter(i => i.id !== id); saveAll(); renderProducts(); showCartModal(); }
-    function removeFromCompare(id) { compare = compare.filter(i => i !== id); saveAll(); showCompareModal(); }
+    function removeFromCart(id) { cart = cart.filter(i => i.id !== id); saveAll(); showCartModal(); renderProducts(); }
 
     function showToast(msg) {
         let toast = document.createElement('div');
+        toast.className = 'toast';
         toast.innerText = msg;
-        toast.style.position = 'fixed';
-        toast.style.bottom = '80px';
-        toast.style.left = '50%';
-        toast.style.transform = 'translateX(-50%)';
-        toast.style.background = '#0F172A';
-        toast.style.color = 'white';
-        toast.style.padding = '12px 20px';
-        toast.style.borderRadius = '40px';
-        toast.style.zIndex = '2000';
-        toast.style.fontSize = '14px';
         document.body.appendChild(toast);
         setTimeout(() => toast.remove(), 2000);
     }
+
+    // Auth
+    document.getElementById('loginBtn').onclick = () => {
+        let email = document.getElementById('authEmail').value;
+        let pass = document.getElementById('authPassword').value;
+        let users = JSON.parse(localStorage.getItem('sim_users')) || [];
+        let user = users.find(u => u.email === email && u.password === pass);
+        if(user) { currentUser = user; saveAll(); document.getElementById('authModal').style.display = 'none'; showToast(`Добро пожаловать, ${user.name}!`); renderProducts(); }
+        else showToast("Неверный email или пароль");
+    };
+    document.getElementById('registerBtn').onclick = () => {
+        let name = document.getElementById('authName').value;
+        let email = document.getElementById('authEmail').value;
+        let pass = document.getElementById('authPassword').value;
+        if(!name || !email || !pass) { showToast("Заполните все поля"); return; }
+        let users = JSON.parse(localStorage.getItem('sim_users')) || [];
+        if(users.find(u => u.email === email)) { showToast("Email уже существует"); return; }
+        let newUser = { id: Date.now(), name, email, password: pass };
+        users.push(newUser);
+        localStorage.setItem('sim_users', JSON.stringify(users));
+        currentUser = newUser;
+        saveAll();
+        document.getElementById('authModal').style.display = 'none';
+        showToast(`Регистрация успешна! Добро пожаловать, ${name}!`);
+        renderProducts();
+    };
+    document.getElementById('userIconBtn').onclick = () => { if(currentUser) showToast(`Вы вошли как ${currentUser.name}`); else showModal('authModal'); };
+
+    // Checkout with auth
+    document.getElementById('checkoutBtn').onclick = () => {
+        if(!isAuthenticated()) return;
+        if(cart.length === 0) { showToast("Корзина пуста"); return; }
+        showModal('orderModal');
+    };
+    document.getElementById('orderForm').onsubmit = (e) => {
+        e.preventDefault();
+        showToast(`✅ Заказ оформлен! Спасибо, ${document.getElementById('orderName').value}. Менеджер свяжется с вами.`);
+        cart = [];
+        saveAll();
+        renderProducts();
+        document.getElementById('orderModal').style.display = 'none';
+    };
 
     // Event Listeners
     document.getElementById('searchInput').addEventListener('input', (e) => { searchQuery = e.target.value.toLowerCase(); renderProducts(); });
     document.getElementById('applyFiltersBtn').onclick = () => { renderProducts(); document.getElementById('filtersDrawer').classList.remove('open'); document.getElementById('overlay').style.display = 'none'; };
     document.getElementById('filterBtn').onclick = () => { document.getElementById('filtersDrawer').classList.add('open'); document.getElementById('overlay').style.display = 'block'; };
     document.getElementById('closeFilters').onclick = () => { document.getElementById('filtersDrawer').classList.remove('open'); document.getElementById('overlay').style.display = 'none'; };
-    document.getElementById('overlay').onclick = () => { document.getElementById('filtersDrawer').classList.remove('open'); document.getElementById('overlay').style.display = 'none'; };
     document.getElementById('cartHeaderBtn').onclick = showCartModal;
-    document.getElementById('favHeaderBtn').onclick = showFavModal;
-    document.getElementById('bannerBtn').onclick = () => { currentCategory = "Смартфоны"; document.querySelectorAll('.cat-btn').forEach(btn => btn.classList.remove('active')); [...document.querySelectorAll('.cat-btn')].find(b => b.innerText === "Смартфоны")?.classList.add('active'); renderProducts(); };
-    document.getElementById('checkoutBtn').onclick = () => { if(cart.length===0){ showToast("Корзина пуста"); return; } showModal('orderModal', () => {}); };
-    document.getElementById('orderForm').onsubmit = (e) => { e.preventDefault(); showToast(`✅ Заказ оформлен! Спасибо, ${document.getElementById('orderName').value}`); cart = []; saveAll(); renderProducts(); document.getElementById('orderModal').style.display = 'none'; };
+    document.getElementById('closeProductPage').onclick = () => { document.getElementById('productPage').style.display = 'none'; document.body.style.overflow = 'auto'; };
+    document.getElementById('bannerBtn').onclick = () => { currentCategory = "Смартфоны"; renderCategories(); renderProducts(); };
+
+    // Categories
+    let categories = ["Все", "Смартфоны", "Наушники", "Зарядки", "Power Bank", "Гаджеты"];
+    function renderCategories() {
+        let container = document.getElementById('categoriesList');
+        container.innerHTML = categories.map(cat => `<button class="cat-btn ${cat === currentCategory ? 'active' : ''}" data-cat="${cat}">${cat}</button>`).join('');
+        document.querySelectorAll('.cat-btn').forEach(btn => {
+            btn.onclick = () => { currentCategory = btn.dataset.cat; renderCategories(); renderProducts(); };
+        });
+    }
 
     // Bottom Nav
     document.querySelectorAll('.nav-item').forEach(btn => {
         btn.onclick = () => {
             document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            let nav = btn.dataset.nav;
-            if(nav === 'home') renderProducts();
-            else if(nav === 'favorites') showFavModal();
-            else if(nav === 'compare') showCompareModal();
-            else if(nav === 'cart') showCartModal();
+            if(btn.dataset.nav === 'home') renderProducts();
+            if(btn.dataset.nav === 'cart') showCartModal();
+            if(btn.dataset.nav === 'profile') { if(currentUser) showToast(`👤 ${currentUser.name}\n📧 ${currentUser.email}`); else showModal('authModal'); }
         };
     });
-
-    // Render categories
-    function renderCategories() {
-        let container = document.getElementById('categoriesList');
-        container.innerHTML = categories.map(cat => `<button class="cat-btn ${cat === currentCategory ? 'active' : ''}" data-cat="${cat}">${cat}</button>`).join('');
-        document.querySelectorAll('.cat-btn').forEach(btn => {
-            btn.onclick = () => {
-                currentCategory = btn.dataset.cat;
-                renderCategories();
-                renderProducts();
-            };
-        });
-    }
 
     renderCategories();
     renderProducts();
