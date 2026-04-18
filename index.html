@@ -1,509 +1,90 @@
-<!DOCTYPE html>
-<html lang="ru">
+<!DOCTYPE html><html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>SimMarket — лучшая электроника за свою цену</title>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SimMarket — электроника по лучшим ценам</title><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Roboto&display=swap" rel="stylesheet"><style>
+body {margin:0;font-family:Roboto;background:#F8FAFC;color:#0F172A;}
+.header {background:#0F172A;color:white;padding:15px;display:flex;justify-content:space-between;align-items:center;}
+.logo {font-family:Inter;font-weight:800;font-size:22px;}
+.logo span {color:#3B82F6;}
+.search {padding:8px;border-radius:20px;border:none;width:200px;}
+.container {padding:20px;max-width:1200px;margin:auto;}
+.banner {background:#0F172A;color:white;padding:30px;border-radius:20px;margin-bottom:20px;}
+.products {display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:20px;}
+.card {background:white;border-radius:15px;padding:15px;cursor:pointer;transition:0.2s;}
+.card:hover {transform:translateY(-8px);box-shadow:0 20px 40px rgba(0,0,0,0.1);}
+.card img {width:100%;height:150px;object-fit:contain;}
+.price {color:#3B82F6;font-weight:bold;font-size:18px;}
+.btn {background:#3B82F6;color:white;border:none;padding:8px;border-radius:20px;width:100%;margin-top:10px;}
+.trust {margin-top:40px;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px;}
 
-        body {
-            font-family: 'Roboto', sans-serif;
-            background: #F8FAFC;
-            color: #0F172A;
-        }
-
-        h1, h2, h3, .logo, .nav-links a, .product-title {
-            font-family: 'Inter', sans-serif;
-        }
-
-        /* ===== Header ===== */
-        .header {
-            background: #0F172A;
-            color: white;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-        }
-        .header-top {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            padding: 1rem 2rem;
-            gap: 1rem;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-        .logo {
-            font-size: 1.8rem;
-            font-weight: 800;
-            letter-spacing: -1px;
-        }
-        .logo span {
-            color: #3B82F6;
-        }
-        .search-bar {
-            flex: 1;
-            max-width: 400px;
-            display: flex;
-        }
-        .search-bar input {
-            width: 100%;
-            padding: 0.7rem 1rem;
-            border: none;
-            border-radius: 2rem 0 0 2rem;
-            outline: none;
-            font-size: 0.9rem;
-        }
-        .search-bar button {
-            background: #3B82F6;
-            border: none;
-            padding: 0.7rem 1.2rem;
-            border-radius: 0 2rem 2rem 0;
-            color: white;
-            cursor: pointer;
-        }
-        .header-icons {
-            display: flex;
-            gap: 1.5rem;
-        }
-        .header-icons i {
-            font-size: 1.3rem;
-            cursor: pointer;
-            transition: color 0.2s;
-            position: relative;
-        }
-        .header-icons i:hover {
-            color: #3B82F6;
-        }
-        .cart-count, .fav-count {
-            background: #F59E0B;
-            color: #0F172A;
-            font-size: 0.7rem;
-            border-radius: 50%;
-            padding: 0.1rem 0.4rem;
-            position: absolute;
-            top: -8px;
-            right: -12px;
-            font-weight: bold;
-        }
-        .categories {
-            background: #1E293B;
-            padding: 0.7rem 2rem;
-            display: flex;
-            gap: 1.8rem;
-            overflow-x: auto;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-        .categories a {
-            color: #CBD5E1;
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 500;
-            white-space: nowrap;
-        }
-        .categories a:hover, .categories a.active {
-            color: #3B82F6;
-        }
-
-        /* ===== Container ===== */
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 1.5rem 2rem;
-        }
-
-        /* Banner */
-        .banner {
-            background: linear-gradient(135deg, #0F172A 0%, #1E3A5F 100%);
-            border-radius: 1.5rem;
-            padding: 2.5rem;
-            margin-bottom: 2rem;
-            color: white;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-        .banner h2 {
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
-        }
-        .banner .discount {
-            color: #F59E0B;
-            font-size: 1.2rem;
-        }
-        .banner-btn {
-            background: #F59E0B;
-            border: none;
-            padding: 0.8rem 1.8rem;
-            border-radius: 2rem;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        /* Section title */
-        .section-title {
-            font-size: 1.8rem;
-            margin: 2rem 0 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-        }
-
-        /* Product Grid */
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 1.8rem;
-        }
-        .product-card {
-            background: white;
-            border-radius: 1rem;
-            overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            transition: transform 0.2s, box-shadow 0.2s;
-            cursor: pointer;
-            position: relative;
-        }
-        .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 24px rgba(0,0,0,0.1);
-        }
-        .product-img {
-            background: #F1F5F9;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 1.5rem;
-            height: 200px;
-        }
-        .product-img img {
-            max-width: 100%;
-            max-height: 150px;
-            object-fit: contain;
-        }
-        .product-info {
-            padding: 1rem;
-        }
-        .product-title {
-            font-weight: 700;
-            font-size: 1rem;
-            margin-bottom: 0.5rem;
-        }
-        .product-price {
-            font-weight: 800;
-            font-size: 1.3rem;
-            color: #3B82F6;
-        }
-        .old-price {
-            font-size: 0.8rem;
-            color: #94A3B8;
-            text-decoration: line-through;
-            margin-left: 0.5rem;
-        }
-        .product-actions {
-            display: flex;
-            gap: 0.5rem;
-            margin-top: 0.8rem;
-        }
-        .btn-cart, .btn-fav {
-            flex: 1;
-            padding: 0.5rem;
-            border: none;
-            border-radius: 2rem;
-            cursor: pointer;
-            font-weight: 600;
-        }
-        .btn-cart {
-            background: #3B82F6;
-            color: white;
-        }
-        .btn-fav {
-            background: #F1F5F9;
-            color: #0F172A;
-        }
-        .btn-fav.active {
-            background: #FEE2E2;
-            color: #DC2626;
-        }
-        .badge {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            background: #F59E0B;
-            padding: 0.2rem 0.6rem;
-            border-radius: 2rem;
-            font-size: 0.7rem;
-            font-weight: bold;
-        }
-
-        /* Filters Sidebar (для категорий) */
-        .category-layout {
-            display: flex;
-            gap: 2rem;
-            flex-wrap: wrap;
-        }
-        .filters-sidebar {
-            width: 260px;
-            background: white;
-            padding: 1.2rem;
-            border-radius: 1rem;
-            height: fit-content;
-        }
-        .filter-group {
-            margin-bottom: 1.2rem;
-        }
-        .filter-group h4 {
-            margin-bottom: 0.5rem;
-        }
-        .filter-group input, .filter-group select {
-            width: 100%;
-            padding: 0.5rem;
-            border: 1px solid #CBD5E1;
-            border-radius: 0.5rem;
-        }
-        .products-area {
-            flex: 1;
-        }
-
-        /* Modal (корзина/сравнение/избранное) */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-        .modal-content {
-            background: white;
-            width: 90%;
-            max-width: 600px;
-            max-height: 80vh;
-            border-radius: 1.5rem;
-            padding: 1.5rem;
-            overflow-y: auto;
-        }
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 1rem;
-        }
-        .cart-item, .compare-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 0.8rem 0;
-            border-bottom: 1px solid #E2E8F0;
-        }
-        .total {
-            font-weight: bold;
-            font-size: 1.2rem;
-            margin-top: 1rem;
-        }
-        .checkout-form input {
-            width: 100%;
-            padding: 0.7rem;
-            margin: 0.5rem 0;
-            border-radius: 0.5rem;
-            border: 1px solid #CBD5E1;
-        }
-
-        @media (max-width: 768px) {
-            .header-top { flex-direction: column; }
-            .search-bar { max-width: 100%; }
-            .filters-sidebar { width: 100%; }
-        }
-        button { cursor: pointer; }
-        .rating { color: #F59E0B; margin: 0.3rem 0; }
-    </style>
-</head>
-<body>
-
-<div class="header">
-    <div class="header-top">
-        <div class="logo">Sim<span>Market</span></div>
-        <div class="search-bar">
-            <input type="text" id="searchInput" placeholder="Поиск смартфонов, наушников...">
-            <button id="searchBtn"><i class="fas fa-search"></i></button>
-        </div>
-        <div class="header-icons">
-            <i class="far fa-heart" id="favIconBtn"><span class="fav-count" id="favCount">0</span></i>
-            <i class="fas fa-balance-scale" id="compareIconBtn"></i>
-            <i class="fas fa-shopping-cart" id="cartIconBtn"><span class="cart-count" id="cartCount">0</span></i>
-        </div>
-    </div>
-    <div class="categories" id="categoriesNav">
-        <a href="#" data-cat="all" class="active">Все товары</a>
-        <a href="#" data-cat="Смартфоны">📱 Смартфоны</a>
-        <a href="#" data-cat="Наушники">🎧 Наушники</a>
-        <a href="#" data-cat="Зарядки">🔋 Зарядки и кабели</a>
-        <a href="#" data-cat="Power Bank">🔌 Power Bank</a>
-        <a href="#" data-cat="Гаджеты">⌚ Гаджеты</a>
-    </div>
+.modal {display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);justify-content:center;align-items:center;}
+.modal-content {background:white;padding:20px;border-radius:20px;max-width:500px;width:90%;}
+.close {float:right;cursor:pointer;}
+</style></head><body><div class="header">
+<div class="logo">Sim<span>Market</span></div>
+<input class="search" id="search" placeholder="Поиск...">
+</div><div class="container"><div class="banner">
+<h2>🔥 Смартфоны 2026</h2>
+<p>Скидки до 30% • Быстрая доставка • Гарантия</p>
+</div><div class="products" id="products"></div><div class="trust">
+<div>🚚 Доставка 1–3 дня</div>
+<div>🛡️ Гарантия 12 месяцев</div>
+<div>💳 Оплата при получении</div>
+<div>⭐ 1000+ клиентов</div>
+</div></div><!-- MODAL --><div id="modal" class="modal">
+<div class="modal-content">
+<span class="close" onclick="closeModal()">×</span>
+<div id="modalBody"></div>
 </div>
+</div><script>
+let products = [
+{ id:1, name:"iPhone 15", price:79990, img:"https://images.pexels.com/photos/699122/pexels-photo-699122.jpeg", rating:4.8 },
+{ id:2, name:"Samsung A54", price:27990, img:"https://images.pexels.com/photos/47261/pexels-photo-47261.jpeg", rating:4.6 },
+{ id:3, name:"JBL 510BT", price:3990, img:"https://images.pexels.com/photos/3394659/pexels-photo-3394659.jpeg", rating:4.4 }
+];
 
-<div class="container">
-    <div class="banner">
-        <div>
-            <h2>Смартфоны 2026</h2>
-            <p class="discount">🔥 Скидка до 30% на топовые модели</p>
-            <p>Быстрая доставка • Гарантия • Проверка товара</p>
-        </div>
-        <button class="banner-btn" id="bannerShopBtn">Купить сейчас →</button>
-    </div>
+let cart = [];
 
-    <div class="category-layout" id="mainLayout">
-        <div class="filters-sidebar">
-            <h3><i class="fas fa-filter"></i> Фильтры</h3>
-            <div class="filter-group">
-                <h4>Цена (₽)</h4>
-                <input type="number" id="minPrice" placeholder="от" value="0">
-                <input type="number" id="maxPrice" placeholder="до" value="200000">
-            </div>
-            <div class="filter-group">
-                <h4>Бренд</h4>
-                <select id="brandFilter">
-                    <option value="">Все бренды</option>
-                    <option>Xiaomi</option>
-                    <option>Samsung</option>
-                    <option>Apple</option>
-                    <option>Sony</option>
-                    <option>JBL</option>
-                    <option>Xiaomi</option>
-                </select>
-            </div>
-            <button id="applyFilters" style="background:#3B82F6; color:white; border:none; padding:0.5rem; width:100%; border-radius:2rem;">Применить</button>
-        </div>
-        <div class="products-area">
-            <div class="section-title">
-                <h2>Популярные товары</h2>
-                <span id="resultsCount"></span>
-            </div>
-            <div id="productsContainer" class="products-grid"></div>
-        </div>
-    </div>
+function render(list){
+document.getElementById("products").innerHTML = list.map(p=>`
+<div class="card" onclick="openProduct(${p.id})">
+<img src="${p.img}">
+<h3>${p.name}</h3>
+<div>⭐ ${p.rating}</div>
+<div class="price">${p.price} ₽</div>
+<div style="font-size:12px;color:green;">✔ В наличии • Доставка 1-3 дня</div>
+<button class="btn" onclick="event.stopPropagation();addToCart(${p.id})">В корзину</button>
 </div>
+`).join("");
+}
 
-<!-- Модальные окна -->
-<div id="cartModal" class="modal"><div class="modal-content"><div class="modal-header"><h2>🛒 Корзина</h2><span class="close">&times;</span></div><div id="cartItems"></div><div id="cartTotal" class="total"></div><button id="checkoutBtn" style="background:#3B82F6; color:white; border:none; padding:0.8rem; width:100%; border-radius:2rem; margin-top:1rem;">Оформить заказ</button></div></div>
-<div id="favModal" class="modal"><div class="modal-content"><div class="modal-header"><h2>❤️ Избранное</h2><span class="close">&times;</span></div><div id="favItems"></div></div></div>
-<div id="compareModal" class="modal"><div class="modal-content"><div class="modal-header"><h2>⚖️ Сравнение товаров</h2><span class="close">&times;</span></div><div id="compareItems"></div></div></div>
-<div id="orderModal" class="modal"><div class="modal-content"><div class="modal-header"><h2>📦 Оформление заказа</h2><span class="close">&times;</span></div><form id="orderForm"><input type="text" placeholder="Имя" required id="orderName"><input type="tel" placeholder="Телефон" required id="orderPhone"><input type="text" placeholder="Адрес" required id="orderAddress"><select id="orderPayment"><option>Картой онлайн</option><option>Наличными при получении</option></select><button type="submit" style="background:#F59E0B; padding:0.8rem; border:none; border-radius:2rem; margin-top:1rem;">Подтвердить заказ</button></form></div></div>
+function openProduct(id){
+let p = products.find(x=>x.id==id);
+document.getElementById("modalBody").innerHTML = `
+<h2>${p.name}</h2>
+<img src="${p.img}" style="width:100%;max-height:200px;object-fit:contain;">
+<p>⭐ ${p.rating}</p>
+<h3>${p.price} ₽</h3>
+<button class="btn" onclick="addToCart(${p.id})">Добавить в корзину</button>
+`;
+document.getElementById("modal").style.display="flex";
+}
 
-<script>
-    // ---------- ДАННЫЕ (имитация БД) ----------
-    let products = [
-        { id: 1, name: "Xiaomi Redmi Note 13", price: 18990, oldPrice: 24990, category: "Смартфоны", brand: "Xiaomi", image: "https://images.pexels.com/photos/404280/pexels-photo-404280.jpeg?w=200&h=150&fit=crop", rating: 4.5, specs: "6.67\", 8/256GB" },
-        { id: 2, name: "Apple iPhone 15", price: 79990, oldPrice: 89990, category: "Смартфоны", brand: "Apple", image: "https://images.pexels.com/photos/699122/pexels-photo-699122.jpeg?w=200&h=150&fit=crop", rating: 4.8 },
-        { id: 3, name: "Samsung Galaxy A54", price: 27990, oldPrice: null, category: "Смартфоны", brand: "Samsung", image: "https://images.pexels.com/photos/47261/pexels-photo-47261.jpeg?w=200&h=150&fit=crop", rating: 4.6 },
-        { id: 4, name: "JBL Tune 510BT", price: 3990, oldPrice: 5990, category: "Наушники", brand: "JBL", image: "https://images.pexels.com/photos/3394659/pexels-photo-3394659.jpeg?w=200&h=150&fit=crop", rating: 4.4 },
-        { id: 5, name: "Xiaomi Power Bank 20000mAh", price: 2490, oldPrice: null, category: "Power Bank", brand: "Xiaomi", image: "https://images.pexels.com/photos/40940/charger-power-bank-phone-charge-40940.jpeg?w=200&h=150&fit=crop", rating: 4.7 },
-        { id: 6, name: "Samsung Buds2 Pro", price: 11990, oldPrice: 14990, category: "Наушники", brand: "Samsung", image: "https://images.pexels.com/photos/3780681/pexels-photo-3780681.jpeg?w=200&h=150&fit=crop", rating: 4.9 },
-        { id: 7, name: "Зарядное устройство 65W GaN", price: 1890, oldPrice: 2990, category: "Зарядки", brand: "Xiaomi", image: "https://images.pexels.com/photos/40940/charger-power-bank-phone-charge-40940.jpeg?w=200&h=150&fit=crop", rating: 4.3 },
-        { id: 8, name: "Smart Watch Kieslect", price: 5490, oldPrice: 7990, category: "Гаджеты", brand: "Xiaomi", image: "https://images.pexels.com/photos/437037/pexels-photo-437037.jpeg?w=200&h=150&fit=crop", rating: 4.2 }
-    ];
+function closeModal(){
+document.getElementById("modal").style.display="none";
+}
 
-    let cart = JSON.parse(localStorage.getItem('sim_cart')) || [];
-    let favorites = JSON.parse(localStorage.getItem('sim_fav')) || [];
-    let compareList = JSON.parse(localStorage.getItem('sim_compare')) || [];
+function addToCart(id){
+cart.push(id);
+alert("Добавлено в корзину");
+}
 
-    function saveData() {
-        localStorage.setItem('sim_cart', JSON.stringify(cart));
-        localStorage.setItem('sim_fav', JSON.stringify(favorites));
-        localStorage.setItem('sim_compare', JSON.stringify(compareList));
-        updateCounters();
-    }
+document.getElementById("search").oninput = (e)=>{
+let val = e.target.value.toLowerCase();
+render(products.filter(p=>p.name.toLowerCase().includes(val)));
+};
 
-    function updateCounters() {
-        document.getElementById('cartCount').innerText = cart.reduce((s, i) => s + i.qty, 0);
-        document.getElementById('favCount').innerText = favorites.length;
-    }
-
-    function renderProducts(filteredProducts) {
-        const container = document.getElementById('productsContainer');
-        document.getElementById('resultsCount').innerText = `Найдено: ${filteredProducts.length}`;
-        if(filteredProducts.length === 0) { container.innerHTML = '<div style="text-align:center">Товары не найдены</div>'; return; }
-        container.innerHTML = filteredProducts.map(p => `
-            <div class="product-card" data-id="${p.id}">
-                ${p.oldPrice ? '<div class="badge">Акция</div>' : ''}
-                <div class="product-img"><img src="${p.image}" onerror="this.src='https://placehold.co/200x150?text=No+Image'"></div>
-                <div class="product-info">
-                    <div class="product-title">${p.name}</div>
-                    <div class="rating">${'★'.repeat(Math.floor(p.rating))}${p.rating % 1 ? '½' : ''} (${p.rating})</div>
-                    <div class="product-price">${p.price.toLocaleString()} ₽ ${p.oldPrice ? `<span class="old-price">${p.oldPrice.toLocaleString()} ₽</span>` : ''}</div>
-                    <div class="product-actions">
-                        <button class="btn-cart" data-id="${p.id}"><i class="fas fa-cart-plus"></i> В корзину</button>
-                        <button class="btn-fav ${favorites.includes(p.id) ? 'active' : ''}" data-id="${p.id}"><i class="far fa-heart"></i></button>
-                    </div>
-                </div>
-            </div>
-        `).join('');
-        // обработчики
-        document.querySelectorAll('.btn-cart').forEach(btn => btn.addEventListener('click', (e) => { e.stopPropagation(); addToCart(parseInt(btn.dataset.id)); }));
-        document.querySelectorAll('.btn-fav').forEach(btn => btn.addEventListener('click', (e) => { e.stopPropagation(); toggleFav(parseInt(btn.dataset.id)); }));
-        document.querySelectorAll('.product-card').forEach(card => card.addEventListener('click', () => showProductModal(parseInt(card.dataset.id))));
-    }
-
-    function addToCart(id) { let item = cart.find(i => i.id === id); if(item) item.qty++; else cart.push({ id, qty:1 }); saveData(); renderProducts(getFilteredProducts()); alert('Товар добавлен в корзину'); }
-    function toggleFav(id) { if(favorites.includes(id)) favorites = favorites.filter(i => i !== id); else favorites.push(id); saveData(); renderProducts(getFilteredProducts()); }
-    function addToCompare(id) { if(!compareList.includes(id) && compareList.length < 4) compareList.push(id); else if(compareList.length>=4) alert('Можно сравнить не более 4 товаров'); saveData(); renderProducts(getFilteredProducts()); alert('Добавлено в сравнение'); }
-
-    function getFilteredProducts() {
-        let filtered = [...products];
-        let cat = document.querySelector('.categories a.active')?.dataset.cat;
-        if(cat && cat !== 'all') filtered = filtered.filter(p => p.category === cat);
-        let search = document.getElementById('searchInput').value.toLowerCase();
-        if(search) filtered = filtered.filter(p => p.name.toLowerCase().includes(search));
-        let min = parseInt(document.getElementById('minPrice').value) || 0;
-        let max = parseInt(document.getElementById('maxPrice').value) || 999999;
-        filtered = filtered.filter(p => p.price >= min && p.price <= max);
-        let brand = document.getElementById('brandFilter').value;
-        if(brand) filtered = filtered.filter(p => p.brand === brand);
-        return filtered;
-    }
-
-    function showProductModal(id) {
-        let p = products.find(pr => pr.id === id);
-        alert(`${p.name}\nЦена: ${p.price.toLocaleString()} ₽\nХарактеристики: ${p.specs || 'Нет данных'}\nРейтинг: ${p.rating}\n\n💡 Чтобы добавить отзыв, перейдите в корзину/избранное - демо-функционал`);
-    }
-
-    // Modal functions
-    function openModal(modalId, contentFunc) { let modal = document.getElementById(modalId); modal.style.display = 'flex'; contentFunc(); modal.querySelector('.close').onclick = () => modal.style.display = 'none'; window.onclick = (e) => { if(e.target === modal) modal.style.display = 'none'; }; }
-    function showCart() { openModal('cartModal', () => { let itemsDiv = document.getElementById('cartItems'); if(cart.length===0) itemsDiv.innerHTML='<p>Корзина пуста</p>'; else itemsDiv.innerHTML = cart.map(item => { let p = products.find(pr => pr.id === item.id); return `<div class="cart-item"><span>${p.name} x${item.qty}</span><span>${(p.price*item.qty).toLocaleString()} ₽ <button class="remove-cart-item" data-id="${item.id}">❌</button></span></div>`; }).join(''); document.getElementById('cartTotal').innerHTML = `Итого: ${cart.reduce((s,i)=> s + (products.find(p=>p.id===i.id).price * i.qty),0).toLocaleString()} ₽`; document.querySelectorAll('.remove-cart-item').forEach(btn => btn.onclick = () => { cart = cart.filter(i => i.id !== parseInt(btn.dataset.id)); saveData(); showCart(); renderProducts(getFilteredProducts()); }); }); }
-    function showFav() { openModal('favModal', () => { let div = document.getElementById('favItems'); if(favorites.length===0) div.innerHTML='Нет избранных'; else div.innerHTML = favorites.map(id => { let p = products.find(pr => pr.id === id); return `<div>${p.name} - ${p.price.toLocaleString()} ₽ <button onclick="toggleFav(${p.id}); location.reload();">Удалить</button></div>`; }).join(''); }); }
-    function showCompare() { openModal('compareModal', () => { let div = document.getElementById('compareItems'); if(compareList.length===0) div.innerHTML='Нет товаров для сравнения'; else div.innerHTML = compareList.map(id => { let p = products.find(pr => pr.id === id); return `<div class="compare-item"><strong>${p.name}</strong><br>Цена: ${p.price} ₽<br>Рейтинг: ${p.rating}<br><button onclick="removeFromCompare(${id})">Убрать</button></div>`; }).join(''); }); }
-    function removeFromCompare(id) { compareList = compareList.filter(i => i !== id); saveData(); showCompare(); renderProducts(getFilteredProducts()); }
-
-    document.getElementById('cartIconBtn').onclick = showCart;
-    document.getElementById('favIconBtn').onclick = showFav;
-    document.getElementById('compareIconBtn').onclick = showCompare;
-    document.getElementById('applyFilters').onclick = () => renderProducts(getFilteredProducts());
-    document.getElementById('searchBtn').onclick = () => renderProducts(getFilteredProducts());
-    document.getElementById('searchInput').addEventListener('keyup', (e) => { if(e.key === 'Enter') renderProducts(getFilteredProducts()); });
-    document.querySelectorAll('#categoriesNav a').forEach(link => { link.onclick = (e) => { e.preventDefault(); document.querySelectorAll('#categoriesNav a').forEach(l => l.classList.remove('active')); link.classList.add('active'); renderProducts(getFilteredProducts()); }; });
-    document.getElementById('bannerShopBtn').onclick = () => { document.querySelector('#categoriesNav a[data-cat="Смартфоны"]').click(); };
-    document.getElementById('checkoutBtn').onclick = () => { if(cart.length===0){alert('Корзина пуста'); return;} openModal('orderModal', () => {}); };
-    document.getElementById('orderForm').onsubmit = (e) => { e.preventDefault(); alert(`Заказ оформлен! Спасибо, ${document.getElementById('orderName').value}. Наш менеджер свяжется с вами.`); cart = []; saveData(); renderProducts(getFilteredProducts()); document.getElementById('orderModal').style.display='none'; };
-
-    // Инициализация
-    renderProducts(products);
-    updateCounters();
-</script>
-</body>
+render(products);
+</script></body>
 </html>
