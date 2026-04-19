@@ -37,11 +37,6 @@
             z-index: 1;
         }
 
-        /* Cursor custom */
-        html {
-            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><circle cx="16" cy="16" r="6" fill="%233B82F6"/><circle cx="16" cy="16" r="10" fill="none" stroke="%233B82F6" stroke-width="1"/></svg>') 16 16, auto;
-        }
-
         /* Bottom Navigation */
         .bottom-nav {
             position: fixed;
@@ -687,6 +682,32 @@
             background: rgba(30, 41, 59, 0.6);
             color: #E8EAED;
         }
+
+        .profile-section {
+            background: rgba(59, 130, 246, 0.1);
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .profile-info {
+            margin-bottom: 15px;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+        }
+
+        .profile-label {
+            font-size: 12px;
+            color: #94A3B8;
+            margin-bottom: 5px;
+        }
+
+        .profile-value {
+            font-size: 16px;
+            font-weight: 600;
+            color: #3B82F6;
+        }
     </style>
 </head>
 <body>
@@ -728,7 +749,7 @@
         <div class="spec-group">
             <input type="text" placeholder="Характеристика" class="spec-key">
             <input type="text" placeholder="Значение" class="spec-value">
-            <button type="button" class="remove-spec" style="background:rgba(239, 68, 68, 0.2); border:1px solid rgba(239, 68, 68, 0.5); border-radius:12px; padding:0 12px; color:#F87171; cursor:pointer; transition:all 0.3s ease;">✖</button>
+            <button type="button" class="remove-spec" style="background:rgba(239, 68, 68, 0.2); border:1px solid rgba(239, 68, 68, 0.5); border-radius:12px; padding:0 12px; color:#F87171; cursor:pointer;">✕</button>
         </div>
     </div>
     <button id="addSpecBtn" class="btn-secondary" style="margin:12px 0; width:100%;">+ Добавить характеристику</button>
@@ -740,7 +761,7 @@
 <div class="bottom-nav">
     <button class="nav-item active" data-nav="home"><i class="fas fa-home"></i><span>Главная</span></button>
     <button class="nav-item" data-nav="cart"><i class="fas fa-shopping-cart"></i><span>Корзина</span></button>
-    <button class="nav-item" data-nav="admin"><i class="fas fa-user-shield"></i><span>Админ</span></button>
+    <button class="nav-item" data-nav="profile"><i class="fas fa-user"></i><span>Профиль</span></button>
 </div>
 
 <button class="filter-btn" id="filterBtn"><i class="fas fa-sliders-h"></i></button>
@@ -748,7 +769,7 @@
 <div class="filters-drawer" id="filtersDrawer">
     <div style="display: flex; justify-content: space-between; margin-bottom: 24px; align-items: center;">
         <h3 style="color: #E8EAED; font-size: 22px;">Фильтры</h3>
-        <button id="closeFilters" style="background:none; border:none; font-size:28px; color:#3B82F6; cursor:pointer; transition:all 0.3s ease;" onclick="this.style.transform='rotate(90deg)'">✕</button>
+        <button id="closeFilters" style="background:none; border:none; font-size:28px; color:#3B82F6; cursor:pointer; transition:all 0.3s ease;">✕</button>
     </div>
     <div class="filter-group">
         <label>Цена (₽)</label>
@@ -786,6 +807,24 @@
     </div>
 </div>
 
+<div id="profileModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header"><span>👤 Мой профиль</span><span class="closeModal" style="cursor:pointer;">✕</span></div>
+        <div id="profileContent"></div>
+    </div>
+</div>
+
+<div id="adminAuthModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header"><span>🔐 Доступ в админ</span><span class="closeModal" style="cursor:pointer;">✕</span></div>
+        <div style="margin-bottom: 20px;">
+            <p style="color: #94A3B8; margin-bottom: 15px;">Введите номер администратора:</p>
+            <input type="tel" id="adminPhone" class="auth-input" placeholder="+7 (999) 999-99-99">
+            <button id="adminAccessBtn" class="btn-primary">Войти в админ</button>
+        </div>
+    </div>
+</div>
+
 <div id="orderModal" class="modal">
     <div class="modal-content">
         <div class="modal-header"><span>📦 Оформление заказа</span><span class="closeModal" style="cursor:pointer;">✕</span></div>
@@ -809,6 +848,8 @@
 </div>
 
 <script>
+    const ADMIN_PHONE = '89999993834';
+    
     let products = JSON.parse(localStorage.getItem('sim_products')) || [];
     let cart = JSON.parse(localStorage.getItem('sim_cart')) || [];
     let currentUser = JSON.parse(localStorage.getItem('sim_user')) || null;
@@ -816,6 +857,12 @@
     let currentCategory = "Все";
     let searchQuery = "";
     let currentProduct = null;
+
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
 
     function saveAll() {
         localStorage.setItem('sim_products', JSON.stringify(products));
@@ -857,7 +904,7 @@
         let filtered = getFilteredProducts();
         let container = document.getElementById('productsContainer');
         if(filtered.length === 0) {
-            container.innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><i class="fas fa-box-open"></i><p>Нет товаров. Добавьте первый товар через админ-панель</p></div>';
+            container.innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><i class="fas fa-box-open"></i><p>Нет товаров. Добавьте первый товар через админ панель</p></div>';
             return;
         }
         container.innerHTML = filtered.map(p => `
@@ -879,15 +926,15 @@
         document.body.style.overflow = 'hidden';
         let specsHtml = '';
         if(currentProduct.specs && currentProduct.specs.length) {
-            specsHtml = currentProduct.specs.map(s => `<div style="display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid rgba(59, 130, 246, 0.1); color:#E8EAED;"><span style="color:#94A3B8;">${escapeHtml(s.key)}</span><span style="font-weight:600;">${escapeHtml(s.value)}</span></div>`).join('');
+            specsHtml = currentProduct.specs.map(s => `<div style="display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid rgba(59, 130, 246, 0.1); color:#E8EAED;"><span style="font-weight:600;">${escapeHtml(s.key)}</span><span>${escapeHtml(s.value)}</span></div>`).join('');
         }
         document.getElementById('productPageContent').innerHTML = `
             <div style="text-align:center; padding:24px; background:rgba(59, 130, 246, 0.1);"><img src="${currentProduct.image}" style="max-width:100%; max-height:300px; object-fit:contain;"></div>
             <div style="padding:20px;">
                 <h2 style="font-size:26px; color:#E8EAED; margin-bottom:12px;">${escapeHtml(currentProduct.name)}</h2>
-                <div class="price" style="font-size:32px; margin:16px 0;">${currentProduct.price.toLocaleString()} ₽${currentProduct.oldPrice ? ` <span style="font-size:18px; text-decoration:line-through; color:#64748B; margin-left:12px;">${currentProduct.oldPrice.toLocaleString()} ₽</span>` : ''}</div>
+                <div class="price" style="font-size:32px; margin:16px 0;">${currentProduct.price.toLocaleString()} ₽${currentProduct.oldPrice ? ` <span style="font-size:18px; text-decoration:line-through; color:#64748B;">${currentProduct.oldPrice.toLocaleString()}</span>` : ''}</div>
                 <button class="btn-primary" onclick="addToCartAndClose(${currentProduct.id})"><i class="fas fa-cart-plus"></i> Добавить в корзину</button>
-                <div style="background:rgba(59, 130, 246, 0.1); padding:18px; border-radius:16px; margin:20px 0; border: 1px solid rgba(59, 130, 246, 0.2);"><h4 style="color:#E8EAED; margin-bottom:12px;">📋 Характеристики</h4><div style="color:#94A3B8;">${specsHtml || 'Не указаны'}</div></div>
+                <div style="background:rgba(59, 130, 246, 0.1); padding:18px; border-radius:16px; margin:20px 0; border: 1px solid rgba(59, 130, 246, 0.2);"><h4 style="color:#E8EAED; margin-bottom:12px;">📋 Характеристики</h4>${specsHtml || '<p style="color:#94A3B8;">Нет характеристик</p>'}</div>
             </div>
         `;
     }
@@ -899,9 +946,9 @@
         else cart.push({ id, qty: 1 });
         saveAll();
         showToast("✅ Товар добавлен в корзину");
+        document.getElementById('productPage').style.display = 'none';
+        document.body.style.overflow = 'auto';
     }
-
-    function addToCart(id) { addToCartAndClose(id); }
 
     function showModal(modalId) {
         let modal = document.getElementById(modalId);
@@ -918,11 +965,51 @@
             div.innerHTML = cart.map(item => {
                 let p = products.find(pr => pr.id === item.id);
                 if(!p) return '';
-                return `<div class="cart-item"><span><b>${escapeHtml(p.name)}</b> x${item.qty}</span><span>${(p.price*item.qty).toLocaleString()} ₽ <button onclick="removeFromCart(${item.id})" style="background:#EF4444; color:white; border:none; border-radius:12px; padding:6px 12px; cursor:pointer; margin-left:12px; transition:all 0.3s ease;" onmouseover="this.style.background='#DC2626'" onmouseout="this.style.background='#EF4444'">Удалить</button></span></div>`;
+                return `<div class="cart-item"><span><b>${escapeHtml(p.name)}</b> x${item.qty}</span><span>${(p.price*item.qty).toLocaleString()} ₽ <button onclick="removeFromCart(${item.id})" style="background:rgba(239, 68, 68, 0.2); border:1px solid rgba(239, 68, 68, 0.5); color:#F87171; padding:6px 12px; border-radius:8px; cursor:pointer;">✕</button></span></div>`;
             }).join('');
             let total = cart.reduce((s,i)=> s + (products.find(p=>p.id===i.id)?.price || 0) * i.qty,0);
             document.getElementById('cartTotal').innerHTML = `💰 Итого: <span style="color:#3B82F6;">${total.toLocaleString()} ₽</span>`;
         }
+    }
+
+    function showProfileModal() {
+        if (!currentUser) {
+            showModal('authModal');
+            return;
+        }
+        showModal('profileModal');
+        let profileContent = document.getElementById('profileContent');
+        profileContent.innerHTML = `
+            <div class="profile-section">
+                <div class="profile-info">
+                    <div class="profile-label">📱 Телефон:</div>
+                    <div class="profile-value">${escapeHtml(currentUser.phone)}</div>
+                </div>
+                <div class="profile-info">
+                    <div class="profile-label">👤 Имя:</div>
+                    <div class="profile-value">${escapeHtml(currentUser.name)}</div>
+                </div>
+                <div class="profile-info">
+                    <div class="profile-label">🆔 ID:</div>
+                    <div class="profile-value">${currentUser.id}</div>
+                </div>
+            </div>
+            <button class="btn-secondary" style="width:100%; margin-bottom:10px;" onclick="showAdminAuthModal()">🔐 Доступ в админ</button>
+            <button class="btn-secondary" style="width:100%; background:rgba(239, 68, 68, 0.2); color:#F87171;" onclick="logoutUser()">Выход</button>
+        `;
+    }
+
+    function showAdminAuthModal() {
+        document.getElementById('profileModal').style.display = 'none';
+        showModal('adminAuthModal');
+    }
+
+    function logoutUser() {
+        currentUser = null;
+        saveAll();
+        document.getElementById('profileModal').style.display = 'none';
+        showToast("👋 Вы вышли из аккаунта");
+        renderProducts();
     }
 
     function removeFromCart(id) { cart = cart.filter(i => i.id !== id); saveAll(); showCartModal(); renderProducts(); }
@@ -965,7 +1052,7 @@
     document.getElementById('addSpecBtn').onclick = () => {
         let div = document.createElement('div');
         div.className = 'spec-group';
-        div.innerHTML = `<input type="text" placeholder="Характеристика" class="spec-key"><input type="text" placeholder="Значение" class="spec-value"><button type="button" class="remove-spec" style="background:rgba(239, 68, 68, 0.2); border:1px solid rgba(239, 68, 68, 0.5); border-radius:12px; padding:0 12px; color:#F87171; cursor:pointer; transition:all 0.3s ease;">✖</button>`;
+        div.innerHTML = `<input type="text" placeholder="Характеристика" class="spec-key"><input type="text" placeholder="Значение" class="spec-value"><button type="button" class="remove-spec" style="background:rgba(239, 68, 68, 0.2); border:1px solid rgba(239, 68, 68, 0.5); border-radius:12px; padding:0 12px; color:#F87171; cursor:pointer;">✕</button>`;
         document.getElementById('specsContainer').appendChild(div);
         div.querySelector('.remove-spec').onclick = () => div.remove();
     };
@@ -983,7 +1070,6 @@
         document.getElementById('authName').style.display = 'block';
         document.getElementById('loginBtn').style.display = 'none';
         document.getElementById('registerBtn').innerText = 'Создать аккаунт';
-        let isRegMode = true;
         document.getElementById('registerBtn').onclick = () => {
             let name = document.getElementById('authName').value.trim();
             let phone = document.getElementById('authPhone').value.trim();
@@ -1000,47 +1086,94 @@
         };
     };
 
-    document.getElementById('userIconBtn').onclick = () => { if(currentUser) showToast(`👤 ${currentUser.name}\n📞 ${currentUser.phone}`); else showModal('authModal'); };
+    document.getElementById('adminAccessBtn').onclick = () => {
+        let phone = document.getElementById('adminPhone').value.trim();
+        if (phone === ADMIN_PHONE) {
+            document.getElementById('adminAuthModal').style.display = 'none';
+            document.getElementById('adminPanel').style.display = 'block';
+            showToast("✅ Добро пожаловать в админ панель!");
+        } else {
+            showToast("❌ Неверный номер администратора");
+        }
+    };
 
-    document.getElementById('checkoutBtn').onclick = () => { if(!isAuthenticated()) return; if(cart.length===0){ showToast("⚠️ Корзина пуста"); return; } showModal('orderModal'); };
-    document.getElementById('orderForm').onsubmit = (e) => { e.preventDefault(); showToast(`✅ Заказ оформлен! Спасибо, ${document.getElementById('orderName').value}. Менеджер позвонит в течение часа.`); cart = []; saveAll(); document.getElementById('orderModal').style.display = 'none'; renderProducts(); };
+    document.getElementById('checkoutBtn').onclick = () => {
+        if(!isAuthenticated()) return;
+        document.getElementById('cartModal').style.display = 'none';
+        showModal('orderModal');
+    };
 
-    document.getElementById('searchInput').addEventListener('input', (e) => { searchQuery = e.target.value.toLowerCase(); renderProducts(); });
-    document.getElementById('applyFiltersBtn').onclick = () => { renderProducts(); document.getElementById('filtersDrawer').classList.remove('open'); document.getElementById('overlay').style.display = 'none'; };
-    document.getElementById('filterBtn').onclick = () => { document.getElementById('filtersDrawer').classList.add('open'); document.getElementById('overlay').style.display = 'block'; };
-    document.getElementById('closeFilters').onclick = () => { document.getElementById('filtersDrawer').classList.remove('open'); document.getElementById('overlay').style.display = 'none'; };
+    document.getElementById('orderForm').onsubmit = (e) => {
+        e.preventDefault();
+        showToast("✅ Заказ успешно оформлен!");
+        document.getElementById('orderModal').style.display = 'none';
+        cart = [];
+        saveAll();
+        renderProducts();
+    };
+
     document.getElementById('cartHeaderBtn').onclick = showCartModal;
-    document.getElementById('closeProductPage').onclick = () => { document.getElementById('productPage').style.display = 'none'; document.body.style.overflow = 'auto'; };
+    document.getElementById('filterBtn').onclick = () => {
+        document.getElementById('filtersDrawer').classList.toggle('open');
+        document.getElementById('overlay').style.display = document.getElementById('filtersDrawer').classList.contains('open') ? 'block' : 'none';
+    };
+    document.getElementById('closeFilters').onclick = () => {
+        document.getElementById('filtersDrawer').classList.remove('open');
+        document.getElementById('overlay').style.display = 'none';
+    };
+    document.getElementById('overlay').onclick = () => {
+        document.getElementById('filtersDrawer').classList.remove('open');
+        document.getElementById('overlay').style.display = 'none';
+    };
+    document.getElementById('applyFiltersBtn').onclick = () => {
+        renderProducts();
+        document.getElementById('filtersDrawer').classList.remove('open');
+        document.getElementById('overlay').style.display = 'none';
+    };
 
-    let categories = ["Все", "Смартфоны", "Наушники", "Зарядки", "Power Bank", "Гаджеты"];
-    function renderCategories() {
-        let container = document.getElementById('categoriesList');
-        container.innerHTML = categories.map(cat => `<button class="cat-btn ${cat === currentCategory ? 'active' : ''}" data-cat="${cat}">${cat}</button>`).join('');
-        document.querySelectorAll('.cat-btn').forEach(btn => {
-            btn.onclick = () => { currentCategory = btn.dataset.cat; renderCategories(); renderProducts(); };
-        });
-    }
+    document.getElementById('searchInput').oninput = (e) => {
+        searchQuery = e.target.value.toLowerCase();
+        renderProducts();
+    };
+
+    document.getElementById('closeProductPage').onclick = () => {
+        document.getElementById('productPage').style.display = 'none';
+        document.body.style.overflow = 'auto';
+    };
 
     document.querySelectorAll('.nav-item').forEach(btn => {
         btn.onclick = () => {
             document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            if(btn.dataset.nav === 'home') { document.getElementById('adminPanel').style.display = 'none'; renderProducts(); }
-            if(btn.dataset.nav === 'cart') showCartModal();
-            if(btn.dataset.nav === 'admin') { 
-                if(currentUser && (currentUser.phone === 'admin' || currentUser.name === 'Admin')) { document.getElementById('adminPanel').style.display = 'block'; renderProducts(); }
-                else { showToast("🔒 Доступ только для администратора"); document.getElementById('adminPanel').style.display = 'none'; }
+            let nav = btn.dataset.nav;
+            if(nav === 'home') {
+                document.getElementById('productsContainer').style.display = 'grid';
+                document.getElementById('adminPanel').style.display = 'none';
+            } else if(nav === 'cart') {
+                showCartModal();
+            } else if(nav === 'profile') {
+                showProfileModal();
             }
         };
     });
 
-    function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, function(m) { if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m; }); }
+    // Инициализация
+    function renderCategories() {
+        let categories = ["Все", "Смартфоны", "Наушники", "Зарядки", "Power Bank", "Гаджеты"];
+        document.getElementById('categoriesList').innerHTML = categories.map(c => 
+            `<button class="cat-btn ${c === 'Все' ? 'active' : ''}" onclick="currentCategory='${c}'; renderProducts(); document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active')); this.classList.add('active');">${c}</button>`
+        ).join('');
+    }
 
     renderCategories();
     renderProducts();
     updateBadges();
-    renderBrandFilter();
-    if(currentUser) showToast(`👋 С возвращением, ${currentUser.name}!`);
+
+    document.getElementById('userIconBtn').onclick = () => {
+        if(currentUser) showProfileModal();
+        else showModal('authModal');
+    };
 </script>
+
 </body>
-</html>
+        </html>
