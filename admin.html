@@ -1,216 +1,152 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SIM-CONTROL | OS v3.0</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <title>Admin — SimMarket Электроника</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Inter:wght@300;600;800&display=swap');
+        :root { --bg: #0A0E27; --accent: #3B82F6; --card: rgba(30, 41, 59, 0.7); }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: white; margin: 0; padding: 15px; }
+        .card { background: var(--card); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 20px; padding: 20px; margin-bottom: 20px; }
+        h2, h3 { margin-top: 0; color: #fff; }
         
-        :root { --gold: #bf953f; --dark-bg: #030303; }
-        body { font-family: 'Inter', sans-serif; background: var(--dark-bg); color: #fff; overflow-x: hidden; }
+        label { display: block; font-size: 12px; color: #94A3B8; margin: 10px 0 5px; }
+        input, select { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #334155; background: #1e293b; color: white; box-sizing: border-box; }
         
-        .cyber-panel { background: rgba(15, 15, 15, 0.9); border: 1px solid rgba(191, 149, 63, 0.2); box-shadow: 0 0 20px rgba(191, 149, 63, 0.05); }
-        .gold-glow { text-shadow: 0 0 10px rgba(191, 149, 63, 0.5); color: var(--gold); font-family: 'Orbitron', sans-serif; }
-        .btn-action { background: linear-gradient(135deg, #bf953f, #8a6d29); color: #000; font-weight: 800; border-radius: 12px; transition: 0.2s; }
-        .btn-action:active { transform: scale(0.95); box-shadow: 0 0 15px var(--gold); }
+        .spec-row { display: flex; gap: 8px; margin-bottom: 8px; }
+        .btn { border: none; border-radius: 12px; padding: 14px; font-weight: 700; cursor: pointer; transition: 0.3s; width: 100%; margin-top: 10px; }
+        .btn-add { background: linear-gradient(135deg, #3B82F6, #2563EB); color: white; }
+        .btn-spec { background: rgba(59, 130, 246, 0.1); color: #3B82F6; padding: 8px; font-size: 12px; }
         
-        .stat-card { background: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0) 100%); border-radius: 20px; padding: 20px; border: 1px solid rgba(255,255,255,0.05); }
-        .input-cyber { background: #0a0a0a; border: 1px solid #222; border-radius: 12px; padding: 12px 16px; width: 100%; color: #fff; outline: none; }
-        .input-cyber:focus { border-color: var(--gold); }
-        
-        /* Анимация загрузки */
-        .loader { width: 20px; height: 20px; border: 3px solid #333; border-top-color: var(--gold); border-radius: 50%; animation: spin 1s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
+        .item-preview { display: flex; align-items: center; gap: 15px; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 12px; margin-bottom: 8px; border: 1px solid rgba(255,255,255,0.1); }
+        .item-preview img { width: 45px; height: 45px; border-radius: 8px; object-fit: cover; }
+        .del-btn { background: none; border: none; color: #EF4444; font-size: 18px; padding-left: 10px; }
     </style>
 </head>
-<body class="p-4 md:p-8">
+<body>
 
-    <div id="gate" class="fixed inset-0 z-[1000] bg-black flex items-center justify-center">
-        <div class="cyber-panel p-10 rounded-[3rem] w-full max-w-sm text-center">
-            <h1 class="gold-glow text-2xl mb-8">ACCESS CODE</h1>
-            <input type="password" id="pass" placeholder="••••" class="input-cyber text-center text-2xl tracking-[1em] mb-6">
-            <button onclick="unlock()" class="btn-action w-full py-4 uppercase tracking-widest">Авторизация</button>
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+    <h2>Админка ⚙️</h2>
+    <button onclick="location.reload()" style="background:none; border:none; color:var(--accent);"><i class="fas fa-sync"></i></button>
+</div>
+
+<div class="card">
+    <h3>Добавить товар</h3>
+    
+    <label>Название товара</label>
+    <input type="text" id="name" placeholder="Напр: MacBook Air M2">
+
+    <div style="display: flex; gap: 10px;">
+        <div style="flex:1">
+            <label>Цена (₽)</label>
+            <input type="number" id="price" placeholder="120000">
+        </div>
+        <div style="flex:1">
+            <label>Старая цена (для скидки)</label>
+            <input type="number" id="oldPrice" placeholder="145000">
         </div>
     </div>
 
-    <div id="os" class="hidden max-w-6xl mx-auto">
-        
-        <div class="flex justify-between items-start mb-10">
-            <div>
-                <h1 class="gold-glow text-3xl font-black italic">SIM MARKET <span class="text-white text-sm opacity-50 font-normal">v3.0</span></h1>
-                <div class="flex items-center gap-2 mt-1">
-                    <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                    <span class="text-[10px] font-bold opacity-40 uppercase tracking-widest">Система активна</span>
-                </div>
-            </div>
-            <button onclick="location.reload()" class="cyber-panel p-3 rounded-xl opacity-50 hover:opacity-100 transition">✕</button>
-        </div>
+    <label>Категория</label>
+    <select id="category">
+        <option>Смартфоны</option>
+        <option>Ноутбуки</option>
+        <option>Часы</option>
+        <option>Наушники</option>
+    </select>
 
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
-            <div class="stat-card">
-                <p class="text-[10px] opacity-40 font-bold uppercase mb-2">Новые заявки</p>
-                <div class="flex items-end gap-2">
-                    <span id="s-leads" class="text-4xl font-black">0</span>
-                    <span class="text-green-500 text-[10px] font-bold mb-1">+входящие</span>
-                </div>
-            </div>
-            <div class="stat-card">
-                <p class="text-[10px] opacity-40 font-bold uppercase mb-2">Всего номеров</p>
-                <span id="s-total" class="text-4xl font-black text-white">0</span>
-            </div>
-            <div class="stat-card border-amber-500/20">
-                <p class="text-[10px] opacity-40 font-bold uppercase mb-2">Капитализация</p>
-                <span id="s-cash" class="text-3xl font-black gold-text">0 ₽</span>
-            </div>
-            <div class="stat-card">
-                <p class="text-[10px] opacity-40 font-bold uppercase mb-2">Продано за всё время</p>
-                <span id="s-sold" class="text-4xl font-black text-green-500">0</span>
-            </div>
-        </div>
+    <label>Бренд</label>
+    <input type="text" id="brand" placeholder="Apple">
 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            
-            <div class="lg:col-span-4 space-y-6">
-                <div class="cyber-panel p-6 rounded-[2rem]">
-                    <h3 class="text-xs font-black uppercase mb-6 opacity-60 italic">Добавить лот</h3>
-                    <div class="space-y-4">
-                        <input type="text" id="n-val" placeholder="Номер (999-000-11-22)" class="input-cyber">
-                        <select id="n-op" class="input-cyber">
-                            <option value="mts">МТС</option>
-                            <option value="beeline">Билайн</option>
-                            <option value="megafon">Мегафон</option>
-                            <option value="tele2">Tele2</option>
-                            <option value="yota">Yota</option>
-                        </select>
-                        <input type="number" id="n-price" placeholder="Цена (1000)" class="input-cyber">
-                        <button onclick="add()" class="btn-action w-full py-4 text-sm uppercase">Опубликовать</button>
-                    </div>
-                </div>
+    <label>Ссылка на фото (URL)</label>
+    <input type="text" id="image" placeholder="https://ссылка-на-картинку.jpg">
 
-                <div class="cyber-panel p-6 rounded-[2rem]">
-                    <h3 class="text-xs font-black uppercase mb-4 opacity-30">Инструменты Mass-Управления</h3>
-                    <div class="grid grid-cols-2 gap-2">
-                        <button onclick="massPrice()" class="text-[9px] font-bold p-3 border border-white/5 rounded-xl hover:bg-white/5">Цена для всех</button>
-                        <button onclick="clearLeads()" class="text-[9px] font-bold p-3 border border-red-500/10 rounded-xl text-red-500/50 hover:bg-red-500/5">Сброс заявок</button>
-                        <button onclick="alert('Скоро!')" class="text-[9px] font-bold p-3 border border-white/5 rounded-xl opacity-20">SMS-рассылка</button>
-                        <button onclick="alert('Скоро!')" class="text-[9px] font-bold p-3 border border-white/5 rounded-xl opacity-20">Экспорт Excel</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="lg:col-span-8">
-                <div class="cyber-panel rounded-[2.5rem] overflow-hidden">
-                    <div class="p-6 border-b border-white/5 flex justify-between items-center bg-white/[0.02]">
-                        <div class="flex gap-4">
-                            <button onclick="setTab('active')" id="tab-a" class="text-xs font-black gold-glow">В НАЛИЧИИ</button>
-                            <button onclick="setTab('sold')" id="tab-s" class="text-xs font-black opacity-30">ПРОДАННЫЕ</button>
-                        </div>
-                        <input type="text" id="search" oninput="draw()" placeholder="Поиск..." class="bg-transparent border-b border-white/10 text-xs py-1 outline-none focus:border-amber-500 w-32">
-                    </div>
-                    
-                    <div id="db-list" class="divide-y divide-white/5 max-h-[600px] overflow-y-auto p-2">
-                        </div>
-                </div>
-            </div>
-
+    <label>Характеристики</label>
+    <div id="specsContainer">
+        <div class="spec-row">
+            <input type="text" placeholder="Свойство (Память)" class="spec-key">
+            <input type="text" placeholder="Значение (256 ГБ)" class="spec-val">
         </div>
     </div>
+    <button class="btn btn-spec" onclick="addSpecRow()">+ Добавить еще характеристику</button>
 
-    <script>
-        // --- КОНФИГУРАЦИЯ (Обязательно вставь свои ключи!) ---
-        const config = {
-            apiKey: "ТВОЙ_КЛЮЧ",
-            databaseURL: "ТВОЯ_ССЫЛКА_FIREBASE",
-            projectId: "ID_ПРОЕКТА"
+    <button class="btn btn-add" onclick="saveProduct()">Опубликовать на сайт</button>
+</div>
+
+<h3 style="padding-left: 5px;">Товары на сайте (<span id="count">0</span>)</h3>
+<div id="list"></div>
+
+<script>
+    let products = JSON.parse(localStorage.getItem('sim_products')) || [];
+
+    function addSpecRow() {
+        const div = document.createElement('div');
+        div.className = 'spec-row';
+        div.innerHTML = `<input type="text" placeholder="Свойство" class="spec-key"><input type="text" placeholder="Значение" class="spec-val">`;
+        document.getElementById('specsContainer').appendChild(div);
+    }
+
+    function saveProduct() {
+        const name = document.getElementById('name').value;
+        const price = parseInt(document.getElementById('price').value);
+        const oldPrice = parseInt(document.getElementById('oldPrice').value);
+        const category = document.getElementById('category').value;
+        const brand = document.getElementById('brand').value;
+        const image = document.getElementById('image').value || 'https://placehold.co/300x300?text=Electronics';
+
+        if (!name || !price) return alert('Заполни название и цену!');
+
+        // Собираем характеристики в массив объектов
+        const specs = [];
+        document.querySelectorAll('.spec-row').forEach(row => {
+            const k = row.querySelector('.spec-key').value;
+            const v = row.querySelector('.spec-val').value;
+            if (k && v) specs.push({ key: k, value: v });
+        });
+
+        const newProduct = {
+            id: Date.now(),
+            name,
+            price,
+            oldPrice: oldPrice || null,
+            category,
+            brand,
+            image,
+            specs
         };
 
-        firebase.initializeApp(config);
-        const db = firebase.database();
-        let curTab = 'active';
+        products.push(newProduct);
+        localStorage.setItem('sim_products', JSON.stringify(products));
+        alert('Товар выставлен!');
+        location.reload(); 
+    }
 
-        function unlock() {
-            if(document.getElementById('pass').value === "7777") {
-                document.getElementById('gate').style.display = 'none';
-                document.getElementById('os').style.display = 'block';
-                init();
-            } else { alert("Отказ в доступе"); }
+    function deleteItem(id) {
+        if (confirm('Удалить товар?')) {
+            products = products.filter(p => p.id !== id);
+            localStorage.setItem('sim_products', JSON.stringify(products));
+            render();
         }
+    }
 
-        function init() {
-            // Слушаем базу номеров
-            db.ref('numbers').on('value', s => {
-                const val = s.val() || {};
-                draw(val);
-                stats(val);
-            });
+    function render() {
+        document.getElementById('count').innerText = products.length;
+        document.getElementById('list').innerHTML = products.map(p => `
+            <div class="item-preview">
+                <img src="${p.image}">
+                <div style="flex:1">
+                    <div style="font-size:14px; font-weight:600;">${p.name}</div>
+                    <div style="font-size:12px; color:var(--accent);">${p.price.toLocaleString()} ₽</div>
+                </div>
+                <button class="del-btn" onclick="deleteItem(${p.id})"><i class="fas fa-trash"></i></button>
+            </div>
+        `).reverse().join('');
+    }
 
-            // Слушаем базу заявок (Счетчик лидов)
-            db.ref('leads').on('value', s => {
-                const count = s.val() ? Object.keys(s.val()).length : 0;
-                document.getElementById('s-leads').innerText = count;
-            });
-        }
+    render();
+</script>
 
-        function stats(data) {
-            const arr = Object.values(data);
-            document.getElementById('s-total').innerText = arr.length;
-            document.getElementById('s-sold').innerText = arr.filter(i => i.status === 'sold').length;
-            const cash = arr.reduce((acc, i) => acc + (parseInt(i.price) || 0), 0);
-            document.getElementById('s-cash').innerText = cash.toLocaleString() + ' ₽';
-        }
-
-        function draw(data = null) {
-            if(!data) { db.ref('numbers').once('value', s => draw(s.val())); return; }
-            const list = document.getElementById('db-list');
-            const q = document.getElementById('search').value;
-            list.innerHTML = "";
-
-            Object.keys(data).reverse().forEach(k => {
-                const i = data[k];
-                if(i.status !== curTab) return;
-                if(!i.n.includes(q)) return;
-
-                list.innerHTML += `
-                    <div class="p-4 flex items-center justify-between hover:bg-white/[0.01] transition">
-                        <div class="flex items-center gap-4">
-                            <div class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-[10px] font-black italic gold-text">${i.op}</div>
-                            <div>
-                                <div class="font-black italic text-lg tracking-tighter">+7 ${i.n}</div>
-                                <div class="text-[9px] font-bold opacity-30 uppercase tracking-widest">${i.price} ₽</div>
-                            </div>
-                        </div>
-                        <div class="flex gap-2">
-                            <button onclick="toggle('${k}', '${i.status}')" class="p-2 border border-white/5 rounded-lg text-[10px] font-black uppercase">
-                                ${i.status === 'active' ? '✅' : '♻️'}
-                            </button>
-                            <button onclick="del('${k}')" class="p-2 border border-red-500/10 rounded-lg text-red-500 opacity-30 hover:opacity-100 transition">✕</button>
-                        </div>
-                    </div>
-                `;
-            });
-        }
-
-        function add() {
-            const n = document.getElementById('n-val').value;
-            const op = document.getElementById('n-op').value;
-            const p = document.getElementById('n-price').value || 1000;
-            if(n) { db.ref('numbers').push({ n, op, price: p, status: 'active' }); document.getElementById('n-val').value = ""; }
-        }
-
-        function del(k) { if(confirm('Удалить лот?')) db.ref('numbers/'+k).remove(); }
-        function toggle(k, s) { db.ref('numbers/'+k).update({ status: s === 'active' ? 'sold' : 'active' }); }
-        function setTab(t) { curTab = t; document.getElementById('tab-a').style.opacity = t==='active'?'1':'0.3'; document.getElementById('tab-s').style.opacity = t==='sold'?'1':'0.3'; draw(); }
-        
-        function massPrice() {
-            const p = prompt("Новая цена для всех:");
-            if(p) db.ref('numbers').once('value', s => { const up = {}; s.forEach(c => { up[c.key+'/price'] = p; }); db.ref('numbers').update(up); });
-        }
-        function clearLeads() { if(confirm('Сбросить счетчик заявок?')) db.ref('leads').remove(); }
-    </script>
 </body>
 </html>
