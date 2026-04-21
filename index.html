@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>HASKOIN · Мгновенное сохранение</title>
+    <title>HASKOIN · Надёжное сохранение</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         * {
@@ -469,7 +469,7 @@
         /* ЭФФЕКТ +МОНЕТЫ */
         .floating-score {
             position: absolute;
-            font-size: 24px;
+            font-size: 22px;
             font-weight: 900;
             color: #ffd700;
             text-shadow: 0 0 35px #ffd700, 0 0 20px #00ffff;
@@ -736,10 +736,12 @@
     </div>
     <div class="cyber-grid"></div>
 
+    <!-- ИНДИКАТОР СОХРАНЕНИЯ -->
     <div class="save-indicator" id="saveIndicator">💾 Сохранено</div>
 
     <div class="app">
         <div class="page-content">
+            <!-- МАЙНИНГ -->
             <div class="page active" id="page-mine">
                 <div class="top-panel">
                     <div class="player-card">
@@ -762,17 +764,17 @@
                         <span class="balance-icon">💎</span>
                     </div>
                     <div class="balance-main">
-                        <span class="balance-number" id="balanceDisplay">0.00</span>
+                        <span class="balance-number" id="balanceDisplay">0.000</span>
                         <span class="balance-currency">HASK</span>
                     </div>
                     <div class="balance-stats">
                         <div class="stat-item">
                             <span class="stat-icon">⚡</span>
-                            <span class="stat-value" id="passiveIncome">+0.00</span>
+                            <span class="stat-value" id="passiveIncome">+0.000</span>
                             <span class="stat-label">/сек</span>
                         </div>
                         <div class="tap-stat">
-                            <span id="tapValue">+0.05</span> за тап
+                            <span id="tapValue">+0.001</span> за тап
                         </div>
                     </div>
                 </div>
@@ -786,7 +788,7 @@
                         <div class="energy-value" id="energyText">500/500</div>
                     </div>
                     <div class="energy-bar-container">
-                        <div class="energy-fill" id="energyFill"></div>
+                        <div class="energy-fill" id="energyFill" style="width: 100%;"></div>
                     </div>
                     <div class="energy-footer">
                         <div class="regen-info">
@@ -801,9 +803,9 @@
                     <div class="coin-container">
                         <div class="coin-aura"></div>
                         <div class="coin-3d" id="coin3D">
-                            <div class="coin-face">
+                            <div class="coin-face" style="background: radial-gradient(circle at 30% 35%, #a0a0a0, #606060, #303030); border-color: #888888;">
                                 <div class="coin-shine"></div>
-                                <div class="coin-letter">H</div>
+                                <div class="coin-letter" style="background: linear-gradient(145deg, #e0e0e0, #909090); -webkit-background-clip: text; background-clip: text; color: transparent;">H</div>
                                 <div class="coin-tap-label">MINE</div>
                             </div>
                         </div>
@@ -815,34 +817,40 @@
                     <button class="game-btn gold" id="bonusBtn"><span>🎁</span>БОНУС</button>
                 </div>
 
-                <div class="status-toast" id="mineStatus">💪 Тапай и зарабатывай!</div>
+                <div class="status-toast" id="mineStatus">💪 1000 тапов = 1 HASK</div>
             </div>
 
+            <!-- ПРОКАЧКА -->
             <div class="page" id="page-boost">
                 <div class="section-title">📈 ПРОКАЧКА</div>
                 <div class="upgrade-grid" id="upgradeGrid"></div>
                 <div class="status-toast" id="boostStatus"></div>
             </div>
 
+            <!-- РЕФЕРАЛЫ -->
             <div class="page" id="page-referrals">
                 <div class="section-title">👥 РЕФЕРАЛЫ</div>
                 <div class="ton-card">
                     <div class="ref-link-box">
-                        <div style="color:#ffd700;margin-bottom:8px;">🔗 Ваша ссылка</div>
+                        <div style="color:#ffd700;margin-bottom:8px;">🔗 Ваша реферальная ссылка</div>
                         <div class="ref-link" id="refLink">Загрузка...</div>
                         <button class="game-btn" id="copyRefBtn" style="margin-top:12px;width:100%;">📋 КОПИРОВАТЬ</button>
                     </div>
+                    
                     <div style="color:#00ffff;margin-bottom:12px;text-align:center;">
-                        👥 Рефералов: <span id="refCount">0</span> / 3
+                        👥 Приглашено: <span id="refCount">0</span> / 3
                     </div>
+                    
                     <div class="warning-box">
                         <p style="color:#ff6666;font-size:13px;margin-bottom:8px;">⚠️ УСЛОВИЯ ВЫВОДА</p>
                         <p style="color:#aaaacc;font-size:12px;">• Минимум 3 реферала<br>• Баланс от 100 HASK</p>
                     </div>
+                    
                     <div id="refStatus" style="color:#00ffaa;font-size:12px;text-align:center;"></div>
                 </div>
             </div>
 
+            <!-- ВЫВОД -->
             <div class="page" id="page-wallet">
                 <div class="section-title">💎 ВЫВОД TON</div>
                 <div class="ton-card">
@@ -851,7 +859,7 @@
                     </div>
                     <input class="cyber-input" id="tonAddress" placeholder="Адрес TON (EQ... / UQ...)">
                     <div style="color:#ffd700;margin-bottom:16px;text-align:center;">
-                        💰 Доступно: <span id="availableBalance">0.00</span> HASK
+                        💰 Доступно: <span id="availableBalance">0.000</span> HASK
                     </div>
                     <div id="withdrawWarning" class="warning-box" style="display:none;"></div>
                     <button class="game-btn" id="withdrawBtn" style="width:100%;">💎 ВЫВЕСТИ ВСЁ</button>
@@ -862,6 +870,7 @@
                 </div>
             </div>
 
+            <!-- ПОДДЕРЖКА -->
             <div class="page" id="page-support">
                 <div class="support-card">
                     <div style="font-size:60px;">🆘</div>
@@ -872,6 +881,7 @@
             </div>
         </div>
 
+        <!-- НИЖНЯЯ ПАНЕЛЬ -->
         <div class="bottom-nav">
             <button class="nav-btn active" data-page="mine"><span class="nav-icon">⛏️</span><span>Майнинг</span></button>
             <button class="nav-btn" data-page="boost"><span class="nav-icon">📈</span><span>Прокачка</span></button>
@@ -891,8 +901,7 @@
             const ADMIN_ID = '8445377034';
             const SUPPORT_USERNAME = 'KU1003';
             
-            // НОВЫЕ ПАРАМЕТРЫ
-            const BASE_TAP = 0.05; // 0.05 HASK за тап
+            const BASE_TAP = 0.001;
             const BASE_MAX_ENERGY = 500;
             const ENERGY_COST = 1;
             const BASE_REGEN = 1;
@@ -902,21 +911,21 @@
             const TON_RATE = 0.5 / 100;
             const REFERRAL_REQUIRED = 3;
 
-            let balance = 0.00;
+            let balance = 0.000;
             let maxEnergy = BASE_MAX_ENERGY;
             let currentEnergy = maxEnergy;
             let tapMult = 1.0;
             let regenMult = 1.0;
             let autoActive = false;
+            let totalTaps = 0;
             
             let energyLvl = 1, tapLvl = 1, regenLvl = 1;
             let lastBonus = 0;
-            let lastSaveTime = Date.now();
             let history = [];
             let referralCount = 0;
             
             const userId = tg.initDataUnsafe?.user?.id?.toString() || 'demo';
-            const STORAGE_KEY = `haskoin_v2_${userId}`;
+            const STORAGE_KEY = `haskoin_save_${userId}`;
 
             const user = tg.initDataUnsafe?.user;
             if (user) {
@@ -927,64 +936,77 @@
             const refLink = `https://t.me/HaskoinBot?start=${userId}`;
             document.getElementById('refLink').textContent = refLink;
 
-            function fmt(n) { return n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+            function fmt(n) { return n.toFixed(3).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
             function haskToTon(h) { return ((h / 100) * 0.5).toFixed(3); }
 
+            // ========== ИНДИКАТОР СОХРАНЕНИЯ ==========
             function showSaveIndicator() {
                 const indicator = document.getElementById('saveIndicator');
                 indicator.classList.add('show');
-                setTimeout(() => indicator.classList.remove('show'), 800);
+                setTimeout(() => indicator.classList.remove('show'), 1000);
             }
 
-            // ========== МОМЕНТАЛЬНОЕ СОХРАНЕНИЕ ==========
+            // ========== НАДЁЖНОЕ СОХРАНЕНИЕ ==========
             function saveData() {
                 const data = {
                     balance, maxEnergy, currentEnergy, tapMult, regenMult, autoActive,
-                    energyLvl, tapLvl, regenLvl, lastBonus, lastSaveTime: Date.now(), history, referralCount
+                    totalTaps, energyLvl, tapLvl, regenLvl, lastBonus, history, referralCount
                 };
                 tg.CloudStorage.setItem(STORAGE_KEY, JSON.stringify(data), (err, success) => {
                     if (success) showSaveIndicator();
+                    console.log('Saved:', { balance, lastBonus });
                 });
             }
 
-            // ========== ЗАГРУЗКА С ОФЛАЙН-РЕГЕНЕРАЦИЕЙ ==========
+            // ========== ЗАГРУЗКА ДАННЫХ ==========
             function loadData() {
                 tg.CloudStorage.getItem(STORAGE_KEY, (err, val) => {
                     let loaded = false;
-                    let savedTime = Date.now();
-                    
                     if (!err && val) {
                         try {
                             const d = JSON.parse(val);
-                            balance = d.balance ?? 0.00;
+                            balance = d.balance ?? 0.000;
                             maxEnergy = d.maxEnergy || BASE_MAX_ENERGY;
                             currentEnergy = d.currentEnergy ?? maxEnergy;
                             tapMult = d.tapMult || 1.0;
                             regenMult = d.regenMult || 1.0;
                             autoActive = d.autoActive || false;
+                            totalTaps = d.totalTaps || 0;
                             energyLvl = d.energyLvl || 1;
                             tapLvl = d.tapLvl || 1;
                             regenLvl = d.regenLvl || 1;
                             lastBonus = d.lastBonus || 0;
-                            savedTime = d.lastSaveTime || Date.now();
                             history = d.history || [];
                             referralCount = d.referralCount || 0;
                             loaded = true;
-                        } catch(e) {}
+                            console.log('Loaded:', { balance, lastBonus });
+                        } catch(e) {
+                            console.error('Parse error:', e);
+                        }
                     }
                     
-                    // ОФЛАЙН-РЕГЕНЕРАЦИЯ ЭНЕРГИИ
-                    if (loaded) {
-                        const secondsPassed = Math.floor((Date.now() - savedTime) / 1000);
-                        const energyGained = Math.floor(secondsPassed / 3) * (BASE_REGEN * regenMult);
-                        currentEnergy = Math.min(currentEnergy + energyGained, maxEnergy);
+                    // Проверка стартового параметра (реферал)
+                    const startParam = tg.initDataUnsafe?.start_param;
+                    if (startParam && startParam !== userId) {
+                        // Загружаем глобальные рефералы
+                        tg.CloudStorage.getItem('haskoin_global_refs', (err2, globalVal) => {
+                            let refs = {};
+                            if (!err2 && globalVal) {
+                                try { refs = JSON.parse(globalVal); } catch(e) {}
+                            }
+                            if (!refs[startParam]) refs[startParam] = [];
+                            if (!refs[startParam].includes(userId)) {
+                                refs[startParam].push(userId);
+                                tg.CloudStorage.setItem('haskoin_global_refs', JSON.stringify(refs));
+                            }
+                        });
                     }
                     
-                    // Проверка рефералов
-                    tg.CloudStorage.getItem('haskoin_global_refs', (err2, globalVal) => {
-                        if (!err2 && globalVal) {
+                    // Загружаем количество рефералов
+                    tg.CloudStorage.getItem('haskoin_global_refs', (err3, globalVal3) => {
+                        if (!err3 && globalVal3) {
                             try {
-                                const refs = JSON.parse(globalVal);
+                                const refs = JSON.parse(globalVal3);
                                 referralCount = (refs[userId] || []).length;
                             } catch(e) {}
                         }
@@ -1008,9 +1030,9 @@
                 const pct = (currentEnergy / maxEnergy) * 100;
                 document.getElementById('energyFill').style.width = Math.max(0, pct) + '%';
                 document.getElementById('energyText').textContent = `${Math.floor(currentEnergy)}/${maxEnergy}`;
-                document.getElementById('tapValue').textContent = `+${(BASE_TAP * tapMult).toFixed(2)}`;
+                document.getElementById('tapValue').textContent = `+${(BASE_TAP * tapMult).toFixed(3)}`;
                 document.getElementById('regenInfo').textContent = `+${(BASE_REGEN * regenMult).toFixed(1)} / 3 сек`;
-                document.getElementById('passiveIncome').textContent = `+${(autoActive ? BASE_TAP * tapMult : 0).toFixed(2)}`;
+                document.getElementById('passiveIncome').textContent = `+${(autoActive ? BASE_TAP * tapMult : 0).toFixed(3)}`;
             }
 
             function updateRefUI() {
@@ -1024,15 +1046,15 @@
                         <div class="upgrade-icon">🔋</div>
                         <h4>Энерго-бак</h4>
                         <div class="upgrade-desc">+100 макс.</div>
-                        <div class="upgrade-price">${(0.5 * energyLvl).toFixed(2)} HASK</div>
+                        <div class="upgrade-price">${(0.5 * energyLvl).toFixed(3)} HASK</div>
                         <div class="upgrade-level">Ур. ${energyLvl}</div>
                         <button class="upgrade-btn" data-boost="energy">УЛУЧШИТЬ</button>
                     </div>
                     <div class="upgrade-card">
                         <div class="upgrade-icon">💪</div>
                         <h4>Мульти-тап</h4>
-                        <div class="upgrade-desc">+0.05 за тап</div>
-                        <div class="upgrade-price">${(1.0 * tapLvl).toFixed(2)} HASK</div>
+                        <div class="upgrade-desc">+0.001 за тап</div>
+                        <div class="upgrade-price">${(1.0 * tapLvl).toFixed(3)} HASK</div>
                         <div class="upgrade-level">Ур. ${tapLvl}</div>
                         <button class="upgrade-btn" data-boost="tap">УЛУЧШИТЬ</button>
                     </div>
@@ -1040,7 +1062,7 @@
                         <div class="upgrade-icon">⚡</div>
                         <h4>Турбо-реген</h4>
                         <div class="upgrade-desc">+1 / 3 сек</div>
-                        <div class="upgrade-price">${(0.8 * regenLvl).toFixed(2)} HASK</div>
+                        <div class="upgrade-price">${(0.8 * regenLvl).toFixed(3)} HASK</div>
                         <div class="upgrade-level">Ур. ${regenLvl}</div>
                         <button class="upgrade-btn" data-boost="regen">УЛУЧШИТЬ</button>
                     </div>
@@ -1048,7 +1070,7 @@
                         <div class="upgrade-icon">🤖</div>
                         <h4>Авто-майнер</h4>
                         <div class="upgrade-desc">Пассивный доход</div>
-                        <div class="upgrade-price">2.00 HASK</div>
+                        <div class="upgrade-price">2.000 HASK</div>
                         <div class="upgrade-level">${autoActive ? 'Вкл' : 'Выкл'}</div>
                         <button class="upgrade-btn" data-boost="auto">${autoActive ? 'АКТИВЕН' : 'КУПИТЬ'}</button>
                     </div>
@@ -1069,7 +1091,7 @@
                             cost = 1.0 * tapLvl;
                             tapMult += 1.0;
                             tapLvl++;
-                            msg = `💪 Тап +0.05! Ур. ${tapLvl}`;
+                            msg = `💪 Тап +0.001! Ур. ${tapLvl}`;
                         } else if (boost === 'regen' && balance >= 0.8 * regenLvl) {
                             cost = 0.8 * regenLvl;
                             regenMult += 1.0;
@@ -1126,7 +1148,6 @@
                 coin3D.style.transform = 'rotateX(0deg) rotateY(0deg)';
             }
 
-            // ========== ТАП С МОМЕНТАЛЬНЫМ СОХРАНЕНИЕМ ==========
             function handleTap(e) {
                 if (e) e.preventDefault();
                 tiltCoin(e);
@@ -1134,10 +1155,11 @@
                 
                 if (currentEnergy < ENERGY_COST) {
                     document.getElementById('mineStatus').textContent = '😴 Энергия кончилась!';
-                    setTimeout(() => document.getElementById('mineStatus').textContent = '💪 Тапай и зарабатывай!', 1500);
+                    setTimeout(() => document.getElementById('mineStatus').textContent = `💪 ${1000 - (totalTaps % 1000)} тапов до 1 HASK`, 1500);
                     return;
                 }
                 currentEnergy -= ENERGY_COST;
+                totalTaps++;
                 let earned = BASE_TAP * tapMult;
                 balance += earned;
                 refreshUI();
@@ -1146,16 +1168,15 @@
                 const y = e.touches ? e.touches[0].clientY : e.clientY;
                 const el = document.createElement('div');
                 el.className = 'floating-score';
-                el.textContent = '+' + earned.toFixed(2);
+                el.textContent = '+' + earned.toFixed(3);
                 el.style.left = x + 'px';
                 el.style.top = y + 'px';
                 document.body.appendChild(el);
                 setTimeout(() => el.remove(), 900);
                 
-                document.getElementById('mineStatus').textContent = `⚡ +${earned.toFixed(2)} HASK`;
-                setTimeout(() => document.getElementById('mineStatus').textContent = '💪 Тапай и зарабатывай!', 800);
-                
-                // МОМЕНТАЛЬНОЕ СОХРАНЕНИЕ ПОСЛЕ КАЖДОГО ТАПА
+                const tapsLeft = 1000 - (totalTaps % 1000);
+                document.getElementById('mineStatus').textContent = `⚡ +${earned.toFixed(3)} HASK`;
+                setTimeout(() => document.getElementById('mineStatus').textContent = `💪 ${tapsLeft} тапов до 1 HASK`, 1000);
                 saveData();
             }
 
@@ -1182,26 +1203,26 @@
                     refreshUI();
                     saveData();
                     document.getElementById('mineStatus').textContent = '🔋 Энергия восстановлена!';
+                    setTimeout(() => document.getElementById('mineStatus').textContent = '💪 Продолжай майнить!', 1000);
                 } else {
                     document.getElementById('mineStatus').textContent = `❌ Нужно ${REGEN_COST} HASK`;
                 }
-                setTimeout(() => document.getElementById('mineStatus').textContent = '💪 Тапай и зарабатывай!', 1000);
             });
 
             document.getElementById('bonusBtn').addEventListener('click', () => {
                 const now = Date.now();
                 if (now - lastBonus >= 86400000) {
-                    balance += 5.0;
+                    balance += 0.5;
                     lastBonus = now;
                     refreshUI();
                     saveData();
-                    document.getElementById('mineStatus').textContent = '🎁 +5 HASK!';
+                    document.getElementById('mineStatus').textContent = '🎁 +0.5 HASK!';
                 } else {
                     const h = 23 - Math.floor((now - lastBonus) / 3600000);
                     const m = 59 - Math.floor(((now - lastBonus) % 3600000) / 60000);
                     document.getElementById('mineStatus').textContent = `⏰ Бонус через ${h}ч ${m}м`;
                 }
-                setTimeout(() => document.getElementById('mineStatus').textContent = '💪 Тапай и зарабатывай!', 2000);
+                setTimeout(() => document.getElementById('mineStatus').textContent = '💪 Продолжай майнить!', 2000);
             });
 
             document.getElementById('copyRefBtn').addEventListener('click', () => {
@@ -1258,7 +1279,6 @@
                 if (currentEnergy < maxEnergy) {
                     currentEnergy = Math.min(currentEnergy + BASE_REGEN * regenMult, maxEnergy);
                     refreshUI();
-                    // Сохраняем при регенерации
                     saveData();
                 }
             }
@@ -1266,6 +1286,7 @@
             setInterval(() => {
                 if (autoActive && currentEnergy >= ENERGY_COST) {
                     currentEnergy -= ENERGY_COST;
+                    totalTaps++;
                     balance += BASE_TAP * tapMult;
                     refreshUI();
                     saveData();
@@ -1275,8 +1296,12 @@
             loadData();
             setInterval(regen, REGEN_INTERVAL);
             
-            // Сохранение при закрытии/сворачивании
-            window.addEventListener('beforeunload', () => saveData());
+            // Сохранение при закрытии
+            window.addEventListener('beforeunload', () => {
+                saveData();
+            });
+            
+            // Сохранение при сворачивании
             document.addEventListener('visibilitychange', () => {
                 if (document.hidden) saveData();
             });
