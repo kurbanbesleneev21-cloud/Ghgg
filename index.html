@@ -2,276 +2,1285 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <meta name="theme-color" content="#0A0E27">
-    <title>SimMarket — Премиум Маркетплейс</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>HASKOIN · Мгновенное сохранение</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        /* ТВОИ СТИЛИ БЕЗ ИЗМЕНЕНИЙ */
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #0A0E27 0%, #1a1f3a 50%, #0d1928 100%); color: #E8EAED; padding-bottom: 70px; position: relative; overflow-x: hidden; }
-        body::before { content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.1) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 50%); pointer-events: none; z-index: 1; }
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(10, 14, 39, 0.95); backdrop-filter: blur(20px); display: flex; justify-content: space-around; padding: 12px 20px 24px; border-top: 1px solid rgba(59, 130, 246, 0.2); z-index: 100; box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.5); }
-        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 6px; font-size: 11px; color: #94A3B8; cursor: pointer; background: none; border: none; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); position: relative; padding: 8px 12px; }
-        .nav-item i { font-size: 20px; transition: all 0.3s ease; }
-        .nav-item.active { color: #3B82F6; transform: scale(1.1); }
-        .nav-item.active::before { content: ''; position: absolute; top: -8px; left: 50%; transform: translateX(-50%); width: 30px; height: 3px; background: linear-gradient(90deg, #3B82F6, #8B5CF6); border-radius: 2px; box-shadow: 0 0 10px rgba(59, 130, 246, 0.5); }
-        .header { background: linear-gradient(180deg, rgba(15, 23, 42, 0.95) 0%, rgba(15, 23, 42, 0.7) 100%); backdrop-filter: blur(20px); padding: 16px; position: sticky; top: 0; z-index: 99; border-bottom: 1px solid rgba(59, 130, 246, 0.1); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3); }
-        .header-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-        .logo { font-size: 24px; font-weight: 800; color: white; font-family: 'Poppins', sans-serif; letter-spacing: -1px; background: linear-gradient(135deg, #3B82F6, #8B5CF6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-        .logo span { color: #3B82F6; }
-        .search-wrapper { flex: 1; position: relative; }
-        .search-wrapper input { width: 100%; padding: 12px 40px 12px 16px; border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 50px; font-size: 14px; background: rgba(30, 41, 59, 0.6); color: white; outline: none; transition: all 0.3s ease; backdrop-filter: blur(10px); }
-        .search-wrapper input:focus { background: rgba(30, 41, 59, 0.9); border-color: #3B82F6; box-shadow: 0 0 20px rgba(59, 130, 246, 0.2); }
-        .search-wrapper i { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); color: #3B82F6; }
-        .header-icons { display: flex; gap: 16px; }
-        .header-icons i { font-size: 20px; color: white; cursor: pointer; position: relative; transition: all 0.3s ease; }
-        .badge-count { position: absolute; top: -8px; right: -10px; background: linear-gradient(135deg, #F59E0B, #F97316); color: white; font-size: 10px; font-weight: bold; padding: 3px 7px; border-radius: 20px; min-width: 18px; text-align: center; }
-        .categories-wrapper { overflow-x: auto; padding: 16px; background: transparent; border-bottom: 1px solid rgba(59, 130, 246, 0.1); position: relative; z-index: 2; }
-        .categories { display: flex; gap: 12px; }
-        .cat-btn { padding: 10px 22px; background: rgba(30, 41, 59, 0.6); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 50px; font-size: 14px; font-weight: 500; white-space: nowrap; cursor: pointer; color: #94A3B8; }
-        .cat-btn.active { background: linear-gradient(135deg, #3B82F6, #2563EB); color: white; border-color: transparent; }
-        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; padding: 0 16px 20px; }
-        .product-card { background: linear-gradient(135deg, rgba(30, 41, 59, 0.6), rgba(30, 41, 59, 0.3)); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 20px; overflow: hidden; cursor: pointer; transition: all 0.4s; backdrop-filter: blur(10px); }
-        .product-img { padding: 16px; text-align: center; height: 150px; display: flex; align-items: center; justify-content: center; }
-        .product-img img { max-width: 100%; max-height: 110px; object-fit: contain; }
-        .product-info { padding: 14px; }
-        .product-title { font-size: 14px; font-weight: 600; margin-bottom: 8px; color: #E8EAED; }
-        .price { font-size: 16px; font-weight: 800; background: linear-gradient(135deg, #3B82F6, #8B5CF6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .old-price { font-size: 11px; text-decoration: line-through; color: #64748B; margin-left: 6px; }
-        .badge-sale { position: absolute; top: 12px; left: 12px; background: linear-gradient(135deg, #F59E0B, #F97316); padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: bold; color: white; z-index: 3; }
-        .btn-primary { background: linear-gradient(135deg, #3B82F6, #2563EB); color: white; border: none; padding: 16px; border-radius: 30px; font-weight: 600; width: 100%; cursor: pointer; }
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); z-index: 300; align-items: flex-end; backdrop-filter: blur(5px); }
-        .modal-content { background: linear-gradient(135deg, #0A0E27 0%, #1a1f3a 100%); width: 100%; max-height: 85vh; border-radius: 32px 32px 0 0; overflow-y: auto; padding: 24px; border: 1px solid rgba(59, 130, 246, 0.2); }
-        .auth-input { width: 100%; padding: 14px; margin: 10px 0; border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 16px; background: rgba(30, 41, 59, 0.6); color: #E8EAED; }
-        .product-page { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #0A0E27 0%, #1a1f3a 100%); z-index: 200; overflow-y: auto; display: none; }
-        .filter-btn { position: fixed; bottom: 90px; right: 16px; background: linear-gradient(135deg, #3B82F6, #8B5CF6); color: white; width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 90; border: none; }
-        .filters-drawer { position: fixed; left: -100%; top: 0; width: 80%; height: 100%; background: linear-gradient(135deg, #0A0E27 0%, #1a1f3a 100%); z-index: 301; transition: left 0.3s; padding: 24px; border-right: 1px solid rgba(59, 130, 246, 0.2); }
-        .filters-drawer.open { left: 0; }
-        .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 300; display: none; }
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: #020108;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 0;
+        }
+
+        .bg-gradient-1 {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 30%, rgba(0, 255, 255, 0.06) 0%, transparent 50%);
+            animation: moveGradient1 15s infinite alternate ease-in-out;
+        }
+
+        .bg-gradient-2 {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 80% 70%, rgba(255, 215, 0, 0.05) 0%, transparent 50%);
+            animation: moveGradient2 18s infinite alternate ease-in-out;
+        }
+
+        @keyframes moveGradient1 {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(5%, 3%) scale(1.1); }
+        }
+
+        @keyframes moveGradient2 {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(-5%, -4%) scale(1.15); }
+        }
+
+        .cyber-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                linear-gradient(rgba(0, 255, 255, 0.015) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 255, 0.015) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .app {
+            max-width: 390px;
+            width: 100%;
+            position: relative;
+            z-index: 10;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 12px 12px 0;
+        }
+
+        .page-content {
+            flex: 1;
+            overflow-y: auto;
+            padding-bottom: 8px;
+            scrollbar-width: none;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .page-content::-webkit-scrollbar { display: none; }
+
+        .page { 
+            display: none;
+            flex: 1;
+        }
+
+        .page.active { 
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ВЕРХНЯЯ ПАНЕЛЬ */
+        .top-panel {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            flex-shrink: 0;
+        }
+
+        .player-card {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(10, 10, 25, 0.85);
+            backdrop-filter: blur(20px);
+            padding: 6px 14px 6px 6px;
+            border-radius: 40px;
+            border: 1px solid rgba(0, 255, 255, 0.25);
+        }
+
+        .player-avatar {
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(145deg, #00ffff, #0066ff);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: bold;
+            color: #020108;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+        }
+
+        .player-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .player-name {
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .player-status {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            color: #00ffaa;
+            font-size: 10px;
+        }
+
+        .status-dot {
+            width: 5px;
+            height: 5px;
+            background: #00ffaa;
+            border-radius: 50%;
+            animation: blink 1.5s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .rank-badge {
+            background: linear-gradient(145deg, #ffd700, #ffaa00);
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-weight: 800;
+            font-size: 12px;
+            color: #020108;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* КАРТОЧКА БАЛАНСА */
+        .balance-card {
+            background: linear-gradient(145deg, rgba(20, 20, 45, 0.9), rgba(10, 10, 25, 0.95));
+            backdrop-filter: blur(25px);
+            border-radius: 24px;
+            padding: 16px 18px;
+            margin-bottom: 12px;
+            border: 1px solid rgba(0, 255, 255, 0.2);
+            flex-shrink: 0;
+        }
+
+        .balance-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            margin-bottom: 8px;
+        }
+
+        .balance-icon {
+            font-size: 16px;
+        }
+
+        .balance-title {
+            color: #00ffff;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 3px;
+            text-shadow: 0 0 10px #00ffff;
+        }
+
+        .balance-main {
+            display: flex;
+            align-items: baseline;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .balance-number {
+            font-size: 46px;
+            font-weight: 900;
+            background: linear-gradient(145deg, #ffffff, #ffd700);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 25px rgba(255, 215, 0, 0.5);
+        }
+
+        .balance-currency {
+            color: #ffd700;
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .balance-stats {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 12px;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(0, 255, 255, 0.05);
+            padding: 5px 14px;
+            border-radius: 30px;
+            border: 1px solid rgba(0, 255, 255, 0.1);
+        }
+
+        .stat-icon {
+            font-size: 16px;
+        }
+
+        .stat-value {
+            color: #00ffaa;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .stat-label {
+            color: #8888aa;
+            font-size: 11px;
+        }
+
+        .tap-stat {
+            background: rgba(255, 215, 0, 0.06);
+            padding: 5px 16px;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 215, 0, 0.15);
+        }
+
+        .tap-stat span {
+            color: #ffd700;
+            font-weight: 800;
+            font-size: 16px;
+        }
+
+        /* ЭНЕРГИЯ */
+        .energy-section {
+            margin-bottom: 16px;
+            flex-shrink: 0;
+        }
+
+        .energy-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 6px;
+        }
+
+        .energy-label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #00ffff;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .energy-value {
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        .energy-bar-container {
+            height: 10px;
+            background: rgba(10, 10, 20, 0.8);
+            border-radius: 20px;
+            padding: 1.5px;
+            border: 1px solid rgba(0, 255, 255, 0.15);
+        }
+
+        .energy-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00ffff, #00ffaa, #ffd700);
+            border-radius: 20px;
+            transition: width 0.2s ease;
+            box-shadow: 0 0 12px #00ffff;
+            width: 100%;
+        }
+
+        .energy-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 5px;
+        }
+
+        .regen-info {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            color: #00ffaa;
+            font-size: 11px;
+        }
+
+        .energy-tip {
+            color: #8888aa;
+            font-size: 10px;
+        }
+
+        /* МОНЕТА */
+        .coin-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 8px 0 16px;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .coin-container {
+            position: relative;
+            perspective: 1000px;
+        }
+
+        .coin-aura {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 220px;
+            height: 220px;
+            background: radial-gradient(circle, rgba(0, 255, 255, 0.15) 0%, rgba(255, 215, 0, 0.1) 40%, transparent 70%);
+            border-radius: 50%;
+            animation: auraPulse 3s infinite alternate;
+            pointer-events: none;
+        }
+
+        @keyframes auraPulse {
+            0% { opacity: 0.3; transform: translate(-50%, -50%) scale(0.95); }
+            100% { opacity: 0.6; transform: translate(-50%, -50%) scale(1.1); }
+        }
+
+        .coin-3d {
+            width: 170px;
+            height: 170px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+            filter: drop-shadow(0 0 25px rgba(0, 255, 255, 0.25));
+        }
+
+        .coin-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            backface-visibility: hidden;
+            box-shadow: 
+                0 0 0 4px rgba(255, 215, 0, 0.4),
+                0 0 0 8px rgba(0, 255, 255, 0.15),
+                0 20px 40px rgba(0, 0, 0, 0.5),
+                inset 0 -8px 12px rgba(0, 0, 0, 0.3),
+                inset 0 8px 14px rgba(255, 255, 255, 0.3);
+            border: 3px solid #ffd700;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .coin-face::after {
+            content: '';
+            position: absolute;
+            top: -4px;
+            left: -4px;
+            right: -4px;
+            bottom: -4px;
+            border-radius: 50%;
+            border: 2px solid #00ffff;
+            box-shadow: 0 0 20px #00ffff, inset 0 0 10px rgba(0, 255, 255, 0.4);
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        .coin-shine {
+            position: absolute;
+            top: 6%;
+            left: 12%;
+            width: 35%;
+            height: 18%;
+            background: radial-gradient(circle, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.1) 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            filter: blur(2px);
+        }
+
+        .coin-letter {
+            font-size: 64px;
+            font-weight: 900;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 4px;
+            pointer-events: none;
+            letter-spacing: 2px;
+            text-shadow: 4px 5px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        .coin-tap-label {
+            background: rgba(0, 0, 0, 0.55);
+            backdrop-filter: blur(8px);
+            padding: 4px 20px;
+            border-radius: 40px;
+            font-weight: 800;
+            font-size: 13px;
+            color: #00ffff;
+            text-shadow: 0 0 12px #00ffff;
+            border: 1.5px solid rgba(0, 255, 255, 0.5);
+            letter-spacing: 4px;
+            pointer-events: none;
+        }
+
+        /* ЭФФЕКТ +МОНЕТЫ */
+        .floating-score {
+            position: absolute;
+            font-size: 24px;
+            font-weight: 900;
+            color: #ffd700;
+            text-shadow: 0 0 35px #ffd700, 0 0 20px #00ffff;
+            pointer-events: none;
+            z-index: 100;
+            animation: flyUp 0.9s ease-out forwards;
+        }
+
+        @keyframes flyUp {
+            0% { opacity: 1; transform: translateY(0) scale(1); }
+            100% { opacity: 0; transform: translateY(-100px) scale(1.6); }
+        }
+
+        /* КНОПКИ */
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 14px;
+            flex-shrink: 0;
+        }
+
+        .game-btn {
+            flex: 1;
+            background: linear-gradient(145deg, #1a1a3e, #0d0d22);
+            color: #00ffff;
+            border: 1.5px solid rgba(0, 255, 255, 0.4);
+            border-radius: 18px;
+            padding: 14px 10px;
+            font-weight: 800;
+            font-size: 14px;
+            box-shadow: 0 6px 0 #0a0a1a, 0 0 20px rgba(0, 255, 255, 0.15);
+            cursor: pointer;
+            transition: all 0.06s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            text-shadow: 0 0 10px #00ffff;
+            touch-action: manipulation;
+        }
+
+        .game-btn:active {
+            transform: translateY(5px);
+            box-shadow: 0 1px 0 #0a0a1a, 0 0 30px rgba(0, 255, 255, 0.3);
+        }
+
+        .game-btn.gold {
+            color: #ffd700;
+            border-color: rgba(255, 215, 0, 0.4);
+            text-shadow: 0 0 10px #ffd700;
+        }
+
+        .game-btn.purple {
+            color: #a78bfa;
+            border-color: rgba(139, 92, 246, 0.4);
+            text-shadow: 0 0 10px #a78bfa;
+        }
+
+        /* СТАТУС */
+        .status-toast {
+            text-align: center;
+            color: #00ffff;
+            font-size: 13px;
+            text-shadow: 0 0 15px #00ffff;
+            font-weight: 600;
+            min-height: 22px;
+            flex-shrink: 0;
+        }
+
+        /* ИНДИКАТОР СОХРАНЕНИЯ */
+        .save-indicator {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(16, 185, 129, 0.95);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-size: 13px;
+            font-weight: 700;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.2s;
+            pointer-events: none;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+        }
+
+        .save-indicator.show {
+            opacity: 1;
+        }
+
+        /* НИЖНЯЯ ПАНЕЛЬ */
+        .bottom-nav {
+            background: linear-gradient(0deg, rgba(10, 10, 25, 0.98), rgba(20, 20, 45, 0.9));
+            backdrop-filter: blur(30px);
+            padding: 12px 10px;
+            border-top: 1.5px solid rgba(0, 255, 255, 0.25);
+            display: flex;
+            gap: 6px;
+            z-index: 50;
+            border-radius: 20px 20px 0 0;
+            margin-top: 4px;
+        }
+
+        .nav-btn {
+            flex: 1;
+            padding: 8px 2px;
+            border: none;
+            background: transparent;
+            color: #7777aa;
+            font-weight: 700;
+            font-size: 11px;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            touch-action: manipulation;
+        }
+
+        .nav-btn.active {
+            background: linear-gradient(145deg, rgba(0, 255, 255, 0.12), rgba(0, 136, 255, 0.08));
+            color: #00ffff;
+            border: 1px solid rgba(0, 255, 255, 0.4);
+            box-shadow: 0 0 18px rgba(0, 255, 255, 0.2);
+        }
+
+        .nav-icon {
+            font-size: 22px;
+        }
+
+        /* КАРТОЧКИ */
+        .section-title {
+            color: #00ffff;
+            font-size: 20px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            text-align: center;
+            text-shadow: 0 0 20px #00ffff;
+        }
+
+        .upgrade-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .upgrade-card {
+            background: linear-gradient(145deg, rgba(20, 20, 45, 0.9), rgba(10, 10, 25, 0.95));
+            border-radius: 20px;
+            padding: 18px 10px;
+            border: 1px solid rgba(0, 255, 255, 0.15);
+            text-align: center;
+        }
+
+        .upgrade-icon {
+            font-size: 34px;
+            margin-bottom: 8px;
+        }
+
+        .upgrade-card h4 {
+            color: #ffd700;
+            font-size: 15px;
+            margin-bottom: 4px;
+        }
+
+        .upgrade-desc {
+            color: #00ffff;
+            font-size: 11px;
+            margin-bottom: 6px;
+        }
+
+        .upgrade-price {
+            color: #00ffaa;
+            font-weight: 700;
+            font-size: 13px;
+            margin-bottom: 6px;
+        }
+
+        .upgrade-level {
+            color: #aaaacc;
+            font-size: 11px;
+            margin-bottom: 8px;
+        }
+
+        .upgrade-btn {
+            background: #1a1a3e;
+            color: #00ffff;
+            border: 1px solid #00ffff40;
+            border-radius: 16px;
+            padding: 10px;
+            font-size: 12px;
+            font-weight: 700;
+            width: 100%;
+            cursor: pointer;
+        }
+
+        .ton-card {
+            background: linear-gradient(145deg, rgba(20, 20, 45, 0.9), rgba(10, 10, 25, 0.95));
+            border-radius: 26px;
+            padding: 22px;
+            border: 1px solid rgba(0, 255, 255, 0.2);
+        }
+
+        .cyber-input {
+            width: 100%;
+            background: #0a0a1a;
+            border: 1.5px solid #00ffff30;
+            border-radius: 18px;
+            padding: 16px;
+            color: #fff;
+            font-size: 14px;
+            margin-bottom: 14px;
+        }
+
+        .support-card {
+            background: linear-gradient(145deg, rgba(20, 20, 45, 0.9), rgba(10, 10, 25, 0.95));
+            border-radius: 30px;
+            padding: 32px 22px;
+            text-align: center;
+        }
+
+        .support-username {
+            font-size: 28px;
+            font-weight: 900;
+            background: linear-gradient(145deg, #00ffff, #ffd700);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin: 16px 0;
+        }
+
+        .warning-box {
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid rgba(255, 0, 0, 0.3);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .ref-link-box {
+            background: rgba(0, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .ref-link {
+            color: #00ffff;
+            font-size: 12px;
+            word-break: break-all;
+            margin: 8px 0;
+        }
     </style>
 </head>
 <body>
-
-<div class="header">
-    <div class="header-top">
-        <div class="logo">Sim<span>Market</span></div>
-        <div class="search-wrapper">
-            <input type="text" id="searchInput" placeholder="Поиск...">
-            <i class="fas fa-search"></i>
-        </div>
-        <div class="header-icons">
-            <i class="far fa-user" id="userIconBtn"></i>
-            <i class="fas fa-shopping-cart" id="cartHeaderBtn"><span id="cartBadge" class="badge-count">0</span></i>
-        </div>
+    <div class="animated-bg">
+        <div class="bg-gradient-1"></div>
+        <div class="bg-gradient-2"></div>
     </div>
-</div>
+    <div class="cyber-grid"></div>
 
-<div class="categories-wrapper">
-    <div class="categories" id="categoriesList"></div>
-</div>
+    <div class="save-indicator" id="saveIndicator">💾 Сохранено</div>
 
-<div id="productsContainer" class="products-grid"></div>
+    <div class="app">
+        <div class="page-content">
+            <div class="page active" id="page-mine">
+                <div class="top-panel">
+                    <div class="player-card">
+                        <div class="player-avatar" id="avatar">H</div>
+                        <div class="player-info">
+                            <span class="player-name" id="userName">Майнер</span>
+                            <div class="player-status">
+                                <span class="status-dot"></span>
+                                <span>Онлайн</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="rank-badge" id="rankDisplay">ШАХТЁР</div>
+                </div>
 
-<div class="bottom-nav">
-    <button class="nav-item active" data-nav="home"><i class="fas fa-home"></i><span>Главная</span></button>
-    <button class="nav-item" data-nav="cart"><i class="fas fa-shopping-cart"></i><span>Корзина</span></button>
-    <button class="nav-item" data-nav="profile"><i class="fas fa-user"></i><span>Профиль</span></button>
-</div>
+                <div class="balance-card">
+                    <div class="balance-header">
+                        <span class="balance-icon">💎</span>
+                        <span class="balance-title">HASKOIN</span>
+                        <span class="balance-icon">💎</span>
+                    </div>
+                    <div class="balance-main">
+                        <span class="balance-number" id="balanceDisplay">0.00</span>
+                        <span class="balance-currency">HASK</span>
+                    </div>
+                    <div class="balance-stats">
+                        <div class="stat-item">
+                            <span class="stat-icon">⚡</span>
+                            <span class="stat-value" id="passiveIncome">+0.00</span>
+                            <span class="stat-label">/сек</span>
+                        </div>
+                        <div class="tap-stat">
+                            <span id="tapValue">+0.05</span> за тап
+                        </div>
+                    </div>
+                </div>
 
-<button class="filter-btn" id="filterBtn"><i class="fas fa-sliders-h"></i></button>
+                <div class="energy-section">
+                    <div class="energy-top">
+                        <div class="energy-label">
+                            <span>🔋</span>
+                            <span>ЭНЕРГИЯ</span>
+                        </div>
+                        <div class="energy-value" id="energyText">500/500</div>
+                    </div>
+                    <div class="energy-bar-container">
+                        <div class="energy-fill" id="energyFill"></div>
+                    </div>
+                    <div class="energy-footer">
+                        <div class="regen-info">
+                            <span>🐢</span>
+                            <span id="regenInfo">+1 / 3 сек</span>
+                        </div>
+                        <div class="energy-tip">⚡ -1 за тап</div>
+                    </div>
+                </div>
 
-<div class="filters-drawer" id="filtersDrawer">
-    <div style="display: flex; justify-content: space-between; margin-bottom: 24px; align-items: center;">
-        <h3 style="color: #E8EAED; font-size: 22px;">Фильтры</h3>
-        <button id="closeFilters" style="background:none; border:none; font-size:28px; color:#3B82F6;">✕</button>
-    </div>
-    <div style="margin-bottom:20px;">
-        <label style="display:block; color:#94A3B8; margin-bottom:10px;">Цена (₽)</label>
-        <input type="number" id="minPrice" placeholder="от 0" style="width:100%; padding:12px; margin-bottom:10px; border-radius:10px; border:1px solid #334155; background:#1e293b; color:white;">
-        <input type="number" id="maxPrice" placeholder="до 500000" style="width:100%; padding:12px; border-radius:10px; border:1px solid #334155; background:#1e293b; color:white;">
-    </div>
-    <div style="margin-bottom:20px;">
-        <label style="display:block; color:#94A3B8; margin-bottom:10px;">Бренд</label>
-        <select id="brandFilter" style="width:100%; padding:12px; border-radius:10px; border:1px solid #334155; background:#1e293b; color:white;">
-            <option value="">Все бренды</option>
-        </select>
-    </div>
-    <button id="applyFiltersBtn" class="btn-primary">Применить</button>
-</div>
-<div id="overlay" class="overlay"></div>
+                <div class="coin-wrapper">
+                    <div class="coin-container">
+                        <div class="coin-aura"></div>
+                        <div class="coin-3d" id="coin3D">
+                            <div class="coin-face">
+                                <div class="coin-shine"></div>
+                                <div class="coin-letter">H</div>
+                                <div class="coin-tap-label">MINE</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-<div id="cartModal" class="modal">
-    <div class="modal-content">
-        <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
-            <span style="font-weight:700; font-size:20px;">🛒 Корзина</span>
-            <span class="closeModal" style="cursor:pointer; font-size:20px;">✕</span>
-        </div>
-        <div id="cartItemsList"></div>
-        <div id="cartTotal" style="margin-top:20px; font-weight:800; font-size:18px; border-top:1px solid #334155; padding-top:15px;"></div>
-        <button id="checkoutBtn" class="btn-primary" style="margin-top:20px;">Оформить заказ</button>
-    </div>
-</div>
+                <div class="action-buttons">
+                    <button class="game-btn purple" id="regenBtn"><span>⚡</span>0.5 HASK</button>
+                    <button class="game-btn gold" id="bonusBtn"><span>🎁</span>БОНУС</button>
+                </div>
 
-<div id="authModal" class="modal">
-    <div class="modal-content">
-        <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
-            <span>🔐 Вход</span>
-            <span class="closeModal" style="cursor:pointer;">✕</span>
-        </div>
-        <input type="tel" id="authPhone" class="auth-input" placeholder="+7 (999) 000-00-00">
-        <input type="password" id="authPassword" class="auth-input" placeholder="Пароль">
-        <button id="loginBtn" class="btn-primary">Войти</button>
-    </div>
-</div>
+                <div class="status-toast" id="mineStatus">💪 Тапай и зарабатывай!</div>
+            </div>
 
-<div id="productPage" class="product-page">
-    <div style="padding:16px; border-bottom:1px solid #334155; display:flex; align-items:center; gap:15px;">
-        <i class="fas fa-arrow-left" id="closeProductPage" style="font-size:20px; color:#3B82F6;"></i>
-        <span style="font-weight:600;">Детали товара</span>
-    </div>
-    <div id="productPageContent"></div>
-</div>
+            <div class="page" id="page-boost">
+                <div class="section-title">📈 ПРОКАЧКА</div>
+                <div class="upgrade-grid" id="upgradeGrid"></div>
+                <div class="status-toast" id="boostStatus"></div>
+            </div>
 
-<script>
-    // ИНИЦИАЛИЗАЦИЯ ДАННЫХ
-    let products = JSON.parse(localStorage.getItem('sim_products')) || [
-        {
-            id: 1,
-            name: "iPhone 15 Pro Max",
-            price: 135000,
-            oldPrice: 150000,
-            category: "Смартфоны",
-            brand: "Apple",
-            image: "https://shop.mts.ru/upload/images/iphone-15-pro-finish-select-202309-6-7inch-naturaltitanium.png",
-            specs: [{key: "Память", value: "256 ГБ"}, {key: "Цвет", value: "Титан"}]
-        }
-    ];
-
-    let cart = JSON.parse(localStorage.getItem('sim_cart')) || [];
-    let currentUser = JSON.parse(localStorage.getItem('sim_user')) || null;
-    let currentCategory = "Все";
-    let searchQuery = "";
-
-    function save() {
-        localStorage.setItem('sim_products', JSON.stringify(products));
-        localStorage.setItem('sim_cart', JSON.stringify(cart));
-        updateBadges();
-    }
-
-    function updateBadges() {
-        document.getElementById('cartBadge').innerText = cart.reduce((s,i) => s + i.qty, 0);
-    }
-
-    function renderProducts() {
-        let container = document.getElementById('productsContainer');
-        let filtered = products.filter(p => {
-            let matchCat = currentCategory === "Все" || p.category === currentCategory;
-            let matchSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase());
-            let min = parseInt(document.getElementById('minPrice').value) || 0;
-            let max = parseInt(document.getElementById('maxPrice').value) || 999999;
-            let matchPrice = p.price >= min && p.price <= max;
-            let brand = document.getElementById('brandFilter').value;
-            let matchBrand = !brand || p.brand === brand;
-            return matchCat && matchSearch && matchPrice && matchBrand;
-        });
-
-        if(filtered.length === 0) {
-            container.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:50px; color:#64748B;">Ничего не найдено</div>';
-            return;
-        }
-
-        container.innerHTML = filtered.map(p => `
-            <div class="product-card" onclick="openProduct(${p.id})">
-                ${p.oldPrice ? '<div class="badge-sale">Акция</div>' : ''}
-                <div class="product-img"><img src="${p.image}" onerror="this.src='https://placehold.co/200x150?text=📦'"></div>
-                <div class="product-info">
-                    <div class="product-title">${p.name}</div>
-                    <div class="price">${p.price.toLocaleString()} ₽ ${p.oldPrice ? `<span class="old-price">${p.oldPrice.toLocaleString()} ₽</span>` : ''}</div>
+            <div class="page" id="page-referrals">
+                <div class="section-title">👥 РЕФЕРАЛЫ</div>
+                <div class="ton-card">
+                    <div class="ref-link-box">
+                        <div style="color:#ffd700;margin-bottom:8px;">🔗 Ваша ссылка</div>
+                        <div class="ref-link" id="refLink">Загрузка...</div>
+                        <button class="game-btn" id="copyRefBtn" style="margin-top:12px;width:100%;">📋 КОПИРОВАТЬ</button>
+                    </div>
+                    <div style="color:#00ffff;margin-bottom:12px;text-align:center;">
+                        👥 Рефералов: <span id="refCount">0</span> / 3
+                    </div>
+                    <div class="warning-box">
+                        <p style="color:#ff6666;font-size:13px;margin-bottom:8px;">⚠️ УСЛОВИЯ ВЫВОДА</p>
+                        <p style="color:#aaaacc;font-size:12px;">• Минимум 3 реферала<br>• Баланс от 100 HASK</p>
+                    </div>
+                    <div id="refStatus" style="color:#00ffaa;font-size:12px;text-align:center;"></div>
                 </div>
             </div>
-        `).join('');
-    }
 
-    function renderCategories() {
-        let cats = ["Все", ...new Set(products.map(p => p.category))];
-        document.getElementById('categoriesList').innerHTML = cats.map(c => `
-            <button class="cat-btn ${c === currentCategory ? 'active' : ''}" onclick="setCat('${c}')">${c}</button>
-        `).join('');
-        
-        // Обновляем фильтр брендов
-        let brands = [...new Set(products.map(p => p.brand))];
-        document.getElementById('brandFilter').innerHTML = '<option value="">Все бренды</option>' + brands.map(b => `<option value="${b}">${b}</option>`).join('');
-    }
-
-    function setCat(c) {
-        currentCategory = c;
-        renderCategories();
-        renderProducts();
-    }
-
-    function openProduct(id) {
-        let p = products.find(x => x.id === id);
-        document.getElementById('productPage').style.display = 'block';
-        let specsHtml = p.specs ? p.specs.map(s => `<div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #334155;"><span>${s.key}</span><span style="color:#3B82F6;">${s.value}</span></div>`).join('') : '';
-        
-        document.getElementById('productPageContent').innerHTML = `
-            <div style="text-align:center; padding:30px; background:rgba(255,255,255,0.02);"><img src="${p.image}" style="max-height:250px;"></div>
-            <div style="padding:20px;">
-                <h2 style="margin-bottom:10px;">${p.name}</h2>
-                <div class="price" style="font-size:28px;">${p.price.toLocaleString()} ₽</div>
-                <button class="btn-primary" style="margin:20px 0;" onclick="addToCart(${p.id})">В корзину</button>
-                <div style="background:rgba(30,41,59,0.5); padding:15px; border-radius:15px;">
-                    <h4 style="margin-bottom:10px; color:#94A3B8;">Характеристики</h4>
-                    ${specsHtml}
+            <div class="page" id="page-wallet">
+                <div class="section-title">💎 ВЫВОД TON</div>
+                <div class="ton-card">
+                    <div style="text-align:center;margin-bottom:20px;">
+                        <span style="color:#ffd700;font-size:20px;font-weight:800;">100 HASK = 0.5 TON</span>
+                    </div>
+                    <input class="cyber-input" id="tonAddress" placeholder="Адрес TON (EQ... / UQ...)">
+                    <div style="color:#ffd700;margin-bottom:16px;text-align:center;">
+                        💰 Доступно: <span id="availableBalance">0.00</span> HASK
+                    </div>
+                    <div id="withdrawWarning" class="warning-box" style="display:none;"></div>
+                    <button class="game-btn" id="withdrawBtn" style="width:100%;">💎 ВЫВЕСТИ ВСЁ</button>
+                    <div style="margin-top:20px;">
+                        <h4 style="color:#00ffff;margin-bottom:10px;">📋 История</h4>
+                        <div id="historyContainer"></div>
+                    </div>
                 </div>
             </div>
-        `;
-    }
 
-    function addToCart(id) {
-        let item = cart.find(i => i.id === id);
-        if(item) item.qty++; else cart.push({id, qty: 1});
-        save();
-        alert('Товар в корзине!');
-    }
+            <div class="page" id="page-support">
+                <div class="support-card">
+                    <div style="font-size:60px;">🆘</div>
+                    <h2 style="color:#00ffff;margin:12px 0;">ПОДДЕРЖКА</h2>
+                    <div class="support-username">@KU1003</div>
+                    <button class="game-btn" id="openSupportBtn" style="width:100%;">💬 НАПИСАТЬ</button>
+                </div>
+            </div>
+        </div>
 
-    function showCart() {
-        let modal = document.getElementById('cartModal');
-        modal.style.display = 'flex';
-        let list = document.getElementById('cartItemsList');
-        if(cart.length === 0) {
-            list.innerHTML = '<div style="text-align:center; padding:20px;">Пусто</div>';
-            document.getElementById('cartTotal').innerText = '';
-        } else {
-            let total = 0;
-            list.innerHTML = cart.map(i => {
-                let p = products.find(x => x.id === i.id);
-                total += p.price * i.qty;
-                return `<div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-                    <span>${p.name} (x${i.qty})</span>
-                    <span>${(p.price * i.qty).toLocaleString()} ₽</span>
-                </div>`;
-            }).join('');
-            document.getElementById('cartTotal').innerText = `Итого: ${total.toLocaleString()} ₽`;
-        }
-    }
+        <div class="bottom-nav">
+            <button class="nav-btn active" data-page="mine"><span class="nav-icon">⛏️</span><span>Майнинг</span></button>
+            <button class="nav-btn" data-page="boost"><span class="nav-icon">📈</span><span>Прокачка</span></button>
+            <button class="nav-btn" data-page="referrals"><span class="nav-icon">👥</span><span>Рефералы</span></button>
+            <button class="nav-btn" data-page="wallet"><span class="nav-icon">💎</span><span>Вывод</span></button>
+            <button class="nav-btn" data-page="support"><span class="nav-icon">🆘</span><span>Поддержка</span></button>
+        </div>
+    </div>
 
-    // Обработчики
-    document.getElementById('searchInput').oninput = (e) => { searchQuery = e.target.value; renderProducts(); };
-    document.getElementById('cartHeaderBtn').onclick = showCart;
-    document.getElementById('closeProductPage').onclick = () => document.getElementById('productPage').style.display = 'none';
-    document.getElementById('filterBtn').onclick = () => { document.getElementById('filtersDrawer').classList.add('open'); document.getElementById('overlay').style.display = 'block'; };
-    document.getElementById('closeFilters').onclick = () => { document.getElementById('filtersDrawer').classList.remove('open'); document.getElementById('overlay').style.display = 'none'; };
-    document.getElementById('applyFiltersBtn').onclick = () => { renderProducts(); document.getElementById('closeFilters').click(); };
-    document.querySelectorAll('.closeModal').forEach(b => b.onclick = () => document.querySelectorAll('.modal').forEach(m => m.style.display = 'none'));
+    <script>
+        (function(){
+            const tg = window.Telegram.WebApp;
+            tg.expand();
+            tg.ready();
 
-    // Старт
-    renderCategories();
-    renderProducts();
-    updateBadges();
-</script>
+            const BOT_TOKEN = '8672019950:AAF6HWX4zsz-CDWdXZGAAQctYdjfI8oaYWs';
+            const ADMIN_ID = '8445377034';
+            const SUPPORT_USERNAME = 'KU1003';
+            
+            // НОВЫЕ ПАРАМЕТРЫ
+            const BASE_TAP = 0.05; // 0.05 HASK за тап
+            const BASE_MAX_ENERGY = 500;
+            const ENERGY_COST = 1;
+            const BASE_REGEN = 1;
+            const REGEN_INTERVAL = 3000;
+            const REGEN_COST = 0.5;
+            const MIN_WITHDRAW = 100;
+            const TON_RATE = 0.5 / 100;
+            const REFERRAL_REQUIRED = 3;
 
+            let balance = 0.00;
+            let maxEnergy = BASE_MAX_ENERGY;
+            let currentEnergy = maxEnergy;
+            let tapMult = 1.0;
+            let regenMult = 1.0;
+            let autoActive = false;
+            
+            let energyLvl = 1, tapLvl = 1, regenLvl = 1;
+            let lastBonus = 0;
+            let lastSaveTime = Date.now();
+            let history = [];
+            let referralCount = 0;
+            
+            const userId = tg.initDataUnsafe?.user?.id?.toString() || 'demo';
+            const STORAGE_KEY = `haskoin_v2_${userId}`;
+
+            const user = tg.initDataUnsafe?.user;
+            if (user) {
+                document.getElementById('userName').textContent = user.first_name || 'Майнер';
+                document.getElementById('avatar').textContent = user.first_name?.charAt(0) || 'H';
+            }
+
+            const refLink = `https://t.me/HaskoinBot?start=${userId}`;
+            document.getElementById('refLink').textContent = refLink;
+
+            function fmt(n) { return n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+            function haskToTon(h) { return ((h / 100) * 0.5).toFixed(3); }
+
+            function showSaveIndicator() {
+                const indicator = document.getElementById('saveIndicator');
+                indicator.classList.add('show');
+                setTimeout(() => indicator.classList.remove('show'), 800);
+            }
+
+            // ========== МОМЕНТАЛЬНОЕ СОХРАНЕНИЕ ==========
+            function saveData() {
+                const data = {
+                    balance, maxEnergy, currentEnergy, tapMult, regenMult, autoActive,
+                    energyLvl, tapLvl, regenLvl, lastBonus, lastSaveTime: Date.now(), history, referralCount
+                };
+                tg.CloudStorage.setItem(STORAGE_KEY, JSON.stringify(data), (err, success) => {
+                    if (success) showSaveIndicator();
+                });
+            }
+
+            // ========== ЗАГРУЗКА С ОФЛАЙН-РЕГЕНЕРАЦИЕЙ ==========
+            function loadData() {
+                tg.CloudStorage.getItem(STORAGE_KEY, (err, val) => {
+                    let loaded = false;
+                    let savedTime = Date.now();
+                    
+                    if (!err && val) {
+                        try {
+                            const d = JSON.parse(val);
+                            balance = d.balance ?? 0.00;
+                            maxEnergy = d.maxEnergy || BASE_MAX_ENERGY;
+                            currentEnergy = d.currentEnergy ?? maxEnergy;
+                            tapMult = d.tapMult || 1.0;
+                            regenMult = d.regenMult || 1.0;
+                            autoActive = d.autoActive || false;
+                            energyLvl = d.energyLvl || 1;
+                            tapLvl = d.tapLvl || 1;
+                            regenLvl = d.regenLvl || 1;
+                            lastBonus = d.lastBonus || 0;
+                            savedTime = d.lastSaveTime || Date.now();
+                            history = d.history || [];
+                            referralCount = d.referralCount || 0;
+                            loaded = true;
+                        } catch(e) {}
+                    }
+                    
+                    // ОФЛАЙН-РЕГЕНЕРАЦИЯ ЭНЕРГИИ
+                    if (loaded) {
+                        const secondsPassed = Math.floor((Date.now() - savedTime) / 1000);
+                        const energyGained = Math.floor(secondsPassed / 3) * (BASE_REGEN * regenMult);
+                        currentEnergy = Math.min(currentEnergy + energyGained, maxEnergy);
+                    }
+                    
+                    // Проверка рефералов
+                    tg.CloudStorage.getItem('haskoin_global_refs', (err2, globalVal) => {
+                        if (!err2 && globalVal) {
+                            try {
+                                const refs = JSON.parse(globalVal);
+                                referralCount = (refs[userId] || []).length;
+                            } catch(e) {}
+                        }
+                        refreshUI();
+                        renderUpgrades();
+                        updateHistory();
+                        updateRefUI();
+                    });
+                    
+                    if (!loaded) {
+                        refreshUI();
+                        renderUpgrades();
+                        updateHistory();
+                    }
+                });
+            }
+
+            function refreshUI() {
+                document.getElementById('balanceDisplay').textContent = fmt(balance);
+                document.getElementById('availableBalance').textContent = fmt(balance);
+                const pct = (currentEnergy / maxEnergy) * 100;
+                document.getElementById('energyFill').style.width = Math.max(0, pct) + '%';
+                document.getElementById('energyText').textContent = `${Math.floor(currentEnergy)}/${maxEnergy}`;
+                document.getElementById('tapValue').textContent = `+${(BASE_TAP * tapMult).toFixed(2)}`;
+                document.getElementById('regenInfo').textContent = `+${(BASE_REGEN * regenMult).toFixed(1)} / 3 сек`;
+                document.getElementById('passiveIncome').textContent = `+${(autoActive ? BASE_TAP * tapMult : 0).toFixed(2)}`;
+            }
+
+            function updateRefUI() {
+                document.getElementById('refCount').textContent = referralCount;
+            }
+
+            function renderUpgrades() {
+                const grid = document.getElementById('upgradeGrid');
+                grid.innerHTML = `
+                    <div class="upgrade-card">
+                        <div class="upgrade-icon">🔋</div>
+                        <h4>Энерго-бак</h4>
+                        <div class="upgrade-desc">+100 макс.</div>
+                        <div class="upgrade-price">${(0.5 * energyLvl).toFixed(2)} HASK</div>
+                        <div class="upgrade-level">Ур. ${energyLvl}</div>
+                        <button class="upgrade-btn" data-boost="energy">УЛУЧШИТЬ</button>
+                    </div>
+                    <div class="upgrade-card">
+                        <div class="upgrade-icon">💪</div>
+                        <h4>Мульти-тап</h4>
+                        <div class="upgrade-desc">+0.05 за тап</div>
+                        <div class="upgrade-price">${(1.0 * tapLvl).toFixed(2)} HASK</div>
+                        <div class="upgrade-level">Ур. ${tapLvl}</div>
+                        <button class="upgrade-btn" data-boost="tap">УЛУЧШИТЬ</button>
+                    </div>
+                    <div class="upgrade-card">
+                        <div class="upgrade-icon">⚡</div>
+                        <h4>Турбо-реген</h4>
+                        <div class="upgrade-desc">+1 / 3 сек</div>
+                        <div class="upgrade-price">${(0.8 * regenLvl).toFixed(2)} HASK</div>
+                        <div class="upgrade-level">Ур. ${regenLvl}</div>
+                        <button class="upgrade-btn" data-boost="regen">УЛУЧШИТЬ</button>
+                    </div>
+                    <div class="upgrade-card">
+                        <div class="upgrade-icon">🤖</div>
+                        <h4>Авто-майнер</h4>
+                        <div class="upgrade-desc">Пассивный доход</div>
+                        <div class="upgrade-price">2.00 HASK</div>
+                        <div class="upgrade-level">${autoActive ? 'Вкл' : 'Выкл'}</div>
+                        <button class="upgrade-btn" data-boost="auto">${autoActive ? 'АКТИВЕН' : 'КУПИТЬ'}</button>
+                    </div>
+                `;
+
+                document.querySelectorAll('[data-boost]').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const boost = btn.dataset.boost;
+                        const status = document.getElementById('boostStatus');
+                        let cost = 0, msg = '';
+                        
+                        if (boost === 'energy' && balance >= 0.5 * energyLvl) {
+                            cost = 0.5 * energyLvl;
+                            maxEnergy += 100;
+                            energyLvl++;
+                            msg = `🔋 Бак +100! Ур. ${energyLvl}`;
+                        } else if (boost === 'tap' && balance >= 1.0 * tapLvl) {
+                            cost = 1.0 * tapLvl;
+                            tapMult += 1.0;
+                            tapLvl++;
+                            msg = `💪 Тап +0.05! Ур. ${tapLvl}`;
+                        } else if (boost === 'regen' && balance >= 0.8 * regenLvl) {
+                            cost = 0.8 * regenLvl;
+                            regenMult += 1.0;
+                            regenLvl++;
+                            msg = `⚡ Реген +1! Ур. ${regenLvl}`;
+                        } else if (boost === 'auto' && balance >= 2.0 && !autoActive) {
+                            cost = 2.0;
+                            autoActive = true;
+                            msg = '🤖 Авто-майнер активирован!';
+                        } else {
+                            status.textContent = '❌ Недостаточно HASK!';
+                            setTimeout(() => status.textContent = '', 1500);
+                            return;
+                        }
+                        
+                        balance -= cost;
+                        refreshUI();
+                        renderUpgrades();
+                        saveData();
+                        status.textContent = msg;
+                        setTimeout(() => status.textContent = '', 1500);
+                    });
+                });
+            }
+
+            function updateHistory() {
+                const c = document.getElementById('historyContainer');
+                if (!history.length) { c.innerHTML = '<p style="color:#8888aa;">Нет операций</p>'; return; }
+                c.innerHTML = history.slice(-5).reverse().map(h => `
+                    <div style="background:#0a0a1a;padding:12px;border-radius:14px;margin-bottom:8px;">
+                        <div style="display:flex;justify-content:space-between;">
+                            <span style="color:#ffd700;">${fmt(h.amount)} HASK</span>
+                            <span style="color:#00ffaa;">${h.ton} TON</span>
+                        </div>
+                        <div style="color:#8888aa;font-size:11px;margin-top:4px;">${h.address?.slice(0,10)}...</div>
+                    </div>
+                `).join('');
+            }
+
+            const coin3D = document.getElementById('coin3D');
+            
+            function tiltCoin(e) {
+                const rect = coin3D.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+                let clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                let clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                const deltaX = (clientX - centerX) / (rect.width / 2);
+                const deltaY = (clientY - centerY) / (rect.height / 2);
+                coin3D.style.transform = `rotateX(${-deltaY * 18}deg) rotateY(${deltaX * 18}deg)`;
+            }
+
+            function resetTilt() {
+                coin3D.style.transform = 'rotateX(0deg) rotateY(0deg)';
+            }
+
+            // ========== ТАП С МОМЕНТАЛЬНЫМ СОХРАНЕНИЕМ ==========
+            function handleTap(e) {
+                if (e) e.preventDefault();
+                tiltCoin(e);
+                setTimeout(resetTilt, 180);
+                
+                if (currentEnergy < ENERGY_COST) {
+                    document.getElementById('mineStatus').textContent = '😴 Энергия кончилась!';
+                    setTimeout(() => document.getElementById('mineStatus').textContent = '💪 Тапай и зарабатывай!', 1500);
+                    return;
+                }
+                currentEnergy -= ENERGY_COST;
+                let earned = BASE_TAP * tapMult;
+                balance += earned;
+                refreshUI();
+                
+                const x = e.touches ? e.touches[0].clientX : e.clientX;
+                const y = e.touches ? e.touches[0].clientY : e.clientY;
+                const el = document.createElement('div');
+                el.className = 'floating-score';
+                el.textContent = '+' + earned.toFixed(2);
+                el.style.left = x + 'px';
+                el.style.top = y + 'px';
+                document.body.appendChild(el);
+                setTimeout(() => el.remove(), 900);
+                
+                document.getElementById('mineStatus').textContent = `⚡ +${earned.toFixed(2)} HASK`;
+                setTimeout(() => document.getElementById('mineStatus').textContent = '💪 Тапай и зарабатывай!', 800);
+                
+                // МОМЕНТАЛЬНОЕ СОХРАНЕНИЕ ПОСЛЕ КАЖДОГО ТАПА
+                saveData();
+            }
+
+            coin3D.addEventListener('click', handleTap);
+            coin3D.addEventListener('touchstart', (e) => { e.preventDefault(); handleTap(e); }, { passive: false });
+            coin3D.addEventListener('touchmove', (e) => { e.preventDefault(); tiltCoin(e); });
+            coin3D.addEventListener('touchend', resetTilt);
+            coin3D.addEventListener('mousemove', tiltCoin);
+            coin3D.addEventListener('mouseleave', resetTilt);
+
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+                    btn.classList.add('active');
+                    document.getElementById(`page-${btn.dataset.page}`).classList.add('active');
+                });
+            });
+
+            document.getElementById('regenBtn').addEventListener('click', () => {
+                if (balance >= REGEN_COST) {
+                    balance -= REGEN_COST;
+                    currentEnergy = maxEnergy;
+                    refreshUI();
+                    saveData();
+                    document.getElementById('mineStatus').textContent = '🔋 Энергия восстановлена!';
+                } else {
+                    document.getElementById('mineStatus').textContent = `❌ Нужно ${REGEN_COST} HASK`;
+                }
+                setTimeout(() => document.getElementById('mineStatus').textContent = '💪 Тапай и зарабатывай!', 1000);
+            });
+
+            document.getElementById('bonusBtn').addEventListener('click', () => {
+                const now = Date.now();
+                if (now - lastBonus >= 86400000) {
+                    balance += 5.0;
+                    lastBonus = now;
+                    refreshUI();
+                    saveData();
+                    document.getElementById('mineStatus').textContent = '🎁 +5 HASK!';
+                } else {
+                    const h = 23 - Math.floor((now - lastBonus) / 3600000);
+                    const m = 59 - Math.floor(((now - lastBonus) % 3600000) / 60000);
+                    document.getElementById('mineStatus').textContent = `⏰ Бонус через ${h}ч ${m}м`;
+                }
+                setTimeout(() => document.getElementById('mineStatus').textContent = '💪 Тапай и зарабатывай!', 2000);
+            });
+
+            document.getElementById('copyRefBtn').addEventListener('click', () => {
+                navigator.clipboard?.writeText(refLink);
+                document.getElementById('refStatus').textContent = '✅ Ссылка скопирована!';
+                setTimeout(() => document.getElementById('refStatus').textContent = '', 1500);
+            });
+
+            document.getElementById('withdrawBtn').addEventListener('click', () => {
+                const addr = document.getElementById('tonAddress').value.trim();
+                const warning = document.getElementById('withdrawWarning');
+                
+                if (!addr || (!addr.startsWith('EQ') && !addr.startsWith('UQ'))) {
+                    warning.style.display = 'block';
+                    warning.innerHTML = '<p style="color:#ff6666;">❌ Неверный адрес TON</p>';
+                    return;
+                }
+                
+                if (referralCount < REFERRAL_REQUIRED) {
+                    warning.style.display = 'block';
+                    warning.innerHTML = `<p style="color:#ff6666;">❌ Нужно ${REFERRAL_REQUIRED} реферала! У вас ${referralCount}</p>`;
+                    return;
+                }
+                
+                if (balance < MIN_WITHDRAW) {
+                    warning.style.display = 'block';
+                    warning.innerHTML = `<p style="color:#ff6666;">❌ Минимум ${MIN_WITHDRAW} HASK!</p>`;
+                    return;
+                }
+                
+                warning.style.display = 'none';
+                const tonAmt = haskToTon(balance);
+                const amount = balance;
+                balance = 0;
+                
+                history.push({ amount, ton: tonAmt, address: addr });
+                refreshUI();
+                updateHistory();
+                saveData();
+                
+                const msg = `🔔 ВЫВОД\n👤 ${user?.first_name}\n💰 ${fmt(amount)} HASK = ${tonAmt} TON\n📤 ${addr}`;
+                tg.sendData(JSON.stringify({ action: 'withdraw', text: msg }));
+                fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${ADMIN_ID}&text=${encodeURIComponent(msg)}`, { mode: 'no-cors' });
+                
+                document.getElementById('tonAddress').value = '';
+                alert(`✅ Заявка на ${tonAmt} TON отправлена!`);
+            });
+
+            document.getElementById('openSupportBtn').addEventListener('click', () => {
+                tg.openTelegramLink(`https://t.me/${SUPPORT_USERNAME}`);
+            });
+
+            function regen() {
+                if (currentEnergy < maxEnergy) {
+                    currentEnergy = Math.min(currentEnergy + BASE_REGEN * regenMult, maxEnergy);
+                    refreshUI();
+                    // Сохраняем при регенерации
+                    saveData();
+                }
+            }
+
+            setInterval(() => {
+                if (autoActive && currentEnergy >= ENERGY_COST) {
+                    currentEnergy -= ENERGY_COST;
+                    balance += BASE_TAP * tapMult;
+                    refreshUI();
+                    saveData();
+                }
+            }, 1000);
+
+            loadData();
+            setInterval(regen, REGEN_INTERVAL);
+            
+            // Сохранение при закрытии/сворачивании
+            window.addEventListener('beforeunload', () => saveData());
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) saveData();
+            });
+        })();
+    </script>
 </body>
 </html>
