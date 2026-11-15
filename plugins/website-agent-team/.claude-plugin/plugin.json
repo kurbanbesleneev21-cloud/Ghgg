@@ -1,0 +1,36 @@
+{
+  "name": "website-agent-team",
+  "version": "1.4.0",
+  "description": "A coordinated website-building team with a guided button-first creation wizard, engineering, security, testing, SEO, deployment, motion-background workflows and OriginKit animated sections, backgrounds and buttons.",
+  "author": {
+    "name": "Аксана Бесленеева",
+    "email": "besleneevaaksana@gmail.com"
+  },
+  "keywords": [
+    "website",
+    "web design",
+    "guided wizard",
+    "button questionnaire",
+    "interactive website builder",
+    "developer",
+    "security",
+    "SEO",
+    "accessibility",
+    "QA",
+    "ecommerce",
+    "TDD",
+    "code review",
+    "performance",
+    "motion design",
+    "animated backgrounds",
+    "Remotion",
+    "Canvas",
+    "SVG",
+    "OriginKit",
+    "hero section",
+    "UI components",
+    "buttons",
+    "Next.js",
+    "Tailwind"
+  ]
+}

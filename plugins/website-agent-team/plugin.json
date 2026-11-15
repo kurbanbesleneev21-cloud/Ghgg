@@ -1,0 +1,57 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "author": {
+    "email": "besleneevaaksana@gmail.com",
+    "name": "Аксана Бесленеева"
+  },
+  "description": "A coordinated website-building team with a guided button-first creation wizard, engineering, security, testing, SEO, deployment, motion-background workflows and OriginKit animated sections, backgrounds and buttons.",
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "capabilities": [
+          "Code",
+          "Interactive"
+        ],
+        "category": "Developer Tools",
+        "defaultPrompt": [
+          "Создай сайт пошагово: проведи меня через выбор цели, структуры, дизайна, анимации, защиты и фона. Задавай по одному вопросу с вариантами выбора.",
+          "Build a complete website using the guided Website Agent Team wizard.",
+          "Review my website for security, accessibility, SEO, and performance.",
+          "Подбери и добавь на сайт секцию, фон или кнопки из OriginKit (например hero-02)."
+        ],
+        "developerName": "Аксана Бесленеева",
+        "displayName": "Website Agent Team",
+        "longDescription": "A coordinated website-building team with a step-by-step, choice-first setup wizard for website purpose, audience, pages, features and buttons, visual design, animation, security, backgrounds, content, budget and final approval. It asks one question at a time and avoids long free-text questionnaires. Includes specialist workflows for frontend/backend engineering, ecommerce, accessibility, SEO, performance, QA, deployment, research-first development, and original animated backgrounds. It favors open-source tools and free tiers, explains limits and paid dependencies, and verifies work rather than claiming checks that were not run. It does not silently create accounts, purchase services, publish, or guarantee security. Integrates the OriginKit library (originkit.dev): hero sections, CTA/pricing/FAQ/footer sections, animated backgrounds and buttons, installed with the originkit CLI into React/Next.js + Tailwind projects or recreated natively for static sites."
+      }
+    }
+  },
+  "keywords": [
+    "website",
+    "web design",
+    "guided wizard",
+    "button questionnaire",
+    "interactive website builder",
+    "developer",
+    "security",
+    "SEO",
+    "accessibility",
+    "QA",
+    "ecommerce",
+    "TDD",
+    "code review",
+    "performance",
+    "motion design",
+    "animated backgrounds",
+    "Remotion",
+    "Canvas",
+    "SVG",
+    "OriginKit",
+    "hero section",
+    "UI components",
+    "buttons",
+    "Next.js",
+    "Tailwind"
+  ],
+  "name": "website-agent-team",
+  "version": "1.4.0"
+}
