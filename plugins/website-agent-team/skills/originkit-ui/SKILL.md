@@ -87,11 +87,21 @@ Package manager equivalents: `pnpm dlx originkit@latest …`, `yarn dlx originki
   `ORIGINKIT_API_KEY` environment variable.
 - Never ask the user to paste the API key into chat, and never commit it. The `.originkit`
   key file written by `init` is added to `.gitignore` automatically. Keep it that way.
-- Delivery quota (shared with website copies): components 10/day and 30/week, sections
-  10/day. `--dry-run`, `list`, `search` and `whoami` are the cheap way to explore. Do not
+- Delivery quota (shared with website copies), per the CLI README: components 10/day and 30/week, sections
+  10/day. Check the real limit, which may be lower (see below). `--dry-run`, `list`, `search` and `whoami` are the cheap way to explore. Do not
   install candidates "just to look"; let the user pick from the website preview first.
 - Outside a TTY, `add` fails with instructions instead of prompting. Report that error
   as BLOCKED with the exact next step for the user.
+- **Free-tier limit can be lower than the README says** (observed: 3 sections/day). Check
+  before planning: fetch **one slug per `add` call**. A multi-slug `add` fetches everything
+  first and writes only at the end, so hitting the limit midway wastes quota with no files.
+- **Proxy-injected credentials (cloud sessions):** Node's built-in `fetch` ignores
+  `HTTPS_PROXY` unless `NODE_USE_ENV_PROXY=1` is set. Without it the key is never injected and
+  the CLI reports "Credential rejected". Run:
+  `NODE_USE_ENV_PROXY=1 ORIGINKIT_API_KEY=proxy-injected npx originkit@latest add <slug>`.
+  The key is needed for `mcp.originkit.dev` (registry); archived sections are also fetched
+  from `www.originkit.dev/api/sections/<slug>/download`.
+- Free check without quota: `GET https://mcp.originkit.dev/v1/me` returns the account when the key works.
 
 ## Plain HTML / CSS / JS sites (no React)
 
