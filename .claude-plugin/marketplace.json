@@ -1,0 +1,17 @@
+{
+  "name": "website-agent-team",
+  "owner": {
+    "name": "Аксана Бесленеева"
+  },
+  "plugins": [
+    {
+      "name": "website-agent-team",
+      "source": "./plugins/website-agent-team",
+      "description": "A coordinated website-building team with a guided button-first creation wizard, engineering, security, testing, SEO, deployment, motion-background workflows and OriginKit animated sections, backgrounds and buttons.",
+      "version": "1.4.0"
+    }
+  ],
+  "metadata": {
+    "description": "Website Agent Team: мастер создания сайтов с секциями, фонами и кнопками OriginKit"
+  }
+}
